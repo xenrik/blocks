@@ -3,74 +3,69 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour {
-
-    public enum Axis {
-        X, Y, Z,
-        InvertX, InvertY, InvertZ
-    };
-
-    public string MouseEnabledButton;
+    public string MoveButton;
     public string MouseXAxis;    
     public string MouseYAxis;
 
     public string KeyboardXAxis;
     public string KeyboardYAxis;
 
-    public Axis CameraXAxis = Axis.X;
-    public Axis CameraYAxis = Axis.Y;
-
-    private new Camera camera;
-    private bool wasOverCamera = false;
+    private Camera[] cameras;
+    private Camera currentCamera;
 
 	// Use this for initialization
 	void Start () {
-        camera = GetComponent<Camera>();
+        cameras = GetComponentsInChildren<Camera>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-        // Ignore if we're not over this camera
-	    if (!camera.pixelRect.Contains(Input.mousePosition)) {
-            wasOverCamera = false;
-            return;
-        }
 
-        if (!wasOverCamera) {
-            Input.ResetInputAxes();
-        }
-        wasOverCamera = true;
+    // Update is called once per frame
+    void Update() {
+        bool moveEnabled = Input.GetButton(MoveButton);
+        if (moveEnabled) {
+            if (currentCamera != null) {
+                MoveCamera(currentCamera);
+            } else {
+                // Select a camera if we can
+                foreach (Camera camera in cameras) {
+                    if (camera.pixelRect.Contains(Input.mousePosition)) {
+                        currentCamera = camera;
 
+                        Cursor.lockState = CursorLockMode.Locked;
+                        Cursor.visible = false;
+
+                        break;
+                    }
+                }
+            }
+        } else if (currentCamera != null) {
+            currentCamera = null;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
+
+    private void MoveCamera(Camera camera) { 
         float axisX = Input.GetAxis(KeyboardXAxis);
         float axisY = Input.GetAxis(KeyboardYAxis);
 
-        bool mouseEnabled = Input.GetButton(MouseEnabledButton);
-        if (mouseEnabled) {
-            axisX = Input.GetAxis(MouseXAxis);
-            axisY = Input.GetAxis(MouseYAxis);
+        float mouseX = Input.GetAxis(MouseXAxis);
+        float mouseY = Input.GetAxis(MouseYAxis);
+
+        Quaternion rot = camera.transform.localRotation;
+        Vector3 pos = camera.transform.localPosition;
+
+        if (camera.CompareTag("FlightCamera")) {
+            rot *= Quaternion.Euler(-mouseY, mouseX, 0);
+            Vector3 rotEuler = rot.eulerAngles;
+            rotEuler.z = 0;
+            rot = Quaternion.Euler(rotEuler);
+
+            pos += rot * new Vector3(axisX, 0, axisY);
+        } else {
+            pos += rot * new Vector3(axisX + mouseX, mouseY, axisY);
         }
 
-        if (axisX == 0 && axisY == 0) {
-            return;
-        }
-
-        Vector3 p = camera.transform.position;
-        switch (CameraXAxis) {
-        case Axis.X: p.x += axisX; break;
-        case Axis.Y: p.y += axisX; break;
-        case Axis.Z: p.z += axisX; break;
-        case Axis.InvertX: p.x -= axisX; break;
-        case Axis.InvertY: p.y -= axisX; break;
-        case Axis.InvertZ: p.z -= axisX; break;
-        }
-        switch (CameraYAxis) {
-        case Axis.X: p.x += axisY; break;
-        case Axis.Y: p.y += axisY; break;
-        case Axis.Z: p.z += axisY; break;
-        case Axis.InvertX: p.x -= axisY; break;
-        case Axis.InvertY: p.y -= axisY; break;
-        case Axis.InvertZ: p.z -= axisY; break;
-        }
-
-        camera.transform.position = p;
-	}
+        camera.transform.localPosition = pos;
+        camera.transform.localRotation = rot;
+    }
 }
