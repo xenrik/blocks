@@ -188,6 +188,7 @@ GameObject:
   - component: {fileID: 242964154}
   - component: {fileID: 242964153}
   - component: {fileID: 242964152}
+  - component: {fileID: 242964151}
   m_Layer: 0
   m_Name: PaletteCamera
   m_TagString: Untagged
@@ -195,6 +196,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &242964151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 242964150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e991afaffb1fd81478081d21be59aa5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeInSpeed: 0.5
+  fadeOutSpeed: 0.25
 --- !u!124 &242964152
 Behaviour:
   m_ObjectHideFlags: 0
@@ -375,6 +389,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: {x: 1, y: 10, z: 3}
   initialiseRandom: 1
+--- !u!114 &1252564345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1252564339}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 0, g: 1, b: 0.9723275, a: 0}
+  outlineWidth: 5
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+--- !u!64 &1252564346
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1252564339}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300000, guid: e6ebb624f5dd47d40ae106ff1979b6fa, type: 3}
 --- !u!1001 &1377918368
 Prefab:
   m_ObjectHideFlags: 0
