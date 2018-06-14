@@ -45,8 +45,10 @@ public class CameraController : MonoBehaviour {
     }
 
     private void MoveCamera(Camera camera) { 
-        float axisX = Input.GetAxis(KeyboardXAxis);
-        float axisY = Input.GetAxis(KeyboardYAxis);
+        float axisX = Input.GetAxis(KeyboardXAxis) / 2;
+        float axisY = Input.GetAxis(KeyboardYAxis) / 2;
+
+        Debug.Log($"X: {axisX} - Y: {axisY}");
 
         float mouseX = Input.GetAxis(MouseXAxis);
         float mouseY = Input.GetAxis(MouseYAxis);
