@@ -56,7 +56,7 @@ public class CameraController : MonoBehaviour {
         Quaternion rot = camera.transform.localRotation;
         Vector3 pos = camera.transform.localPosition;
 
-        if (camera.CompareTag("FlightCamera")) {
+        if (Tags.FLIGHT_CAMERA.HasTag(camera)) { 
             rot *= Quaternion.Euler(-mouseY, mouseX, 0);
             Vector3 rotEuler = rot.eulerAngles;
             rotEuler.z = 0;
