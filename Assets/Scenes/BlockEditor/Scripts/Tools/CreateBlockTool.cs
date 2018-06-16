@@ -5,12 +5,14 @@ using UnityEngine;
 public class CreateBlockTool : MonoBehaviour {
     public string buttonName;
 
-    private new Camera camera;
+    private Camera paletteCamera;
+    private MouseOverFeedback feedback;
     private GameObject currentBlock;
 
     // Use this for initialization
     void Start () {
-        camera = GetComponentInChildren<Camera>();
+        paletteCamera = GetComponentInChildren<Camera>();
+        feedback = GetComponentInChildren<MouseOverFeedback>();
     }
 
     // Update is called once per frame
@@ -23,15 +25,20 @@ public class CreateBlockTool : MonoBehaviour {
             return;
         }
 
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = paletteCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo) && Tags.BLOCK.HasTag(hitInfo.collider)) {
+        if (Physics.Raycast(ray, out hitInfo) && Tags.PALETTE_BLOCK.HasTag(hitInfo.collider)) {
+            // Reset the feedback and create the block
+            feedback.Reset(true);
+
             ObjectTemplate template = hitInfo.collider.GetComponent<ObjectTemplate>();
             if (template != null) {
                 currentBlock = template.CreateFromTemplate();
             } else {
                 currentBlock = Instantiate(hitInfo.collider.gameObject);
             }
+
+            UpdateCurrentBlock();
         }
     }
 
@@ -41,10 +48,23 @@ public class CreateBlockTool : MonoBehaviour {
     }
 
     private void Commit() {
-        Reset();
+        Camera currentCamera = CameraExtensions.FindCameraUnderMouse();
+        if (currentCamera == paletteCamera) {
+            Reset();
+        } else {
+            currentBlock = null;
+        }
     }
 
     private void UpdateCurrentBlock() {
+        Camera currentCamera = CameraExtensions.FindCameraUnderMouse();
+        if (currentCamera == null) {
+            Debug.Log("No Camera?");
+            return;
+        }
 
+        Vector3 mousePosition = Input.mousePosition;
+        mousePosition.z = 10;
+        currentBlock.transform.position = currentCamera.ScreenToWorldPoint(mousePosition);
     }
 }

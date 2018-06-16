@@ -6,6 +6,9 @@ TagManager:
   tags:
   - FlightCamera
   - Block
+  - Template
+  - PaletteBlock
+  - TemplateBlock
   layers:
   - Default
   - TransparentFX
