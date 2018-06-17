@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PrefabTemplate : MonoBehaviour, ObjectTemplate {
 
-    public GameObject prefab;
+    public GameObject Prefab;
 
     public GameObject CreateFromTemplate() {
-        return Instantiate(prefab);
+        return Instantiate(Prefab);
     }
 }

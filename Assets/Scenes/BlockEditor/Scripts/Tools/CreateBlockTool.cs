@@ -1,27 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+
 using UnityEngine;
 
 public class CreateBlockTool : MonoBehaviour {
-    public string buttonName;
+    public string ButtonName;
 
     private Camera paletteCamera;
-    private MouseOverFeedback feedback;
-    private GameObject currentBlock;
+    private MouseOverFeedback paletteFeedback;
+
+    private GameObject feedbackBlock;
+    private GameObject collisionCheckerBlock;
+    private GameObject editorBlock;
+
+    private TemplateOutline outline;
+    private PipCollider[] pipColliders;
 
     // Use this for initialization
     void Start () {
         paletteCamera = GetComponentInChildren<Camera>();
-        feedback = GetComponentInChildren<MouseOverFeedback>();
+        paletteFeedback = GetComponentInChildren<MouseOverFeedback>();
     }
 
     // Update is called once per frame
     void Update() {
-        if (!Input.GetButton(buttonName)) {
-            Commit();
-            return;
-        } else if (currentBlock != null) {
-            UpdateCurrentBlock();
+        if (feedbackBlock != null) {
+            if (!Input.GetButton(ButtonName)) {
+                Commit();
+                return;
+            } else {
+                UpdateCurrentBlock();
+                return;
+            }
+        } else if (!Input.GetButton(ButtonName)) {
             return;
         }
 
@@ -29,42 +41,79 @@ public class CreateBlockTool : MonoBehaviour {
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo) && Tags.PALETTE_BLOCK.HasTag(hitInfo.collider)) {
             // Reset the feedback and create the block
-            feedback.Reset(true);
+            paletteFeedback.Reset(true);
 
-            ObjectTemplate template = hitInfo.collider.GetComponent<ObjectTemplate>();
-            if (template != null) {
-                currentBlock = template.CreateFromTemplate();
-            } else {
-                currentBlock = Instantiate(hitInfo.collider.gameObject);
-            }
-
-            UpdateCurrentBlock();
+            PaletteTemplate template = hitInfo.collider.GetComponent<PaletteTemplate>();
+            InitialiseForCreate(template);
         }
     }
 
     private void Reset() {
-        Destroy(currentBlock);
-        currentBlock = null;
+        Destroy(feedbackBlock);
+        feedbackBlock = null;
+
+        Destroy(collisionCheckerBlock);
+        collisionCheckerBlock = null;
+
+        Destroy(editorBlock);
+        editorBlock = null;
     }
 
     private void Commit() {
-        Camera currentCamera = CameraExtensions.FindCameraUnderMouse();
-        if (currentCamera == paletteCamera) {
-            Reset();
-        } else {
-            currentBlock = null;
+        if (CheckValidPosition()) {
+            editorBlock.transform.position = feedbackBlock.transform.position;
+            editorBlock.transform.rotation = feedbackBlock.transform.rotation;
+            editorBlock.SetActive(true);
+
+            editorBlock = null;
         }
+
+        Reset();
+    }
+
+    private void InitialiseForCreate(PaletteTemplate template) {
+        feedbackBlock = Instantiate(template.FeedbackBlock);
+        outline = feedbackBlock.GetComponent<TemplateOutline>();
+
+        collisionCheckerBlock = Instantiate(template.CollisionCheckerBlock);
+        pipColliders = collisionCheckerBlock.GetComponentsInChildren<PipCollider>();
+
+        editorBlock = Instantiate(template.EditorBlock);
+        editorBlock.SetActive(false);
+
+        UpdateCurrentBlock();
     }
 
     private void UpdateCurrentBlock() {
         Camera currentCamera = CameraExtensions.FindCameraUnderMouse();
         if (currentCamera == null) {
-            Debug.Log("No Camera?");
             return;
         }
 
         Vector3 mousePosition = Input.mousePosition;
         mousePosition.z = 10;
-        currentBlock.transform.position = currentCamera.ScreenToWorldPoint(mousePosition);
+
+        Vector3 worldPosition = currentCamera.ScreenToWorldPoint(mousePosition);
+        collisionCheckerBlock.transform.position = worldPosition;
+        feedbackBlock.transform.position = worldPosition;
+
+        bool validPosition = CheckValidPosition();
+        outline.OutlineColor = validPosition ? outline.ValidPositionColor : outline.InvalidPositionColor;
+
+        if (!validPosition) {
+            return;
+        }
+
+        PipCollider collider = pipColliders.First(p => p.GetOtherPip());
+        Vector3 pipOffset = collider.gameObject.transform.position - collisionCheckerBlock.transform.position;
+
+        GameObject otherPip = collider.GetOtherPip();
+        Vector3 otherPipPosition = otherPip.transform.position;
+
+        feedbackBlock.transform.position = otherPipPosition - pipOffset;
+    }
+    
+    private bool CheckValidPosition() {
+        return pipColliders.Any(collider => (collider.GetOtherPip() != null));
     }
 }

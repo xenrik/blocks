@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 64573036752547382}
   - component: {fileID: 114556559753310434}
   - component: {fileID: 114562586211417034}
-  - component: {fileID: 114859659872437408}
+  - component: {fileID: 114100454943945426}
   m_Layer: 0
   m_Name: Cube1x1_Palette
   m_TagString: PaletteBlock
@@ -101,6 +101,23 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300000, guid: e6ebb624f5dd47d40ae106ff1979b6fa, type: 3}
+--- !u!114 &114100454943945426
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1151390379603250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 851e245ef12e84a43af7993f5ea941cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionCheckerBlock: {fileID: 1319603417534346, guid: ee8fea6dd8d3e074fa7cbf5ec34612bf,
+    type: 2}
+  FeedbackBlock: {fileID: 1319603417534346, guid: 2f429a09ba2260943ab35d18939e6d35,
+    type: 2}
+  EditorBlock: {fileID: 1319603417534346, guid: cc174ff8aa2eeb14ea3a3e35661d8ce7,
+    type: 2}
 --- !u!114 &114556559753310434
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -112,8 +129,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8157e42cb50ef3a40b6c648432d9c938, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: {x: 13, y: 23, z: 37}
-  initialiseRandom: 1
+  RotationSpeed: {x: 13, y: 23, z: 37}
+  InitialiseRandom: 0
 --- !u!114 &114562586211417034
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -131,15 +148,3 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
---- !u!114 &114859659872437408
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1151390379603250}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c567226aa3360f4fbc36d11344b3bf1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 1319603417534346, guid: 2f429a09ba2260943ab35d18939e6d35, type: 2}

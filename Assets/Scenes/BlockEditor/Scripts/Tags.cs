@@ -12,6 +12,9 @@ public enum Tags {
     // Tag that blocks which are in the palette should have
     PALETTE_BLOCK,
 
+    // Tag that pips should have
+    PIP,
+
     // Tag that blocks which are templates should have
     TEMPLATE_BLOCK
 }
@@ -22,6 +25,7 @@ static class TagMethods {
         case Tags.BLOCK: return "Block";
         case Tags.FLIGHT_CAMERA: return "FlightCamera";
         case Tags.PALETTE_BLOCK: return "PaletteBlock";
+        case Tags.PIP: return "Pip";
         case Tags.TEMPLATE_BLOCK: return "TemplateBlock";
 
         default:
@@ -31,5 +35,8 @@ static class TagMethods {
 
     public static bool HasTag(this Tags tag, Component comp) {
         return comp.CompareTag(tag.Name());
+    }
+    public static bool HasTag(this Tags tag, GameObject go) {
+        return go.CompareTag(tag.Name());
     }
 }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class MouseOverFeedback : MonoBehaviour {
 
-    public float fadeInSpeed;
-    public float fadeOutSpeed;
-    public float spinSpeed;
+    public float FadeInSpeed;
+    public float FadeOutSpeed;
+    public float SpinSpeed;
 
     private new Camera camera;
 
@@ -23,7 +23,7 @@ public class MouseOverFeedback : MonoBehaviour {
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo)) {
             if (Tags.PALETTE_BLOCK.HasTag(hitInfo.collider)) {
-                if (currentHighlight == null || currentHighlight.block != hitInfo.collider.gameObject) {
+                if (currentHighlight == null || currentHighlight.Block != hitInfo.collider.gameObject) {
                     if (currentHighlight != null) {
                         ResetHighlight(currentHighlight, false);
                     }
@@ -50,35 +50,35 @@ public class MouseOverFeedback : MonoBehaviour {
     }
 
     void ResetHighlight(Highlight highlight, bool immediate) {
-        if (highlight.fade != null) {
-            StopCoroutine(highlight.fade);
-            highlight.fade = null;
+        if (highlight.Fade != null) {
+            StopCoroutine(highlight.Fade);
+            highlight.Fade = null;
         }
-        if (highlight.spin != null) {
-            StopCoroutine(highlight.spin);
-            highlight.spin = null;
+        if (highlight.Spin != null) {
+            StopCoroutine(highlight.Spin);
+            highlight.Spin = null;
         }
-        if (highlight.outline.enabled) {
+        if (highlight.Outline.enabled) {
             if (immediate) {
-                highlight.outline.enabled = false;
+                highlight.Outline.enabled = false;
             }
 
             // Fade out (or just reset)
-            StartCoroutine(FadeOut(highlight.outline));
+            StartCoroutine(FadeOut(highlight.Outline));
         }
 
-        highlight.rotator.enabled = true;
+        highlight.Rotator.enabled = true;
     }
 
     void StartHighlight(Highlight highlight) {
-        highlight.outline.enabled = true;
-        highlight.rotator.enabled = false;
+        highlight.Outline.enabled = true;
+        highlight.Rotator.enabled = false;
 
-        highlight.fade = FadeIn(highlight.outline);
-        StartCoroutine(highlight.fade);
+        highlight.Fade = FadeIn(highlight.Outline);
+        StartCoroutine(highlight.Fade);
 
-        highlight.spin = Spin(highlight.block);
-        StartCoroutine(highlight.spin);
+        highlight.Spin = Spin(highlight.Block);
+        StartCoroutine(highlight.Spin);
     }
 
     IEnumerator FadeIn(Outline outline) {
@@ -86,7 +86,7 @@ public class MouseOverFeedback : MonoBehaviour {
         outline.enabled = true;
 
         while (c.a < 1) {
-            c.a += (1 / fadeInSpeed) * Time.deltaTime;
+            c.a += (1 / FadeInSpeed) * Time.deltaTime;
             outline.OutlineColor = c;
             yield return null;
         }
@@ -107,7 +107,7 @@ public class MouseOverFeedback : MonoBehaviour {
         }
 
         while (c.a > 0) {
-            c.a -= (1 / fadeOutSpeed) * Time.deltaTime;
+            c.a -= (1 / FadeOutSpeed) * Time.deltaTime;
             outline.OutlineColor = c;
             yield return null;
         }
@@ -122,8 +122,8 @@ public class MouseOverFeedback : MonoBehaviour {
         Quaternion current = block.transform.localRotation;
 
         float t = 0, p = 0;
-        while (t < spinSpeed) {
-            p = t / spinSpeed;
+        while (t < SpinSpeed) {
+            p = t / SpinSpeed;
             block.transform.localRotation = Quaternion.Slerp(current, target, p);
 
             t += Time.deltaTime;
@@ -134,20 +134,20 @@ public class MouseOverFeedback : MonoBehaviour {
     }
 
     private class Highlight {
-        public readonly GameObject block;
-        public readonly Outline outline;
-        public readonly SimpleRotator rotator;
+        public readonly GameObject Block;
+        public readonly Outline Outline;
+        public readonly SimpleRotator Rotator;
 
-        public IEnumerator fade;
-        public IEnumerator spin;
+        public IEnumerator Fade;
+        public IEnumerator Spin;
 
         public Highlight(GameObject block) {
-            this.block = block;
-            this.outline = block.GetComponent<Outline>();
-            this.rotator = block.GetComponent<SimpleRotator>();
+            this.Block = block;
+            this.Outline = block.GetComponent<Outline>();
+            this.Rotator = block.GetComponent<SimpleRotator>();
 
-            this.fade = null;
-            this.spin = null;
+            this.Fade = null;
+            this.Spin = null;
         }
     }
 }

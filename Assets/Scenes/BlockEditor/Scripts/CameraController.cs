@@ -10,6 +10,9 @@ public class CameraController : MonoBehaviour {
     public string KeyboardXAxis;
     public string KeyboardYAxis;
 
+    public float KeyboardAxisMultipler;
+    public float FlightAngleMultiplier;
+
     private Camera[] cameras;
     private Camera currentCamera;
 
@@ -45,10 +48,8 @@ public class CameraController : MonoBehaviour {
     }
 
     private void MoveCamera(Camera camera) { 
-        float axisX = Input.GetAxis(KeyboardXAxis) / 2;
-        float axisY = Input.GetAxis(KeyboardYAxis) / 2;
-
-        Debug.Log($"X: {axisX} - Y: {axisY}");
+        float axisX = Input.GetAxis(KeyboardXAxis) * KeyboardAxisMultipler;
+        float axisY = Input.GetAxis(KeyboardYAxis) * KeyboardAxisMultipler;
 
         float mouseX = Input.GetAxis(MouseXAxis);
         float mouseY = Input.GetAxis(MouseYAxis);
@@ -57,7 +58,7 @@ public class CameraController : MonoBehaviour {
         Vector3 pos = camera.transform.localPosition;
 
         if (Tags.FLIGHT_CAMERA.HasTag(camera)) { 
-            rot *= Quaternion.Euler(-mouseY, mouseX, 0);
+            rot *= Quaternion.Euler(-mouseY * FlightAngleMultiplier, mouseX * FlightAngleMultiplier, 0);
             Vector3 rotEuler = rot.eulerAngles;
             rotEuler.z = 0;
             rot = Quaternion.Euler(rotEuler);
