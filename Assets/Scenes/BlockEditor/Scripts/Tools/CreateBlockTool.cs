@@ -16,6 +16,7 @@ public class CreateBlockTool : MonoBehaviour {
 
     private TemplateOutline outline;
     private PipCollider[] pipColliders;
+    private BlockCollider[] blockColliders;
 
     // Use this for initialization
     void Start () {
@@ -77,6 +78,7 @@ public class CreateBlockTool : MonoBehaviour {
 
         collisionCheckerBlock = Instantiate(template.CollisionCheckerBlock);
         pipColliders = collisionCheckerBlock.GetComponentsInChildren<PipCollider>();
+        blockColliders = collisionCheckerBlock.GetComponentsInChildren<BlockCollider>();
 
         editorBlock = Instantiate(template.EditorBlock);
         editorBlock.SetActive(false);
@@ -114,6 +116,7 @@ public class CreateBlockTool : MonoBehaviour {
     }
     
     private bool CheckValidPosition() {
-        return pipColliders.Any(collider => (collider.GetOtherPip() != null));
+        return pipColliders.Any(collider => (collider.GetOtherPip() != null)) &&
+            !blockColliders.Any(collider => (collider.GetOtherBlock() != null));
     }
 }

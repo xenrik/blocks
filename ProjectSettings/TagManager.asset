@@ -9,6 +9,7 @@ TagManager:
   - PaletteBlock
   - TemplateBlock
   - Pip
+  - EditorBlock
   layers:
   - Default
   - TransparentFX
