@@ -17,6 +17,7 @@ public class CreateBlockTool : MonoBehaviour {
     private TemplateOutline outline;
     private PipCollider[] pipColliders;
     private BlockCollider[] blockColliders;
+    private Quaternion currentRotation;
 
     // Use this for initialization
     void Start () {
@@ -79,6 +80,7 @@ public class CreateBlockTool : MonoBehaviour {
         collisionCheckerBlock = Instantiate(template.CollisionCheckerBlock);
         pipColliders = collisionCheckerBlock.GetComponentsInChildren<PipCollider>();
         blockColliders = collisionCheckerBlock.GetComponentsInChildren<BlockCollider>();
+        currentRotation = collisionCheckerBlock.transform.rotation;
 
         editorBlock = Instantiate(template.EditorBlock);
         editorBlock.SetActive(false);
@@ -96,8 +98,24 @@ public class CreateBlockTool : MonoBehaviour {
         mousePosition.z = 10;
 
         Vector3 worldPosition = currentCamera.ScreenToWorldPoint(mousePosition);
+        Quaternion rotation = currentRotation;
+
+        // Update the collision checker
         collisionCheckerBlock.transform.position = worldPosition;
+
+        PipCollider collider = pipColliders.FirstOrDefault(p => p.GetOtherPip());
+        GameObject otherPip = collider?.GetOtherPip();
+
+        if (otherPip == null) {
+            collisionCheckerBlock.transform.rotation = rotation;
+        } else {
+            // Snap the rotation using the pip
+            rotation = SnapRotation(rotation, otherPip.transform.forward);
+        }
+
+        // Update feedback
         feedbackBlock.transform.position = worldPosition;
+        feedbackBlock.transform.rotation = rotation;
 
         bool validPosition = CheckValidPosition();
         outline.OutlineColor = validPosition ? outline.ValidPositionColor : outline.InvalidPositionColor;
@@ -106,10 +124,8 @@ public class CreateBlockTool : MonoBehaviour {
             return;
         }
 
-        PipCollider collider = pipColliders.First(p => p.GetOtherPip());
+        // Snap the position to the pip
         Vector3 pipOffset = collider.gameObject.transform.position - collisionCheckerBlock.transform.position;
-
-        GameObject otherPip = collider.GetOtherPip();
         Vector3 otherPipPosition = otherPip.transform.position;
 
         feedbackBlock.transform.position = otherPipPosition - pipOffset;
@@ -118,5 +134,30 @@ public class CreateBlockTool : MonoBehaviour {
     private bool CheckValidPosition() {
         return pipColliders.Any(collider => (collider.GetOtherPip() != null)) &&
             !blockColliders.Any(collider => (collider.GetOtherBlock() != null));
+    }
+
+    /**
+     * Snap the current rotation to be a 0, 90, 180 or 270 degree spin around the forward vector.
+     */
+    private Quaternion SnapRotation(Quaternion currentRotation, Vector3 forward) {
+        Quaternion currentInv = Quaternion.Inverse(currentRotation);
+        Quaternion spinZero = Quaternion.Euler(forward);
+        Quaternion[] spins = {
+            spinZero,
+            spinZero * Quaternion.Euler(0, 0, 90),
+            spinZero * Quaternion.Euler(0, 0, 180),
+            spinZero * Quaternion.Euler(0, 0, 270)
+        };
+
+        Quaternion bestSpin = currentRotation;
+        float bestAngle = float.MaxValue;
+        foreach (Quaternion spin in spins) {
+            float angle = Mathf.Abs(Quaternion.Angle(currentRotation, spin));
+            if (angle < bestAngle) {
+                bestSpin = spin;
+            }
+        }
+
+        return bestSpin;
     }
 }
