@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114691966258585932}
   m_Layer: 0
   m_Name: CPip_Front
-  m_TagString: Untagged
+  m_TagString: Pip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 114305370734107592}
   m_Layer: 0
   m_Name: CPip_Back
-  m_TagString: Untagged
+  m_TagString: Pip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: 114121320545815456}
   m_Layer: 0
   m_Name: CPip_Left
-  m_TagString: Untagged
+  m_TagString: Pip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,9 +76,6 @@ GameObject:
   - component: {fileID: 64761049502432872}
   - component: {fileID: 114324917138420346}
   - component: {fileID: 54930146503666026}
-  - component: {fileID: 33060536022563298}
-  - component: {fileID: 114247412158993832}
-  - component: {fileID: 23118969023840550}
   m_Layer: 0
   m_Name: Corner1x1_CollisionChecker
   m_TagString: TemplateBlock
@@ -141,47 +138,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23118969023840550
-MeshRenderer:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1916370211289430}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 4294967295
-  m_Materials: []
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!33 &33060536022563298
-MeshFilter:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1916370211289430}
-  m_Mesh: {fileID: 4300000, guid: e6aea8b3ebd932243b727acb449fa408, type: 3}
 --- !u!54 &54059895646226462
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -303,23 +259,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01ed34f59e34feb43813c1c710e789c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114247412158993832
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1916370211289430}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 10
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!114 &114305370734107592
 MonoBehaviour:
   m_ObjectHideFlags: 1

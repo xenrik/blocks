@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114244168127503838}
   m_Layer: 0
   m_Name: EPip_Back
-  m_TagString: Untagged
+  m_TagString: Pip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 114025317494763124}
   m_Layer: 0
   m_Name: EPip_Front
-  m_TagString: Untagged
+  m_TagString: Pip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -77,7 +77,7 @@ GameObject:
   - component: {fileID: 114314698570451940}
   m_Layer: 0
   m_Name: Collider
-  m_TagString: Untagged
+  m_TagString: EditorBlock
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 114725157075824936}
   m_Layer: 0
   m_Name: EPip_Left
-  m_TagString: Untagged
+  m_TagString: Pip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
