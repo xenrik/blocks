@@ -8,8 +8,7 @@ public class BlockCollider : MonoBehaviour {
     private HashSet<GameObject> otherBlocks = new HashSet<GameObject>();
 
     private void OnCollisionEnter(Collision collision) {
-        if (Tags.TEMPLATE_BLOCK.HasTag(collision.gameObject) ||
-            Tags.EDITOR_BLOCK.HasTag(collision.gameObject)) {
+        if (Tags.EDITOR_BLOCK.HasTag(collision.gameObject)) {
             otherBlocks.Add(collision.gameObject);
         }
     }
@@ -19,8 +18,7 @@ public class BlockCollider : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider collider) {
-        if (Tags.TEMPLATE_BLOCK.HasTag(collider.gameObject) ||
-            Tags.EDITOR_BLOCK.HasTag(collider.gameObject)) {
+        if (Tags.EDITOR_BLOCK.HasTag(collider.gameObject)) {
             otherBlocks.Add(collider.gameObject);
         }
     }

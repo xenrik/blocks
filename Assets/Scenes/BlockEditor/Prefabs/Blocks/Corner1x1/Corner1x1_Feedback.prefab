@@ -22,6 +22,9 @@ GameObject:
   - component: {fileID: 33457805443873764}
   - component: {fileID: 23088647308512764}
   - component: {fileID: 114997648053226826}
+  - component: {fileID: 64657344502262930}
+  - component: {fileID: 54324923638512926}
+  - component: {fileID: 114081306538307474}
   m_Layer: 0
   m_Name: Corner1x1_Feedback
   m_TagString: TemplateBlock
@@ -84,6 +87,46 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1671046804707756}
   m_Mesh: {fileID: 4300000, guid: e6aea8b3ebd932243b727acb449fa408, type: 3}
+--- !u!54 &54324923638512926
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1671046804707756}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!64 &64657344502262930
+MeshCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1671046804707756}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 1
+  m_CookingOptions: 14
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300000, guid: 372f2cdd31ebe0845bc6937667b4a8ab, type: 3}
+--- !u!114 &114081306538307474
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1671046804707756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d306492a4644cd4d8058d4464003124, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114997648053226826
 MonoBehaviour:
   m_ObjectHideFlags: 1
