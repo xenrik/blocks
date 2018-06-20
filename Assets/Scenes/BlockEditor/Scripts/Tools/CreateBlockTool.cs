@@ -87,7 +87,7 @@ public class CreateBlockTool : MonoBehaviour {
             editorBlock = null;
         }
 
-        Reset();
+        //Reset();
     }
 
     private void InitialiseForCreate(PaletteTemplate template) {
@@ -162,21 +162,20 @@ public class CreateBlockTool : MonoBehaviour {
      * Snap the current rotation to be a 0, 90, 180 or 270 degree spin around the forward vector.
      */
     private Quaternion SnapRotation(Quaternion currentRotation, Quaternion forward) {
-        Quaternion currentInv = Quaternion.Inverse(currentRotation);
-        Quaternion spin0 = forward * Quaternion.Euler(0, 90, 0);
+        Quaternion spin0 = forward;// * Quaternion.Euler(0, 90, 0);
         Quaternion[] spins = {
             spin0,
-            spin0 * Quaternion.Euler(90, 0, 0),
-            spin0 * Quaternion.Euler(180, 0, 0),
-            spin0 * Quaternion.Euler(270, 0, 0)
+            spin0 * Quaternion.Euler(0, 0, 90),
+            spin0 * Quaternion.Euler(0, 0, 180),
+            spin0 * Quaternion.Euler(0, 0, 270)
         };
 
-        string spinStrings = currentRotation.ToString() + " -> ";
+        string spinStrings = currentRotation.eulerAngles + "," + forward.eulerAngles + " -> ";
         Quaternion bestSpin = currentRotation;
         float bestAngle = float.MaxValue;
         foreach (Quaternion spin in spins) {
             float angle = Mathf.Abs(Quaternion.Angle(currentRotation, spin));
-            spinStrings += spin + ":" + angle;
+            spinStrings += spin.eulerAngles + ":" + angle;
 
             if (angle < bestAngle) {
                 bestSpin = spin;
