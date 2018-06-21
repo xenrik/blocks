@@ -5,7 +5,15 @@ using System.Linq;
 using UnityEngine;
 
 public class CreateBlockTool : MonoBehaviour {
-    public string ButtonName;
+    public string DragButtonName;
+    public string CameraButtonName;
+
+    public string YawPositiveButtonName;
+    public string YawNegativeButtonName;
+    public string PitchPositiveButtonName;
+    public string PitchNegativeButtonName;
+    public string RollPositiveButtonName;
+    public string RollNegativeButtonName;
 
     private Camera paletteCamera;
     private MouseOverFeedback paletteFeedback;
@@ -23,7 +31,6 @@ public class CreateBlockTool : MonoBehaviour {
     private TemplateOutline outline;
 
     private PipCollider[] pipColliders;
-    private BlockCollider[] dragColliders;
 
     private Quaternion currentRotation;
 
@@ -36,14 +43,25 @@ public class CreateBlockTool : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (feedbackBlock != null) {
-            if (!Input.GetButton(ButtonName)) {
+            if (!Input.GetButton(DragButtonName)) {
                 Commit();
                 return;
+            } else if (Input.GetButtonDown(CameraButtonName)) {
+                HideBlocks();
+                return;
             } else {
-                UpdateCurrentBlock();
+                Camera currentCamera = CameraExtensions.FindCameraUnderMouse();
+                if (currentCamera == null) {
+                    return;
+                }
+
+                ShowBlocks();
+                UpdateRotation(currentCamera);
+                UpdateCurrentBlock(currentCamera);
+
                 return;
             }
-        } else if (!Input.GetButton(ButtonName)) {
+        } else if (!Input.GetButton(DragButtonName)) {
             return;
         }
 
@@ -88,21 +106,54 @@ public class CreateBlockTool : MonoBehaviour {
 
         dragCollisionBlock = Instantiate(template.CollisionCheckerBlock);
         pipColliders = dragCollisionBlock.GetComponentsInChildren<PipCollider>();
-        dragColliders = dragCollisionBlock.GetComponentsInChildren<BlockCollider>();
         currentRotation = dragCollisionBlock.transform.rotation;
 
         editorBlock = Instantiate(template.EditorBlock);
         editorBlock.SetActive(false);
 
-        UpdateCurrentBlock();
+        Camera currentCamera = CameraExtensions.FindCameraUnderMouse();
+        if (currentCamera != null) {
+            UpdateCurrentBlock(currentCamera);
+        }
     }
 
-    private void UpdateCurrentBlock() {
-        Camera currentCamera = CameraExtensions.FindCameraUnderMouse();
-        if (currentCamera == null) {
+    private void HideBlocks() {
+        feedbackBlock.SetActive(false);
+        dragCollisionBlock.SetActive(false);
+    }
+
+    private void ShowBlocks() {
+        feedbackBlock.SetActive(true);
+        dragCollisionBlock.SetActive(true);
+    }
+
+    private void UpdateRotation(Camera currentCamera) {
+        Quaternion rotation = Quaternion.identity;
+        if (Input.GetButtonDown(PitchPositiveButtonName)) {
+            rotation = currentCamera.transform.localRotation * Quaternion.Euler(-90, 0, 0);
+            Debug.Log($"PitchPositive: {currentCamera.transform.localRotation.eulerAngles} -> {rotation.eulerAngles}");
+        } else if (Input.GetButtonDown(PitchNegativeButtonName)) {
+            rotation = Quaternion.Euler(90, 0, 0);
+        } else if (Input.GetButtonDown(YawPositiveButtonName)) {
+            rotation = Quaternion.Euler(0, 90, 0);
+        } else if (Input.GetButtonDown(YawNegativeButtonName)) {
+            rotation = Quaternion.Euler(0, -90, 0);
+        } else if (Input.GetButtonDown(RollPositiveButtonName)) {
+            rotation *= Quaternion.Euler(0, 0, 90);
+        } else if (Input.GetButtonDown(RollNegativeButtonName)) {
+            rotation *= Quaternion.Euler(0, 0, -90);
+        }
+
+        if (rotation.Equals(Quaternion.identity)) {
             return;
         }
 
+        //rotation = rotation * ;
+        Debug.Log($"Rotation: {currentRotation.eulerAngles} -> {(rotation*currentRotation).eulerAngles}");
+        currentRotation = rotation * currentRotation;
+    }
+
+    private void UpdateCurrentBlock(Camera currentCamera) {
         // Get the mouse position and initialise the rotation
         Vector3 mousePosition = Input.mousePosition;
         mousePosition.z = 10;
