@@ -130,26 +130,21 @@ public class CreateBlockTool : MonoBehaviour {
     private void UpdateRotation(Camera currentCamera) {
         Quaternion rotation = Quaternion.identity;
         if (Input.GetButtonDown(PitchPositiveButtonName)) {
-            rotation = currentCamera.transform.localRotation * Quaternion.Euler(-90, 0, 0);
-            Debug.Log($"PitchPositive: {currentCamera.transform.localRotation.eulerAngles} -> {rotation.eulerAngles}");
+            rotation = Quaternion.AngleAxis(90, transform.right);
         } else if (Input.GetButtonDown(PitchNegativeButtonName)) {
-            rotation = Quaternion.Euler(90, 0, 0);
+            rotation = Quaternion.AngleAxis(-90, transform.right);
         } else if (Input.GetButtonDown(YawPositiveButtonName)) {
-            rotation = Quaternion.Euler(0, 90, 0);
+            rotation = Quaternion.AngleAxis(-90, transform.up);
         } else if (Input.GetButtonDown(YawNegativeButtonName)) {
-            rotation = Quaternion.Euler(0, -90, 0);
+            rotation = Quaternion.AngleAxis(90, transform.up);
         } else if (Input.GetButtonDown(RollPositiveButtonName)) {
-            rotation *= Quaternion.Euler(0, 0, 90);
+            rotation = Quaternion.AngleAxis(-90, transform.forward);
         } else if (Input.GetButtonDown(RollNegativeButtonName)) {
-            rotation *= Quaternion.Euler(0, 0, -90);
-        }
-
-        if (rotation.Equals(Quaternion.identity)) {
+            rotation = Quaternion.AngleAxis(90, transform.forward);
+        } else {
             return;
         }
 
-        //rotation = rotation * ;
-        Debug.Log($"Rotation: {currentRotation.eulerAngles} -> {(rotation*currentRotation).eulerAngles}");
         currentRotation = rotation * currentRotation;
     }
 
