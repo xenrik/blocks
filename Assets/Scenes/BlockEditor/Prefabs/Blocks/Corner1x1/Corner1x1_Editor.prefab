@@ -57,6 +57,9 @@ GameObject:
   - component: {fileID: 4349662510506924}
   - component: {fileID: 33066725396284096}
   - component: {fileID: 23827693489953804}
+  - component: {fileID: 114277389785176720}
+  - component: {fileID: 114356857850090224}
+  - component: {fileID: 114648589649289252}
   m_Layer: 0
   m_Name: Corner1x1_Editor
   m_TagString: EditorBlock
@@ -343,6 +346,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01ed34f59e34feb43813c1c710e789c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114277389785176720
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1425917744625156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 0, g: 1, b: 1, a: 0}
+  outlineWidth: 5
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!114 &114314698570451940
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -354,6 +374,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d306492a4644cd4d8058d4464003124, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114356857850090224
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1425917744625156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41b17532276c8c34595bb789be785f0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114648589649289252
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1425917744625156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 355cce7ef4a695e4d84af082ae50c2ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionCheckerBlock: {fileID: 1916370211289430, guid: bab91c59a135c6e408ec080a98a01ecb,
+    type: 2}
+  FeedbackBlock: {fileID: 1671046804707756, guid: 93b18433d6d3d9d458c30058c752d591,
+    type: 2}
 --- !u!114 &114725157075824936
 MonoBehaviour:
   m_ObjectHideFlags: 1

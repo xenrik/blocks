@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RotationSpeed: {x: 13, y: 23, z: 37}
-  InitialiseRandom: 0
+  InitialiseRandom: 1
 --- !u!114 &114562586211417034
 MonoBehaviour:
   m_ObjectHideFlags: 1

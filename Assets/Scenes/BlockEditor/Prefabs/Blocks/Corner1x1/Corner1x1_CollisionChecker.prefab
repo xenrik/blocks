@@ -76,6 +76,7 @@ GameObject:
   - component: {fileID: 64761049502432872}
   - component: {fileID: 114324917138420346}
   - component: {fileID: 54930146503666026}
+  - component: {fileID: 114430344169924022}
   m_Layer: 0
   m_Name: Corner1x1_CollisionChecker
   m_TagString: TemplateBlock
@@ -279,6 +280,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9d306492a4644cd4d8058d4464003124, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114430344169924022
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1916370211289430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41b17532276c8c34595bb789be785f0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114691966258585932

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1203,6 +1203,7 @@ GameObject:
   m_Component:
   - component: {fileID: 509853160}
   - component: {fileID: 509853161}
+  - component: {fileID: 509853162}
   m_Layer: 0
   m_Name: Palette
   m_TagString: Untagged
@@ -1235,6 +1236,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 665d5016b2613d646bc8be14882ca4f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DragButtonName: Selection
+  CameraButtonName: MoveCamera
+  YawPositiveButtonName: YawPositive
+  YawNegativeButtonName: YawNegative
+  PitchPositiveButtonName: PitchPositive
+  PitchNegativeButtonName: PitchNegative
+  RollPositiveButtonName: RollPositive
+  RollNegativeButtonName: RollNegative
+--- !u!114 &509853162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 509853159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86b80f12040d1b44faec8655814ea1b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   DragButtonName: Selection
@@ -1653,7 +1673,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1489254408
 Transform:
   m_ObjectHideFlags: 0

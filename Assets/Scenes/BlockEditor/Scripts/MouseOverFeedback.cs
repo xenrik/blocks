@@ -8,27 +8,31 @@ public class MouseOverFeedback : MonoBehaviour {
     public float FadeOutSpeed;
     public float SpinSpeed;
 
-    private new Camera camera;
-
     private Highlight currentHighlight;
 
 	// Use this for initialization
 	void Start () {
-        camera = GetComponent<Camera>();
 	}
 
     // Update is called once per frame
     void Update() {
+        Camera camera = CameraExtensions.FindCameraUnderMouse();
+        if (camera == null) {
+            return;
+        }
+
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo)) {
-            if (Tags.PALETTE_BLOCK.HasTag(hitInfo.collider)) {
-                if (currentHighlight == null || currentHighlight.Block != hitInfo.collider.gameObject) {
+            GameObject gameObject = hitInfo.collider.gameObject.GetRoot();
+            if (Tags.EDITOR_BLOCK.HasTag(gameObject) || Tags.PALETTE_BLOCK.HasTag(gameObject)) {
+                if (currentHighlight == null || currentHighlight.Block != gameObject) {
+
                     if (currentHighlight != null) {
                         ResetHighlight(currentHighlight, false);
                     }
 
-                    currentHighlight = new Highlight(hitInfo.collider.gameObject);
+                    currentHighlight = new Highlight(gameObject);
                     StartHighlight(currentHighlight);
                     return;
                 } else {
@@ -66,19 +70,21 @@ public class MouseOverFeedback : MonoBehaviour {
             // Fade out (or just reset)
             StartCoroutine(FadeOut(highlight.Outline));
         }
-
-        highlight.Rotator.enabled = true;
+        if (highlight.Rotator) {
+            highlight.Rotator.enabled = true;
+        }
     }
 
     void StartHighlight(Highlight highlight) {
         highlight.Outline.enabled = true;
-        highlight.Rotator.enabled = false;
-
         highlight.Fade = FadeIn(highlight.Outline);
         StartCoroutine(highlight.Fade);
 
-        highlight.Spin = Spin(highlight.Block);
-        StartCoroutine(highlight.Spin);
+        if (highlight.Rotator) {
+            highlight.Rotator.enabled = false;
+            highlight.Spin = Spin(highlight.Block);
+            StartCoroutine(highlight.Spin);
+        }
     }
 
     IEnumerator FadeIn(Outline outline) {
@@ -143,7 +149,7 @@ public class MouseOverFeedback : MonoBehaviour {
 
         public Highlight(GameObject block) {
             this.Block = block;
-            this.Outline = block.GetComponent<Outline>();
+            this.Outline = block.GetComponentInParent<Outline>();
             this.Rotator = block.GetComponent<SimpleRotator>();
 
             this.Fade = null;

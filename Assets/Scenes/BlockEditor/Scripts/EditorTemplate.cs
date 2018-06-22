@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PaletteTemplate : MonoBehaviour {
+public class EditorTemplate : MonoBehaviour {
     public GameObject CollisionCheckerBlock;
     public GameObject FeedbackBlock;
-    public GameObject EditorBlock;
 }
