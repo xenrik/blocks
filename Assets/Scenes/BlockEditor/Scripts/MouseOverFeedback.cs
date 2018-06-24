@@ -46,6 +46,10 @@ public class MouseOverFeedback : MonoBehaviour {
         Reset(false);
     }
 
+    private void OnDisable() {
+        Reset(true);
+    }
+
     public void Reset(bool immediate) {
         if (currentHighlight != null) {
             ResetHighlight(currentHighlight, immediate);

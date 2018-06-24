@@ -21,24 +21,14 @@ public class CameraController : MonoBehaviour {
         cameras = GetComponentsInChildren<Camera>();
 	}
 
-    // Update is called once per frame
-    void Update() {
+    // We are updated from the ControllerManager
+    public void DoUpdate() {
         bool moveEnabled = Input.GetButton(MoveButton);
         if (moveEnabled) {
             if (currentCamera != null) {
                 MoveCamera(currentCamera);
             } else {
                 // Select a camera if we can
-                foreach (Camera camera in cameras) {
-                    if (camera.pixelRect.Contains(Input.mousePosition)) {
-                        currentCamera = camera;
-
-                        Cursor.lockState = CursorLockMode.Locked;
-                        Cursor.visible = false;
-
-                        break;
-                    }
-                }
             }
         } else if (currentCamera != null) {
             currentCamera = null;

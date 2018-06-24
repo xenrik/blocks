@@ -11,11 +11,18 @@ public class MoveBlockTool : BaseMoveBlockTool {
     private Quaternion originalRotation;
 
     // Update is called once per frame
-    void Update() {
-        if (doUpdate()) {
-            return;
+    public override bool CanActivate() {
+        if (!base.CanActivate()) {
+            return false;
         }
 
+        Camera camera = CameraExtensions.FindCameraUnderMouse();
+        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+        return Physics.Raycast(ray, out hitInfo) && Tags.EDITOR_BLOCK.HasTag(hitInfo.collider);
+    }
+
+    public override void Activate() {
         Camera camera = CameraExtensions.FindCameraUnderMouse();
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
@@ -31,7 +38,7 @@ public class MoveBlockTool : BaseMoveBlockTool {
         }
     }
 
-    protected override void Commit() {
+    public override void Commit() {
         if (CheckValidPosition()) {
             moveBlock.transform.position = moveFeedback.transform.position;
             moveBlock.transform.rotation = moveFeedback.transform.rotation;

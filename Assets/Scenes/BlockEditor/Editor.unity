@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1202,8 +1202,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 509853160}
-  - component: {fileID: 509853161}
-  - component: {fileID: 509853162}
   m_Layer: 0
   m_Name: Palette
   m_TagString: Untagged
@@ -1227,44 +1225,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &509853161
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 509853159}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 665d5016b2613d646bc8be14882ca4f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DragButtonName: Selection
-  CameraButtonName: MoveCamera
-  YawPositiveButtonName: YawPositive
-  YawNegativeButtonName: YawNegative
-  PitchPositiveButtonName: PitchPositive
-  PitchNegativeButtonName: PitchNegative
-  RollPositiveButtonName: RollPositive
-  RollNegativeButtonName: RollNegative
---- !u!114 &509853162
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 509853159}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86b80f12040d1b44faec8655814ea1b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DragButtonName: Selection
-  CameraButtonName: MoveCamera
-  YawPositiveButtonName: YawPositive
-  YawNegativeButtonName: YawNegative
-  PitchPositiveButtonName: PitchPositive
-  PitchNegativeButtonName: PitchNegative
-  RollPositiveButtonName: RollPositive
-  RollNegativeButtonName: RollNegative
 --- !u!1001 &733035111
 Prefab:
   m_ObjectHideFlags: 0
@@ -1436,7 +1396,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 845203388}
+  - component: {fileID: 845203389}
   - component: {fileID: 845203387}
+  - component: {fileID: 845203391}
+  - component: {fileID: 845203390}
   m_Layer: 0
   m_Name: Cameras
   m_TagString: Untagged
@@ -1479,6 +1442,55 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &845203389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 845203386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76a4f737b71945342a5436f56e8991a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveCamera: MoveCamera
+--- !u!114 &845203390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 845203386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86b80f12040d1b44faec8655814ea1b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DragButtonName: Selection
+  YawPositiveButtonName: YawPositive
+  YawNegativeButtonName: YawNegative
+  PitchPositiveButtonName: PitchPositive
+  PitchNegativeButtonName: PitchNegative
+  RollPositiveButtonName: RollPositive
+  RollNegativeButtonName: RollNegative
+--- !u!114 &845203391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 845203386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 665d5016b2613d646bc8be14882ca4f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DragButtonName: Selection
+  YawPositiveButtonName: YawPositive
+  YawNegativeButtonName: YawNegative
+  PitchPositiveButtonName: PitchPositive
+  PitchNegativeButtonName: PitchNegative
+  RollPositiveButtonName: RollPositive
+  RollNegativeButtonName: RollNegative
+  paletteCamera: {fileID: 242964153}
 --- !u!1001 &855050610
 Prefab:
   m_ObjectHideFlags: 0

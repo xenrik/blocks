@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public abstract class BaseMoveBlockTool : MonoBehaviour {
+public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     public string DragButtonName;
-    public string CameraButtonName;
 
     public string YawPositiveButtonName;
     public string YawNegativeButtonName;
@@ -13,7 +12,6 @@ public abstract class BaseMoveBlockTool : MonoBehaviour {
     public string PitchNegativeButtonName;
     public string RollPositiveButtonName;
     public string RollNegativeButtonName;
-
 
     // Block that follows the mouse pointer for collision checking. Is invisible
     private GameObject dragCollisionBlock;
@@ -28,36 +26,37 @@ public abstract class BaseMoveBlockTool : MonoBehaviour {
 
     private Quaternion currentRotation;
 
-    // Should be called during Update. If it returns true, then
-    // the caller should exit the Update method
-    protected bool doUpdate() {
-        if (feedbackBlock != null) {
-            if (!Input.GetButton(DragButtonName)) {
-                Commit();
-                return true;
-            } else if (Input.GetButtonDown(CameraButtonName)) {
-                HideBlocks();
-                return true;
-            } else {
-                Camera currentCamera = CameraExtensions.FindCameraUnderMouse();
-                if (currentCamera == null) {
-                    return true;
-                }
+    public abstract void Commit();
+    public abstract void Activate();
 
-                ShowBlocks();
-                UpdateRotation(currentCamera);
-                UpdateCurrentBlock(currentCamera);
-
-                return true;
-            }
-        } else if (!Input.GetButton(DragButtonName)) {
-            return true;
-        }
-
-        return false;
+    public virtual bool StillActive() {
+        return Input.GetButton(DragButtonName);
     }
 
-    protected abstract void Commit();
+    public virtual bool CanActivate() {
+        return Input.GetButton(DragButtonName);
+    }
+
+    // Should be called during Update. If it returns true, then
+    // the caller should exit the Update method
+    public void DoUpdate() {
+        ShowBlocks();
+
+        if (feedbackBlock != null) {
+            Camera currentCamera = CameraExtensions.FindCameraUnderMouse();
+            if (currentCamera == null) {
+                return;
+            }
+
+            ShowBlocks();
+            UpdateRotation(currentCamera);
+            UpdateCurrentBlock(currentCamera);
+        }
+    }
+
+    public void UpdatePaused() {
+        HideBlocks();
+    }
 
     protected void Reset() {
         feedbackBlock = null;

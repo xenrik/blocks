@@ -5,8 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 public class CreateBlockTool : BaseMoveBlockTool {
-    private Camera paletteCamera;
-    private MouseOverFeedback paletteFeedback;
+    public Camera paletteCamera;
 
     private GameObject createCollisionChecker; 
     private GameObject createFeedback;
@@ -14,22 +13,22 @@ public class CreateBlockTool : BaseMoveBlockTool {
 
     // Use this for initialization
     void Start () {
-        paletteCamera = GetComponentInChildren<Camera>();
-        paletteFeedback = GetComponentInChildren<MouseOverFeedback>();
     }
 
-    // Update is called once per frame
-    void Update() {
-        if (doUpdate()) {
-            return;
+    public override bool CanActivate() {
+        if (!base.CanActivate()) {
+            return false;
         }
 
         Ray ray = paletteCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo) && Tags.PALETTE_BLOCK.HasTag(hitInfo.collider)) {
-            // Reset the feedback and create the block
-            paletteFeedback.Reset(true);
+        return Physics.Raycast(ray, out hitInfo) && Tags.PALETTE_BLOCK.HasTag(hitInfo.collider);
+    }
 
+    public override void Activate() {
+        Ray ray = paletteCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+        if (Physics.Raycast(ray, out hitInfo) && Tags.PALETTE_BLOCK.HasTag(hitInfo.collider)) {
             PaletteTemplate template = hitInfo.collider.GetComponent<PaletteTemplate>();
             createFeedback = Instantiate(template.FeedbackBlock);
             createCollisionChecker = Instantiate(template.CollisionCheckerBlock);
@@ -39,7 +38,7 @@ public class CreateBlockTool : BaseMoveBlockTool {
         }
     }
 
-    protected override void Commit() {
+    public override void Commit() {
         if (CheckValidPosition()) {
             createBlock.transform.position = createFeedback.transform.position;
             createBlock.transform.rotation = createFeedback.transform.rotation;
