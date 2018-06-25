@@ -8,7 +8,6 @@ public class ControllerManager : MonoBehaviour {
 
     public string MoveCamera;
 
-    private CameraController cameraController;
     private MouseOverFeedback[] allFeedback;
 
     private Tool[] tools;
@@ -16,9 +15,7 @@ public class ControllerManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        cameraController = GetComponent<CameraController>();
         allFeedback = FindObjectsOfType<MouseOverFeedback>();
-
         tools = GetComponents<Tool>();
 	}
 	
@@ -28,8 +25,6 @@ public class ControllerManager : MonoBehaviour {
             if (currentTool != null) {
                 currentTool.UpdatePaused();
             }
-
-            cameraController.DoUpdate();
         } else if (currentTool != null) {
             if (currentTool.StillActive()) {
                 currentTool.DoUpdate();

@@ -126,12 +126,13 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
 
         // Move the dragged block for the next frame
         dragCollisionBlock.transform.position = position;
+        dragCollisionBlock.transform.rotation = currentRotation;
 
         // Check if the dragged block is hitting any pips
         PipCollider collider = pipColliders.FirstOrDefault(p => (p.GetOtherPip() != null));
         GameObject otherPip = collider?.GetOtherPip();
 
-        if (otherPip != null) {
+        if (otherPip != null) { 
             GameObject pip = collider.gameObject;
 
             // Snap the rotation and get the other pips position

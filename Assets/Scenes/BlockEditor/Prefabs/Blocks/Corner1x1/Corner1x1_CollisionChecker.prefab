@@ -55,8 +55,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4146877513377870}
-  - component: {fileID: 65293096734488438}
   - component: {fileID: 54104656740097592}
+  - component: {fileID: 65293096734488438}
   - component: {fileID: 114121320545815456}
   m_Layer: 0
   m_Name: CPip_Left
@@ -130,7 +130,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1916370211289430}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.201641, y: -3.968184, z: -1.2937697}
+  m_LocalPosition: {x: 1.022291, y: -0.040948868, z: 4.271906}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4127560296039612}

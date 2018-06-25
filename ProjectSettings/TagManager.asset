@@ -10,6 +10,7 @@ TagManager:
   - TemplateBlock
   - Pip
   - EditorBlock
+  - DragCamera
   layers:
   - Default
   - TransparentFX

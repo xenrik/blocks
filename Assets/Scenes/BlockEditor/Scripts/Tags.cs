@@ -6,6 +6,9 @@ public enum Tags {
     // Tag that game objects should have if they are (real) blocks
     BLOCK,
 
+    // Tag that cameras that can be dragged should have
+    DRAG_CAMERA,
+
     // Tag that blocks should have if they are used in the editor
     EDITOR_BLOCK,
 
@@ -26,6 +29,7 @@ static class TagMethods {
     public static string Name(this Tags tag) {
         switch (tag) {
         case Tags.BLOCK: return "Block";
+        case Tags.DRAG_CAMERA: return "DragCamera";
         case Tags.EDITOR_BLOCK: return "EditorBlock";
         case Tags.FLIGHT_CAMERA: return "FlightCamera";
         case Tags.PALETTE_BLOCK: return "PaletteBlock";

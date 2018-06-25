@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour {
@@ -18,17 +19,20 @@ public class CameraController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        cameras = GetComponentsInChildren<Camera>();
+        cameras = FindObjectsOfType<Camera>().Where(camera => 
+            Tags.FLIGHT_CAMERA.HasTag(camera) ||
+            Tags.DRAG_CAMERA.HasTag(camera)).ToArray();
 	}
 
-    // We are updated from the ControllerManager
-    public void DoUpdate() {
+    public void Update() {
         bool moveEnabled = Input.GetButton(MoveButton);
         if (moveEnabled) {
             if (currentCamera != null) {
                 MoveCamera(currentCamera);
             } else {
                 // Select a camera if we can
+                Vector3 mousePosition = Input.mousePosition;
+                currentCamera = cameras.FirstOrDefault(camera => camera.pixelRect.Contains(mousePosition));
             }
         } else if (currentCamera != null) {
             currentCamera = null;
