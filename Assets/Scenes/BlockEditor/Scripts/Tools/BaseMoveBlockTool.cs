@@ -96,6 +96,13 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     }
 
     private void UpdateRotation(Camera currentCamera) {
+        Transform transform;
+        if (Tags.FLIGHT_CAMERA.HasTag(currentCamera)) {
+            transform = dragCollisionBlock.transform;
+        } else {
+            transform = currentCamera.transform;
+        }
+
         Quaternion rotation = Quaternion.identity;
         if (Input.GetButtonDown(PitchPositiveButtonName)) {
             rotation = Quaternion.AngleAxis(90, transform.right);
@@ -121,11 +128,8 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
         Vector3 mousePosition = Input.mousePosition;
         mousePosition.z = 10;
 
-        Vector3 position = currentCamera.ScreenToWorldPoint(mousePosition);
-        Quaternion rotation = currentRotation;
-
         // Move the dragged block for the next frame
-        dragCollisionBlock.transform.position = position;
+        dragCollisionBlock.transform.position = currentCamera.ScreenToWorldPoint(mousePosition);
         dragCollisionBlock.transform.rotation = currentRotation;
 
         // Check if the dragged block is hitting any pips
@@ -137,25 +141,19 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
 
             // Snap the rotation and get the other pips position
             Quaternion snappedPipRotation = SnapRotation(pip.transform.rotation, otherPip.transform.rotation);
-            Vector3 otherPipPosition = otherPip.transform.position;
 
-            // This will probably be the local position and local rotation, but doing it this way
-            // allows for multiple objects between the pip and the block
-            Vector3 pipOffset = pip.transform.position - dragCollisionBlock.transform.position;
             Quaternion pipRotation = dragCollisionBlock.transform.rotation * Quaternion.Inverse(pip.transform.rotation);
+            Vector3 pipOffset = Quaternion.Inverse(dragCollisionBlock.transform.rotation) * (pip.transform.position - dragCollisionBlock.transform.position);
 
-            // The rotation on the block is just the snapped pip position * the relative rotation of our pip
-            rotation = snappedPipRotation * pipRotation;
-
-            // The position of the block is the position of the other pip - the difference between our pips position and 
-            // the block rotated by the new rotation (need to undo the rotation first)
-            position = otherPipPosition - (Quaternion.Inverse(dragCollisionBlock.transform.rotation) * rotation * pipOffset);
+            feedbackBlock.transform.rotation = pipRotation * snappedPipRotation;
+            feedbackBlock.transform.position = otherPip.transform.position - (feedbackBlock.transform.rotation * pipOffset);
+        } else {
+            feedbackBlock.transform.rotation = dragCollisionBlock.transform.rotation;
+            feedbackBlock.transform.position = dragCollisionBlock.transform.position;
         }
 
-        // Update the feedback block
+        // Update the outline
         outline.OutlineColor = CheckValidPosition() ? outline.ValidPositionColor : outline.InvalidPositionColor;
-        feedbackBlock.transform.rotation = rotation;
-        feedbackBlock.transform.position = position;
     }
 
     /**
