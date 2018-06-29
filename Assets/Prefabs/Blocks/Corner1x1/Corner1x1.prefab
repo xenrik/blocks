@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33797947421507246}
   - component: {fileID: 23780054302420562}
   - component: {fileID: 64335046582362424}
+  - component: {fileID: 114239594648256356}
   m_Layer: 0
   m_Name: Corner1x1
   m_TagString: Block
@@ -98,3 +99,16 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300000, guid: 372f2cdd31ebe0845bc6937667b4a8ab, type: 3}
+--- !u!114 &114239594648256356
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1532183192627556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e514dbf74bb4e2c4a81e1d152186e148, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockType: Corner1x1
+  linkedBlocks: []

@@ -17,8 +17,6 @@ public class SimpleRotator : MonoBehaviour {
 
             gameObject.transform.localRotation = Quaternion.Euler(rotation);
         }
-
-        BlockRegistry.GetRegistry();
     }
 	
 	// Update is called once per frame

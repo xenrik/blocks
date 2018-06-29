@@ -9,21 +9,40 @@ public class BlockRegistry : ScriptableObject {
     /** Lazy loaded on first access */
     private static BlockRegistry registry;
 
-    public BlockDefinition[] blocks;
+    [SerializeField]
+    private BlockDefinition[] Blocks;
 
-    public static BlockRegistry GetRegistry() {
+    private Dictionary<string, BlockDefinition> blockMap;
+
+    private static BlockRegistry GetRegistry() {
         if (registry == null) {
             registry = Resources.Load<BlockRegistry>("BlockRegistry");
+            registry.Initialise();
             if (registry == null) {
                 throw new System.InvalidOperationException("Could not load the block registry!");
             } else {
                 Debug.Log("Block Registry Initialised:");
-                foreach (BlockDefinition def in registry.blocks) {
-                    Debug.Log($"   {def.blockName}");
+                foreach (BlockDefinition def in registry.Blocks) {
+                    Debug.Log($"   {def.BlockType}");
                 }
             }
         } 
 
         return registry;
+    }
+
+    private void Initialise() {
+        blockMap = new Dictionary<string, BlockDefinition>();
+
+        foreach (var block in Blocks) {
+            blockMap[block.BlockType] = block;
+        }
+    }
+
+    public static BlockDefinition GetDefinition(string blockType) {
+        BlockDefinition result = null;
+        GetRegistry()?.blockMap.TryGetValue(blockType, out result);
+
+        return result;
     }
 }

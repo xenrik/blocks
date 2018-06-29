@@ -11,14 +11,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2962f8c818fd877428eea259edcd8483, type: 3}
   m_Name: Corner1x1
   m_EditorClassIdentifier: 
-  blockName: Corner1x1
-  paletteBlock: {fileID: 1845185501550240, guid: 1891420648bb13145ba098f425c363a4,
+  BlockType: Corner1x1
+  PaletteBlock: {fileID: 1845185501550240, guid: 1891420648bb13145ba098f425c363a4,
     type: 2}
-  editorBlock: {fileID: 1425917744625156, guid: 38bab7e24487b374ebb21a28f947cdf3,
+  EditorBlock: {fileID: 1425917744625156, guid: 38bab7e24487b374ebb21a28f947cdf3,
     type: 2}
-  editorFeedbackBlock: {fileID: 1671046804707756, guid: 93b18433d6d3d9d458c30058c752d591,
+  EditorFeedbackBlock: {fileID: 1671046804707756, guid: 93b18433d6d3d9d458c30058c752d591,
     type: 2}
-  editorCollisionChecker: {fileID: 1916370211289430, guid: bab91c59a135c6e408ec080a98a01ecb,
+  EditorCollisionChecker: {fileID: 1916370211289430, guid: bab91c59a135c6e408ec080a98a01ecb,
     type: 2}
-  gameplayBlock: {fileID: 1532183192627556, guid: 10e177c776e50c84492a38e3104f3bba,
+  GameplayBlock: {fileID: 1532183192627556, guid: 10e177c776e50c84492a38e3104f3bba,
     type: 2}

@@ -11,14 +11,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2962f8c818fd877428eea259edcd8483, type: 3}
   m_Name: Cube1x1
   m_EditorClassIdentifier: 
-  blockName: Cube1x1
-  paletteBlock: {fileID: 1151390379603250, guid: 4d9f5f0ff30b1de48aa34b6cde8ea592,
+  BlockType: Cube1x1
+  PaletteBlock: {fileID: 1151390379603250, guid: 4d9f5f0ff30b1de48aa34b6cde8ea592,
     type: 2}
-  editorBlock: {fileID: 1319603417534346, guid: cc174ff8aa2eeb14ea3a3e35661d8ce7,
+  EditorBlock: {fileID: 1319603417534346, guid: cc174ff8aa2eeb14ea3a3e35661d8ce7,
     type: 2}
-  editorFeedbackBlock: {fileID: 1319603417534346, guid: 2f429a09ba2260943ab35d18939e6d35,
+  EditorFeedbackBlock: {fileID: 1319603417534346, guid: 2f429a09ba2260943ab35d18939e6d35,
     type: 2}
-  editorCollisionChecker: {fileID: 1319603417534346, guid: ee8fea6dd8d3e074fa7cbf5ec34612bf,
+  EditorCollisionChecker: {fileID: 1319603417534346, guid: ee8fea6dd8d3e074fa7cbf5ec34612bf,
     type: 2}
-  gameplayBlock: {fileID: 1319603417534346, guid: d0d81a77fcf522f4a9370784fb64b54d,
+  GameplayBlock: {fileID: 1319603417534346, guid: d0d81a77fcf522f4a9370784fb64b54d,
     type: 2}

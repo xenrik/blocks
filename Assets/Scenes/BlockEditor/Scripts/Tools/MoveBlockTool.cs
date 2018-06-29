@@ -31,9 +31,12 @@ public class MoveBlockTool : BaseMoveBlockTool {
             originalPosition = moveBlock.transform.position;
             originalRotation = moveBlock.transform.rotation;
 
-            EditorTemplate template = moveBlock.GetComponent<EditorTemplate>();
-            moveCollisionChecker = Instantiate(template.CollisionCheckerBlock);
-            moveFeedback = Instantiate(template.FeedbackBlock);
+            Block block = moveBlock.GetComponent<Block>();
+            BlockDefinition blockDef = BlockRegistry.GetDefinition(block.BlockType);
+            moveCollisionChecker = Instantiate(blockDef.EditorCollisionChecker);
+            moveFeedback = Instantiate(blockDef.EditorFeedbackBlock);
+
+            UnlinkBlock(moveBlock);
             Initialise(moveFeedback, moveCollisionChecker, moveBlock);
         }
     }
@@ -48,6 +51,8 @@ public class MoveBlockTool : BaseMoveBlockTool {
         }
 
         moveBlock.SetActive(true);
+        LinkBlock(moveBlock, moveCollisionChecker);
+
         moveBlock = null;
 
         Destroy(moveFeedback);

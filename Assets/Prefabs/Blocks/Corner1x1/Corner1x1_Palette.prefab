@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 64646428039281114}
   - component: {fileID: 114862116946507680}
   - component: {fileID: 114968511213186352}
-  - component: {fileID: 114293699130456206}
+  - component: {fileID: 114136042010263042}
   m_Layer: 0
   m_Name: Corner1x1_Palette
   m_TagString: PaletteBlock
@@ -101,7 +101,7 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300000, guid: e6aea8b3ebd932243b727acb449fa408, type: 3}
---- !u!114 &114293699130456206
+--- !u!114 &114136042010263042
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -109,15 +109,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1845185501550240}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 851e245ef12e84a43af7993f5ea941cb, type: 3}
+  m_Script: {fileID: 11500000, guid: e514dbf74bb4e2c4a81e1d152186e148, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CollisionCheckerBlock: {fileID: 1916370211289430, guid: bab91c59a135c6e408ec080a98a01ecb,
-    type: 2}
-  FeedbackBlock: {fileID: 1671046804707756, guid: 93b18433d6d3d9d458c30058c752d591,
-    type: 2}
-  EditorBlock: {fileID: 1425917744625156, guid: 38bab7e24487b374ebb21a28f947cdf3,
-    type: 2}
+  blockType: Corner1x1
+  linkedBlocks: []
 --- !u!114 &114862116946507680
 MonoBehaviour:
   m_ObjectHideFlags: 1

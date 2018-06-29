@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BlockDefinition : ScriptableObject {
-    public string blockName;
+    public string BlockType;
 
-    public GameObject paletteBlock;
+    public GameObject PaletteBlock;
 
-    public GameObject editorBlock;
-    public GameObject editorFeedbackBlock;
-    public GameObject editorCollisionChecker;
+    public GameObject EditorBlock;
+    public GameObject EditorFeedbackBlock;
+    public GameObject EditorCollisionChecker;
 
-    public GameObject gameplayBlock;
+    public GameObject GameplayBlock;
 }
