@@ -43,8 +43,6 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     // Should be called during Update. If it returns true, then
     // the caller should exit the Update method
     public void DoUpdate() {
-        ShowBlocks();
-
         if (feedbackBlock != null) {
             Camera currentCamera = CameraExtensions.FindCameraUnderMouse();
             if (currentCamera == null) {
@@ -71,6 +69,8 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
         this.dragCollisionBlock = collisionChecker;
 
         feedbackOutline = feedbackBlock.GetComponent<Outline>();
+        feedbackOutline.enabled = true;
+
         feedbackColliders = feedbackBlock.GetComponentsInChildren<BlockCollider>();
         foreach (GameObject go in feedbackBlock.Children(true)) {
             if (Tags.EDITOR_PIP.HasTag(go)) {
@@ -109,7 +109,8 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     }
 
     protected bool CheckValidPosition() {
-        return !feedbackColliders.Any(collider => (collider.GetOtherBlock() != null));
+        return !feedbackColliders.Any(collider => (collider.GetOtherBlock() != null)) &&
+            !Tags.PALETTE_CAMERA.HasTag(CameraExtensions.FindCameraUnderMouse());
     }
 
     private void HideBlocks() {

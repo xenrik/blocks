@@ -20,6 +20,9 @@ public enum Tags {
 
     // Tag that blocks which are in the palette should have
     PALETTE_BLOCK,
+
+    // Tag that the camera for the palette has
+    PALETTE_CAMERA,
     
     // Tag that blocks which are templates should have
     TEMPLATE_BLOCK,
@@ -37,6 +40,7 @@ static class TagMethods {
         case Tags.EDITOR_PIP: return "EditorPip";
         case Tags.FLIGHT_CAMERA: return "FlightCamera";
         case Tags.PALETTE_BLOCK: return "PaletteBlock";
+        case Tags.PALETTE_CAMERA: return "PaletteCamera";
         case Tags.TEMPLATE_BLOCK: return "TemplateBlock";
         case Tags.TEMPLATE_PIP: return "TemplatePip";
 

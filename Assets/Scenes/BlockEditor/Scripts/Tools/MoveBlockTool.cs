@@ -33,7 +33,10 @@ public class MoveBlockTool : BaseMoveBlockTool {
             originalBlock.SetActive(false);
 
             moveCollisionChecker = Instantiate(originalBlock);
+            moveCollisionChecker.name += "_Checker";
+
             moveFeedback = Instantiate(originalBlock);
+            moveFeedback.name += "_Feedback";
 
             Initialise(moveFeedback, moveCollisionChecker);
         }
