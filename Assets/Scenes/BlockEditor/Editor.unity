@@ -1334,7 +1334,13 @@ Prefab:
       propertyPath: m_Name
       value: RootBlock
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 114746308849462204, guid: cc174ff8aa2eeb14ea3a3e35661d8ce7,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114746308849462204, guid: cc174ff8aa2eeb14ea3a3e35661d8ce7, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: cc174ff8aa2eeb14ea3a3e35661d8ce7, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &839468386
@@ -1392,6 +1398,7 @@ GameObject:
   - component: {fileID: 845203391}
   - component: {fileID: 845203390}
   - component: {fileID: 845203392}
+  - component: {fileID: 845203393}
   m_Layer: 0
   m_Name: Cameras
   m_TagString: Untagged
@@ -1487,6 +1494,7 @@ MonoBehaviour:
   ValidPositionColour: {r: 0, g: 1, b: 0, a: 1}
   InvalidPositionColour: {r: 1, g: 0, b: 0, a: 1}
   paletteCamera: {fileID: 242964153}
+  rootBlock: {fileID: 1280801214}
 --- !u!114 &845203392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1498,6 +1506,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 568160676846cc44e872f62ad1a76449, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &845203393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 845203386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b0910eb171404469e3c2c7621cf95d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DragButtonName: Selection
 --- !u!1001 &855050610
 Prefab:
   m_ObjectHideFlags: 0
@@ -1570,6 +1590,11 @@ Transform:
   m_PrefabParentObject: {fileID: 4812845681557766, guid: 4d9f5f0ff30b1de48aa34b6cde8ea592,
     type: 2}
   m_PrefabInternal: {fileID: 1317166422}
+--- !u!1 &1280801214 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1319603417534346, guid: cc174ff8aa2eeb14ea3a3e35661d8ce7,
+    type: 2}
+  m_PrefabInternal: {fileID: 809557662}
 --- !u!1001 &1317166422
 Prefab:
   m_ObjectHideFlags: 0

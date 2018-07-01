@@ -7,14 +7,11 @@ using UnityEngine;
 
 public class CreateBlockTool : BaseMoveBlockTool {
     public Camera paletteCamera;
+    public GameObject rootBlock;
 
     private BlockDefinition blockDef;
     private GameObject createCollisionChecker; 
     private GameObject createFeedback;
-
-    // Use this for initialization
-    void Start () {
-    }
 
     public override bool CanActivate() {
         if (!base.CanActivate()) {
@@ -49,8 +46,9 @@ public class CreateBlockTool : BaseMoveBlockTool {
             newBlock.name = blockDef.BlockType + String.Format("_{0:HHmmss}", DateTime.Now);
             newBlock.transform.position = createFeedback.transform.position;
             newBlock.transform.rotation = createFeedback.transform.rotation;
+            newBlock.transform.parent = rootBlock.transform;
 
-            LinkBlock(newBlock, createFeedback);
+            LinkBlock(newBlock);
         }
 
         Destroy(createFeedback);

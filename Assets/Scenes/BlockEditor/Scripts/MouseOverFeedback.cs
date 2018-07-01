@@ -16,38 +16,46 @@ public class MouseOverFeedback : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        Camera camera = CameraExtensions.FindCameraUnderMouse();
-        if (camera == null) {
+        GameObject gameObject = GetGameObjectUnderMouse();
+        if (gameObject == null) {
+            Reset(false);
             return;
         }
 
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo)) {
-            GameObject gameObject = hitInfo.collider.gameObject.GetRoot();
-            if (Tags.EDITOR_BLOCK.HasTag(gameObject) || Tags.PALETTE_BLOCK.HasTag(gameObject)) {
-                if (currentHighlight == null || currentHighlight.Block != gameObject) {
-
-                    if (currentHighlight != null) {
-                        ResetHighlight(currentHighlight, false);
-                    }
-
-                    currentHighlight = new Highlight(gameObject);
-                    StartHighlight(currentHighlight);
-                    return;
-                } else {
-                    // We're already highlighting this block
-                    return;
-                }
+        if (currentHighlight == null || currentHighlight.Block != gameObject) {
+            if (currentHighlight != null) {
+                ResetHighlight(currentHighlight, false);
             }
-        }
 
-        // If we get here we were not over a suitable game object
-        Reset(false);
+            currentHighlight = new Highlight(gameObject);
+            StartHighlight(currentHighlight);
+
+            return;
+        }
     }
 
     private void OnDisable() {
         Reset(true);
+    }
+
+    public GameObject GetGameObjectUnderMouse() {
+        Camera camera = CameraExtensions.FindCameraUnderMouse();
+        if (camera == null) {
+            return null;
+        }
+
+        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+        if (!Physics.Raycast(ray, out hitInfo)) {
+            return null;
+        }
+
+        GameObject gameObject = hitInfo.collider.gameObject.GetRoot();
+        if (!Tags.EDITOR_BLOCK.HasTag(gameObject) && !Tags.PALETTE_BLOCK.HasTag(gameObject)) {
+            return null;
+        }
+
+        return gameObject;
     }
 
     public void Reset(bool immediate) {
@@ -58,6 +66,10 @@ public class MouseOverFeedback : MonoBehaviour {
     }
 
     void ResetHighlight(Highlight highlight, bool immediate) {
+        if (highlight.Outline == null) {
+            return;
+        }
+
         if (highlight.Fade != null) {
             StopCoroutine(highlight.Fade);
             highlight.Fade = null;
@@ -80,6 +92,10 @@ public class MouseOverFeedback : MonoBehaviour {
     }
 
     void StartHighlight(Highlight highlight) {
+        if (highlight.Outline == null) {
+            return;
+        }
+
         highlight.Outline.enabled = true;
         highlight.Fade = FadeIn(highlight.Outline);
         StartCoroutine(highlight.Fade);

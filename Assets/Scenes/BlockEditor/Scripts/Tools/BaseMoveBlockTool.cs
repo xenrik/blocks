@@ -211,7 +211,7 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     }
 
     /**
-     * Remove all this links the block on the given gameobject has to other blocks
+     * Remove all this links to other blocks
      */
     protected void UnlinkBlock(GameObject blockGo) {
         Block block = blockGo.GetComponent<Block>();
@@ -223,15 +223,15 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     }
 
     /**
-     * Add links between the given block and all the blocks it is in-contact with
+     * Add links between the given block and all the blocks it is in-contact with.
      */
-    protected void LinkBlock(GameObject editorBlock, GameObject feedbackBlock) {
+    protected void LinkBlock(GameObject editorBlock) {
         Block block = editorBlock.GetComponent<Block>();
 
         // Find all the pips on the game object and check for collisions with other pips. 
         // If we find any then we are linked to the blocks that own those pips.
-        foreach (var collider in feedbackBlock.GetComponentsInChildren<PipCollider>()) {
-            var otherPip = collider.GetOtherPip();
+        foreach (var feedbackCollider in feedbackBlock.GetComponentsInChildren<PipCollider>()) {
+            var otherPip = feedbackCollider.GetOtherPip();
             if (otherPip == null) {
                 continue;
             }

@@ -17,7 +17,11 @@ public class MoveBlockTool : BaseMoveBlockTool {
         Camera camera = CameraExtensions.FindCameraUnderMouse();
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
-        return Physics.Raycast(ray, out hitInfo) && Tags.EDITOR_BLOCK.HasTag(hitInfo.collider);
+        if (Physics.Raycast(ray, out hitInfo) && Tags.EDITOR_BLOCK.HasTag(hitInfo.collider)) {
+            return hitInfo.collider.gameObject.GetRoot().transform.parent != null;
+        } else {
+            return false;
+        }
     }
 
     public override void Activate() {
@@ -41,7 +45,7 @@ public class MoveBlockTool : BaseMoveBlockTool {
             originalBlock.transform.rotation = moveFeedback.transform.rotation;
 
             UnlinkBlock(originalBlock);
-            LinkBlock(originalBlock, moveFeedback);
+            LinkBlock(originalBlock);
         }
 
         originalBlock.SetActive(true);
