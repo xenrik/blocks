@@ -5,10 +5,8 @@ using UnityEngine;
 public class MoveBlockTool : BaseMoveBlockTool {
     private GameObject moveCollisionChecker;
     private GameObject moveFeedback;
-    private GameObject moveBlock;
 
-    private Vector3 originalPosition;
-    private Quaternion originalRotation;
+    private GameObject originalBlock;
 
     // Update is called once per frame
     public override bool CanActivate() {
@@ -27,33 +25,26 @@ public class MoveBlockTool : BaseMoveBlockTool {
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo) && Tags.EDITOR_BLOCK.HasTag(hitInfo.collider)) {
-            moveBlock = hitInfo.collider.gameObject.GetRoot();
-            originalPosition = moveBlock.transform.position;
-            originalRotation = moveBlock.transform.rotation;
+            originalBlock = hitInfo.collider.gameObject.GetRoot();
+            originalBlock.SetActive(false);
 
-            Block block = moveBlock.GetComponent<Block>();
-            BlockDefinition blockDef = BlockRegistry.GetDefinition(block.BlockType);
-            moveCollisionChecker = Instantiate(blockDef.EditorCollisionChecker);
-            moveFeedback = Instantiate(blockDef.EditorFeedbackBlock);
+            moveCollisionChecker = Instantiate(originalBlock);
+            moveFeedback = Instantiate(originalBlock);
 
-            UnlinkBlock(moveBlock);
-            Initialise(moveFeedback, moveCollisionChecker, moveBlock);
+            Initialise(moveFeedback, moveCollisionChecker);
         }
     }
 
     public override void Commit() {
         if (CheckValidPosition()) {
-            moveBlock.transform.position = moveFeedback.transform.position;
-            moveBlock.transform.rotation = moveFeedback.transform.rotation;
-        } else {
-            moveBlock.transform.position = originalPosition;
-            moveBlock.transform.rotation = originalRotation;
+            originalBlock.transform.position = moveFeedback.transform.position;
+            originalBlock.transform.rotation = moveFeedback.transform.rotation;
+
+            UnlinkBlock(originalBlock);
+            LinkBlock(originalBlock, moveFeedback);
         }
 
-        moveBlock.SetActive(true);
-        LinkBlock(moveBlock, moveCollisionChecker);
-
-        moveBlock = null;
+        originalBlock.SetActive(true);
 
         Destroy(moveFeedback);
         moveFeedback = null;

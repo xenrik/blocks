@@ -8,9 +8,9 @@ using UnityEngine;
 public class CreateBlockTool : BaseMoveBlockTool {
     public Camera paletteCamera;
 
+    private BlockDefinition blockDef;
     private GameObject createCollisionChecker; 
     private GameObject createFeedback;
-    private GameObject createBlock;
 
     // Use this for initialization
     void Start () {
@@ -31,24 +31,26 @@ public class CreateBlockTool : BaseMoveBlockTool {
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo) && Tags.PALETTE_BLOCK.HasTag(hitInfo.collider)) {
             Block blockDetails = hitInfo.collider.GetComponent<Block>();
-            BlockDefinition blockDef = BlockRegistry.GetDefinition(blockDetails.BlockType);
-            createFeedback = Instantiate(blockDef.EditorFeedbackBlock);
-            createCollisionChecker = Instantiate(blockDef.EditorCollisionChecker);
-            createBlock = Instantiate(blockDef.EditorBlock);
-            createBlock.name = blockDef.BlockType + String.Format("_{0:HHmmss}", DateTime.Now);
+            blockDef = BlockRegistry.GetDefinition(blockDetails.BlockType);
 
-            Initialise(createFeedback, createCollisionChecker, createBlock);
+            createFeedback = Instantiate(blockDef.EditorBlock);
+            createFeedback.name = blockDetails.BlockType + "_Feedback";
+
+            createCollisionChecker = Instantiate(blockDef.EditorBlock);
+            createCollisionChecker.name = blockDetails.BlockType + "_Checker";
+
+            Initialise(createFeedback, createCollisionChecker);
         }
     }
 
     public override void Commit() {
         if (CheckValidPosition()) {
-            createBlock.transform.position = createFeedback.transform.position;
-            createBlock.transform.rotation = createFeedback.transform.rotation;
-            createBlock.SetActive(true);
+            GameObject newBlock = Instantiate(blockDef.EditorBlock);
+            newBlock.name = blockDef.BlockType + String.Format("_{0:HHmmss}", DateTime.Now);
+            newBlock.transform.position = createFeedback.transform.position;
+            newBlock.transform.rotation = createFeedback.transform.rotation;
 
-            LinkBlock(createBlock, createCollisionChecker);
-            createBlock = null;
+            LinkBlock(newBlock, createFeedback);
         }
 
         Destroy(createFeedback);
@@ -56,11 +58,6 @@ public class CreateBlockTool : BaseMoveBlockTool {
 
         Destroy(createCollisionChecker);
         createCollisionChecker = null;
-
-        if (createBlock != null) {
-            Destroy(createBlock);
-            createBlock = null;
-        }
 
         Reset();
     }

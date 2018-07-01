@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class GameObjectExtensions {
@@ -14,6 +15,23 @@ public static class GameObjectExtensions {
             return gameObject;
         } else {
             return root.gameObject;
+        }
+    }
+
+    public static IEnumerable<GameObject> Children(this GameObject gameObject, bool recursive) {
+        var stack = new Stack<Transform>();
+        stack.Push(gameObject.transform);
+
+        while (stack.Any()) {
+            var current = stack.Pop();
+            for (int i = 0; i < current.childCount; ++i) {
+                var child = current.GetChild(i);
+                yield return child.gameObject;
+
+                if (recursive) {
+                    stack.Push(child);
+                }
+            }
         }
     }
 }

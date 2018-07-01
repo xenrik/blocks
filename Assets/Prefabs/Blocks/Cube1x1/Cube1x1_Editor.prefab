@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 54644334909998496}
   m_Layer: 0
   m_Name: EPip_Bottom
-  m_TagString: Pip
+  m_TagString: EditorPip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 54244364492355634}
   m_Layer: 0
   m_Name: EPip_Right
-  m_TagString: Pip
+  m_TagString: EditorPip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: 54256611461616932}
   m_Layer: 0
   m_Name: EPip_Back
-  m_TagString: Pip
+  m_TagString: EditorPip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -78,7 +78,7 @@ GameObject:
   - component: {fileID: 54246340799031092}
   m_Layer: 0
   m_Name: EPip_Left
-  m_TagString: Pip
+  m_TagString: EditorPip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 54288659563922074}
   m_Layer: 0
   m_Name: EPip_Top
-  m_TagString: Pip
+  m_TagString: EditorPip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 54049868564784374}
   m_Layer: 0
   m_Name: EPip_Front
-  m_TagString: Pip
+  m_TagString: EditorPip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -521,6 +521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01ed34f59e34feb43813c1c710e789c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TagType: 3
 --- !u!114 &114059495711612250
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -543,6 +544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01ed34f59e34feb43813c1c710e789c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TagType: 3
 --- !u!114 &114574271916792424
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -554,6 +556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01ed34f59e34feb43813c1c710e789c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TagType: 3
 --- !u!114 &114576696787221046
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -565,6 +568,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01ed34f59e34feb43813c1c710e789c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TagType: 3
 --- !u!114 &114623104047372494
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -576,6 +580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01ed34f59e34feb43813c1c710e789c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TagType: 3
 --- !u!114 &114746308849462204
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -616,3 +621,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01ed34f59e34feb43813c1c710e789c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TagType: 3

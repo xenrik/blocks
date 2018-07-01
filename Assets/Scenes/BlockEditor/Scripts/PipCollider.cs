@@ -6,10 +6,12 @@ using UnityEngine;
 
 public class PipCollider : MonoBehaviour {
 
+    public Tags TagType = Tags.EDITOR_PIP;
+
     private HashSet<GameObject> otherPips = new HashSet<GameObject>();
 
     private void OnCollisionEnter(Collision collision) {
-        if (Tags.PIP.HasTag(collision.gameObject)) {
+        if (TagType.HasTag(collision.gameObject)) {
             otherPips.Add(collision.gameObject);
         }
     }
@@ -19,7 +21,7 @@ public class PipCollider : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider collider) {
-        if (Tags.PIP.HasTag(collider.gameObject)) {
+        if (TagType.HasTag(collider.gameObject)) {
             otherPips.Add(collider.gameObject);
         }
     }

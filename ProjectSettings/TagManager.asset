@@ -8,9 +8,10 @@ TagManager:
   - Block
   - PaletteBlock
   - TemplateBlock
-  - Pip
   - EditorBlock
   - DragCamera
+  - EditorPip
+  - TemplatePip
   layers:
   - Default
   - TransparentFX

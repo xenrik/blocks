@@ -13,6 +13,9 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     public string RollPositiveButtonName;
     public string RollNegativeButtonName;
 
+    public Color ValidPositionColour;
+    public Color InvalidPositionColour;
+
     // Block that follows the mouse pointer for collision checking. Is invisible
     private GameObject dragCollisionBlock;
 
@@ -20,7 +23,7 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     private GameObject feedbackBlock;
 
     private BlockCollider[] feedbackColliders;
-    private TemplateOutline outline;
+    private Outline feedbackOutline;
 
     private PipCollider[] pipColliders;
 
@@ -63,17 +66,41 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
         dragCollisionBlock = null;
     }
 
-    protected void Initialise(GameObject feedbackBlock, GameObject collisionChecker, GameObject editorBlock) {
+    protected void Initialise(GameObject feedbackBlock, GameObject collisionChecker) {
         this.feedbackBlock = feedbackBlock;
         this.dragCollisionBlock = collisionChecker;
 
-        outline = feedbackBlock.GetComponent<TemplateOutline>();
+        feedbackOutline = feedbackBlock.GetComponent<Outline>();
         feedbackColliders = feedbackBlock.GetComponentsInChildren<BlockCollider>();
+        foreach (GameObject go in feedbackBlock.Children(true)) {
+            if (Tags.EDITOR_PIP.HasTag(go)) {
+                go.tag = Tags.TEMPLATE_PIP.TagName();
+            } else if (Tags.EDITOR_BLOCK.HasTag(go)) {
+                go.tag = Tags.TEMPLATE_BLOCK.TagName();
+            }
+        }
+        if (Tags.EDITOR_BLOCK.HasTag(feedbackBlock)) {
+            feedbackBlock.tag = Tags.TEMPLATE_BLOCK.TagName();
+        }
 
         pipColliders = dragCollisionBlock.GetComponentsInChildren<PipCollider>();
         currentRotation = dragCollisionBlock.transform.rotation;
-
-        editorBlock.SetActive(false);
+        foreach (Renderer renderer in dragCollisionBlock.GetComponentsInChildren<Renderer>()) {
+            Destroy(renderer);
+        }
+        foreach (Outline outline in dragCollisionBlock.GetComponentsInChildren<Outline>()) {
+            Destroy(outline);
+        }
+        foreach (GameObject go in dragCollisionBlock.Children(true)) {
+            if (Tags.EDITOR_PIP.HasTag(go)) {
+                go.tag = Tags.TEMPLATE_PIP.TagName();
+            } else if (Tags.EDITOR_BLOCK.HasTag(go)) {
+                go.tag = Tags.TEMPLATE_BLOCK.TagName();
+            }
+        }
+        if (Tags.EDITOR_BLOCK.HasTag(dragCollisionBlock)) {
+            dragCollisionBlock.tag = Tags.TEMPLATE_BLOCK.TagName();
+        }
 
         Camera currentCamera = CameraExtensions.FindCameraUnderMouse();
         if (currentCamera != null) {
@@ -153,7 +180,7 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
         }
 
         // Update the outline
-        outline.OutlineColor = CheckValidPosition() ? outline.ValidPositionColor : outline.InvalidPositionColor;
+        feedbackOutline.OutlineColor = CheckValidPosition() ? ValidPositionColour : InvalidPositionColour;
     }
 
     /**
@@ -198,12 +225,12 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     /**
      * Add links between the given block and all the blocks it is in-contact with
      */
-    protected void LinkBlock(GameObject blockGo, GameObject collisionChecker) {
-        Block block = blockGo.GetComponent<Block>();
+    protected void LinkBlock(GameObject editorBlock, GameObject feedbackBlock) {
+        Block block = editorBlock.GetComponent<Block>();
 
         // Find all the pips on the game object and check for collisions with other pips. 
         // If we find any then we are linked to the blocks that own those pips.
-        foreach (var collider in collisionChecker.GetComponentsInChildren<PipCollider>()) {
+        foreach (var collider in feedbackBlock.GetComponentsInChildren<PipCollider>()) {
             var otherPip = collider.GetOtherPip();
             if (otherPip == null) {
                 continue;
@@ -214,7 +241,6 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
                 continue;
             }
 
-            Debug.Log($"{collider} Added link");
             block.AddLink(otherBlock);
             otherBlock.AddLink(block);
         }
