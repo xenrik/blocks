@@ -45,4 +45,15 @@ public class Block : MonoBehaviour {
     public void ClearLinks() {
         linkedBlocks = new Block[0];
     }
+
+    /**
+     * Replace all the links on this block with the given set of links
+     */
+    public void SetLinks(Block[] links) {
+        if (links == null) {
+            ClearLinks();
+        } else {
+            linkedBlocks = links;
+        }
+    }
 }
