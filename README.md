@@ -6,3 +6,5 @@ Different blocks will provide different capabilities and their position on the s
 Inspired by:  
 Reassembly - https://store.steampowered.com/app/329130/Reassembly/  
 Nimbatus - https://store.steampowered.com/app/383840/Nimbatus__The_Space_Drone_Constructor/
+
+Trello worklog: https://trello.com/b/PMfi5z2U/blocks
