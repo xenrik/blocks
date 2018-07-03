@@ -28,9 +28,14 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     private PipCollider[] pipColliders;
 
     private Quaternion currentRotation;
+    private Quaternion snappedRotation;
 
-    public abstract void Commit();
+    
     public abstract void Activate();
+
+    public virtual void Commit() {
+        feedbackBlock.transform.rotation = snappedRotation;
+    }
 
     public virtual bool StillActive() {
         return Input.GetButton(DragButtonName);
@@ -52,6 +57,8 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
             ShowBlocks();
             UpdateRotation(currentCamera);
             UpdateCurrentBlock(currentCamera);
+
+            AnimateRotation();
         }
     }
 
@@ -151,6 +158,10 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
         currentRotation = rotation * currentRotation;
     }
 
+    private void AnimateRotation() {
+        feedbackBlock.transform.rotation = Quaternion.Slerp(feedbackBlock.transform.rotation, snappedRotation, 0.5f);
+    }
+
     private void UpdateCurrentBlock(Camera currentCamera) {
         // Get the mouse position and initialise the rotation
         Vector3 mousePosition = Input.mousePosition;
@@ -173,10 +184,10 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
             Quaternion pipRotation = dragCollisionBlock.transform.rotation * Quaternion.Inverse(pip.transform.rotation);
             Vector3 pipOffset = Quaternion.Inverse(dragCollisionBlock.transform.rotation) * (pip.transform.position - dragCollisionBlock.transform.position);
 
-            feedbackBlock.transform.rotation = pipRotation * snappedPipRotation;
+            snappedRotation = pipRotation * snappedPipRotation;
             feedbackBlock.transform.position = otherPip.transform.position - (feedbackBlock.transform.rotation * pipOffset);
         } else {
-            feedbackBlock.transform.rotation = dragCollisionBlock.transform.rotation;
+            snappedRotation = dragCollisionBlock.transform.rotation;
             feedbackBlock.transform.position = dragCollisionBlock.transform.position;
         }
 

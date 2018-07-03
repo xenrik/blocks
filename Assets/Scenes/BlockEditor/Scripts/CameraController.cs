@@ -27,6 +27,9 @@ public class CameraController : MonoBehaviour {
     public void Update() {
         bool moveEnabled = Input.GetButton(MoveButton);
         if (moveEnabled) {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
             if (currentCamera != null) {
                 MoveCamera(currentCamera);
             } else {

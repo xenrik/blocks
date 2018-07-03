@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2962f8c818fd877428eea259edcd8483, type: 3}
+  m_Name: Thruster-Small
+  m_EditorClassIdentifier: 
+  BlockType: Thruster-Small
+  PaletteBlock: {fileID: 1927561056779496, guid: e5abf2553666c394caf542e9cad35e2f,
+    type: 2}
+  EditorBlock: {fileID: 1669130446260912, guid: d02be9cb8ef9d914f9abcdb63c58af2c,
+    type: 2}
+  EditorFeedbackBlock: {fileID: 0}
+  EditorCollisionChecker: {fileID: 0}
+  GameplayBlock: {fileID: 1248839836955506, guid: 87c21725de5618d41a50f55d90f040e0,
+    type: 2}

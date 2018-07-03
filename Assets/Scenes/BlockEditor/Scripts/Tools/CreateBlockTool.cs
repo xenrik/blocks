@@ -41,6 +41,8 @@ public class CreateBlockTool : BaseMoveBlockTool {
     }
 
     public override void Commit() {
+        base.Commit();
+
         if (CheckValidPosition()) {
             GameObject newBlock = Instantiate(blockDef.EditorBlock);
             newBlock.name = blockDef.BlockType + String.Format("_{0:HHmmss}", DateTime.Now);

@@ -43,6 +43,8 @@ public class MoveBlockTool : BaseMoveBlockTool {
     }
 
     public override void Commit() {
+        base.Commit();
+
         if (CheckValidPosition()) {
             originalBlock.transform.position = moveFeedback.transform.position;
             originalBlock.transform.rotation = moveFeedback.transform.rotation;
