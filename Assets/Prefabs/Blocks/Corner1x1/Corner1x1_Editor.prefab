@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 54492734537079974}
   - component: {fileID: 65534674137595002}
   - component: {fileID: 114244168127503838}
+  - component: {fileID: 114527587948905224}
   m_Layer: 0
   m_Name: EPip_Back
   m_TagString: EditorPip
@@ -40,6 +41,7 @@ GameObject:
   - component: {fileID: 54702534929551892}
   - component: {fileID: 65814334141747186}
   - component: {fileID: 114025317494763124}
+  - component: {fileID: 114371187902984340}
   m_Layer: 0
   m_Name: EPip_Front
   m_TagString: EditorPip
@@ -96,6 +98,7 @@ GameObject:
   - component: {fileID: 54324962403752572}
   - component: {fileID: 65698243973460408}
   - component: {fileID: 114725157075824936}
+  - component: {fileID: 114876654408030528}
   m_Layer: 0
   m_Name: EPip_Left
   m_TagString: EditorPip
@@ -387,6 +390,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41b17532276c8c34595bb789be785f0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114371187902984340
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1424015299434832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd83167a5b8a7b04f8da112cbd8789ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PipType: 0
+  LinkablePipTypes: 
 --- !u!114 &114408384594319938
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -399,6 +415,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockType: Corner1x1
+--- !u!114 &114527587948905224
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1092859298556600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd83167a5b8a7b04f8da112cbd8789ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PipType: 0
+  LinkablePipTypes: 
 --- !u!114 &114725157075824936
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -411,3 +440,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TagType: 3
+--- !u!114 &114876654408030528
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1680467878934096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd83167a5b8a7b04f8da112cbd8789ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PipType: 0
+  LinkablePipTypes: 

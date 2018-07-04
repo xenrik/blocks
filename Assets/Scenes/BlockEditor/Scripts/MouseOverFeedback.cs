@@ -102,7 +102,7 @@ public class MouseOverFeedback : MonoBehaviour {
 
         if (highlight.Rotator) {
             highlight.Rotator.enabled = false;
-            highlight.Spin = Spin(highlight.Block);
+            highlight.Spin = Spin(highlight);
             StartCoroutine(highlight.Spin);
         }
     }
@@ -143,20 +143,20 @@ public class MouseOverFeedback : MonoBehaviour {
         outline.enabled = false;
     }
 
-    IEnumerator Spin(GameObject block) {
-        Quaternion target = Quaternion.Euler(Vector3.forward);
-        Quaternion current = block.transform.localRotation;
+    IEnumerator Spin(Highlight highlight) {
+        Quaternion target = highlight.Rotator.InitialRotation;
+        Quaternion current = highlight.Block.transform.localRotation;
 
         float t = 0, p = 0;
         while (t < SpinSpeed) {
             p = t / SpinSpeed;
-            block.transform.localRotation = Quaternion.Slerp(current, target, p);
+            highlight.Block.transform.localRotation = Quaternion.Slerp(current, target, p);
 
             t += Time.deltaTime;
             yield return null;
         }
 
-        block.transform.localRotation = target;
+        highlight.Block.transform.localRotation = target;
     }
 
     private class Highlight {

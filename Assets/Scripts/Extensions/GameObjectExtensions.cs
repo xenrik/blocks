@@ -34,5 +34,10 @@ public static class GameObjectExtensions {
             }
         }
     }
+
+    public static string GetFullName(this GameObject gameObject) {
+        string parentName = gameObject.transform.parent?.gameObject.GetFullName();
+        return parentName != null ? parentName + "." + gameObject.name : gameObject.name;
+    }
 }
 

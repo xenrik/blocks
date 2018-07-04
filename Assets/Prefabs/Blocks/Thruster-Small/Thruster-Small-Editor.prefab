@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 65160423349009590}
   - component: {fileID: 114669586759106778}
   - component: {fileID: 54752576692094624}
+  - component: {fileID: 114980269017961452}
   m_Layer: 0
   m_Name: EPip_Front
   m_TagString: EditorPip
@@ -58,6 +59,7 @@ GameObject:
   - component: {fileID: 65167316559271098}
   - component: {fileID: 114040698579768046}
   - component: {fileID: 54397825352630834}
+  - component: {fileID: 114276791147537872}
   m_Layer: 0
   m_Name: EPip_Back
   m_TagString: EditorPip
@@ -79,6 +81,7 @@ GameObject:
   - component: {fileID: 114110437355878226}
   - component: {fileID: 114717006893420784}
   - component: {fileID: 114747952975188010}
+  - component: {fileID: 114568316111528194}
   m_Layer: 0
   m_Name: Thruster-Small-Editor
   m_TagString: EditorBlock
@@ -324,6 +327,33 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!114 &114276791147537872
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1313546094631380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd83167a5b8a7b04f8da112cbd8789ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PipType: 1
+  LinkablePipTypes: 01000000
+--- !u!114 &114568316111528194
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1669130446260912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b68e8a9d7edeaa64db09e1771bb23fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Properties:
+  - PropertyName: ButtonName
+    Type: 0
 --- !u!114 &114669586759106778
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -359,3 +389,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockType: Thruster-Small
+--- !u!114 &114980269017961452
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1239068237362916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd83167a5b8a7b04f8da112cbd8789ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PipType: 1
+  LinkablePipTypes: 

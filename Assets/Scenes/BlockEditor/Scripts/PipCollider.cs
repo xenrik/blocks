@@ -10,8 +10,12 @@ public class PipCollider : MonoBehaviour {
 
     private HashSet<GameObject> otherPips = new HashSet<GameObject>();
 
+    public GameObject GetOtherPip() {
+        return otherPips.FirstOrDefault();
+    }
+
     private void OnCollisionEnter(Collision collision) {
-        if (TagType.HasTag(collision.gameObject)) {
+        if (AcceptCollision(collision.gameObject)) { 
             otherPips.Add(collision.gameObject);
         }
     }
@@ -21,7 +25,7 @@ public class PipCollider : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider collider) {
-        if (TagType.HasTag(collider.gameObject)) {
+        if (AcceptCollision(collider.gameObject)) {
             otherPips.Add(collider.gameObject);
         }
     }
@@ -30,7 +34,27 @@ public class PipCollider : MonoBehaviour {
         otherPips.Remove(collider.gameObject);
     }
 
-    public GameObject GetOtherPip() {
-        return otherPips.FirstOrDefault();
+    private bool AcceptCollision(GameObject go) {
+        if (!TagType.HasTag(go)) {
+            return false;
+        }
+
+        Pip myPip = GetComponent<Pip>();
+        Pip otherPip = go.GetComponent<Pip>();
+        if (myPip == null || otherPip == null) {
+            return false;
+        }
+
+        if (myPip.LinkablePipTypes?.Length > 0 &&
+            !myPip.LinkablePipTypes.Any(linkableType => linkableType.Equals(otherPip.PipType))) {
+            return false;
+        }
+
+        if (otherPip.LinkablePipTypes?.Length > 0 &&
+            !otherPip.LinkablePipTypes.Any(linkableType => linkableType.Equals(myPip.PipType))) {
+            return false;
+        }
+
+        return true;
     }
 }

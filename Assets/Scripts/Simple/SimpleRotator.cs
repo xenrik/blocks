@@ -5,10 +5,15 @@ using UnityEngine;
 public class SimpleRotator : MonoBehaviour {
 
     public Vector3 RotationSpeed;
+
     public bool InitialiseRandom;
+
+    public Quaternion InitialRotation { get; private set; }
 
 	// Use this for initialization
 	void Start () {
+        InitialRotation = gameObject.transform.rotation;
+
 		if (InitialiseRandom) {
             Vector3 rotation;
             rotation.x = Random.value * 360;
