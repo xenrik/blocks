@@ -82,6 +82,7 @@ GameObject:
   - component: {fileID: 114717006893420784}
   - component: {fileID: 114747952975188010}
   - component: {fileID: 114568316111528194}
+  - component: {fileID: 114139222576817602}
   m_Layer: 0
   m_Name: Thruster-Small-Editor
   m_TagString: EditorBlock
@@ -327,6 +328,21 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!114 &114139222576817602
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1669130446260912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d94c7e4d14e109e429ad04a84ffcfcac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FadeInSpeed: 0.5
+  FadeOutSpeed: 0.2
+  MouseOverColour: {r: 0, g: 1, b: 1, a: 1}
+  SelectedColour: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &114276791147537872
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -354,6 +370,7 @@ MonoBehaviour:
   Properties:
   - PropertyName: ButtonName
     Type: 0
+    DefaultValue: 
 --- !u!114 &114669586759106778
 MonoBehaviour:
   m_ObjectHideFlags: 1

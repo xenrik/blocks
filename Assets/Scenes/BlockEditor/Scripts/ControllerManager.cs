@@ -8,14 +8,14 @@ public class ControllerManager : MonoBehaviour {
 
     public string MoveCamera;
 
-    private MouseOverFeedback[] allFeedback;
+    private MouseOverFeedbackOld[] allFeedback;
 
     private Tool[] tools;
     private Tool currentTool;
 
     // Use this for initialization
     void Start () {
-        allFeedback = FindObjectsOfType<MouseOverFeedback>();
+        allFeedback = FindObjectsOfType<MouseOverFeedbackOld>();
         tools = GetComponents<Tool>();
 	}
 	

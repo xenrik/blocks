@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MouseOverFeedback : MonoBehaviour {
+public class MouseOverFeedbackOld : MonoBehaviour {
 
     public float FadeInSpeed;
     public float FadeOutSpeed;

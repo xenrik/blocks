@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 114365270176479200}
   - component: {fileID: 114095613583287156}
   - component: {fileID: 114931633818060820}
+  - component: {fileID: 114344195160735876}
   m_Layer: 0
   m_Name: Thruster-Small-Palette
   m_TagString: PaletteBlock
@@ -38,13 +39,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1927561056779496}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: -10, z: 10}
   m_LocalScale: {x: 2.8, y: 2.8, z: 2.8}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!23 &23826826913393660
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -118,6 +119,21 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!114 &114344195160735876
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1927561056779496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7480d11c75594a04190237f37f74b996, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FadeInSpeed: 0.5
+  FadeOutSpeed: 0.2
+  SpinSpeed: 0.1
+  MouseOverColour: {r: 0, g: 1, b: 1, a: 1}
 --- !u!114 &114365270176479200
 MonoBehaviour:
   m_ObjectHideFlags: 1
