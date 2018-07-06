@@ -26,12 +26,12 @@ public class FeedbackEditorBlock : MonoBehaviour {
             return;
         }
 
-        GameObject currentBlock = GetBlockUnderMouse();
-        GameObject currentSelection = SelectionManager.Selection;
-        if (currentSelection == gameObject) {
-            FadeForState(State.SELECTED, SelectedColour, FadeInSpeed);
-        } else if (gameObject == currentBlock) {
+        GameObject overBlock = GetBlockUnderMouse();
+        GameObject selectedBlock = SelectionManager.Selection;
+        if (gameObject == overBlock) {
             FadeForState(State.OVER, MouseOverColour, FadeInSpeed);
+        } else if (selectedBlock == gameObject) { 
+            FadeForState(State.SELECTED, SelectedColour, FadeInSpeed);
         } else {
             Color colour = outline.OutlineColor;
             colour.a = 0;

@@ -6,27 +6,30 @@ public class SelectionTool : MonoBehaviour, Tool {
     public string SelectionButton;
 
     public bool CanActivate() {
-        if (!Input.GetButton(SelectionButton)) {
-            return false;
+        // Note, we never return true, but do stuff anyway...
+        if (Input.GetButtonDown(SelectionButton)) { 
+            Camera camera = CameraExtensions.FindCameraUnderMouse();
+            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hitInfo;
+            if (!Physics.Raycast(ray, out hitInfo)) {
+                return false;
+            }
+            
+            GameObject newSelection = hitInfo.collider.gameObject.GetRoot();
+            if (Tags.EDITOR_BLOCK.HasTag(newSelection)) {
+                SelectionManager.Selection = newSelection;
+            }
         }
 
-        Camera camera = CameraExtensions.FindCameraUnderMouse();
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-        return Physics.Raycast(ray, out hitInfo) && Tags.EDITOR_BLOCK.HasTag(hitInfo.collider);
+        return false;
     }
 
     public void Activate() {
-        Camera camera = CameraExtensions.FindCameraUnderMouse();
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-        Physics.Raycast(ray, out hitInfo);
-
-        SelectionManager.Selection = hitInfo.collider.gameObject;
+        // Nothing to do.
     }
 
     public bool StillActive() {
-        return Input.GetButton(SelectionButton);
+        return false;
     }
 
     public void Commit() {

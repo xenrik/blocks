@@ -39,5 +39,19 @@ public static class GameObjectExtensions {
         string parentName = gameObject.transform.parent?.gameObject.GetFullName();
         return parentName != null ? parentName + "." + gameObject.name : gameObject.name;
     }
+
+    public static void Destroy<T>(this GameObject gameObject) {
+        var components = gameObject.GetComponents(typeof(T));
+        foreach (var component in components) {
+            GameObject.Destroy(component);
+        }
+    }
+
+    public static void DestroyInChildren<T>(this GameObject gameObject) {
+        var components = gameObject.GetComponentsInChildren(typeof(T));
+        foreach (var component in components) {
+            GameObject.Destroy(component);
+        }
+    }
 }
 

@@ -17,7 +17,7 @@ public class FeedbackPaletteBlock : MonoBehaviour {
 
     private IEnumerator currentAnimation;
     
-    private void Start() {
+    private void Awake() {
         initialRotation = gameObject.transform.rotation;
     }
 

@@ -30,8 +30,11 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     private Quaternion currentRotation;
     private Quaternion snappedRotation;
 
+    private Vector3 dragStartPosition;
+    private Collider dragCollider;
     
-    public abstract void Activate();
+    protected abstract Collider GetColliderForDrag();
+    protected abstract void DoActivate(Collider collider);
 
     public virtual void Commit() {
         feedbackBlock.transform.rotation = snappedRotation;
@@ -41,8 +44,23 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
         return Input.GetButton(DragButtonName);
     }
 
-    public virtual bool CanActivate() {
-        return Input.GetButton(DragButtonName);
+    public bool CanActivate() {
+        if (Input.GetButtonDown(DragButtonName)) {
+            //Debug.Log($"Button down: {Input.mousePosition}");
+            dragStartPosition = Input.mousePosition;
+            dragCollider = GetColliderForDrag();
+            
+            return false; 
+        } else if (Input.GetButton(DragButtonName)) {
+            bool canActivate = !dragStartPosition.Equals(Input.mousePosition);
+            return canActivate && dragCollider != null; 
+        } else {
+            return false;
+        }
+    }
+
+    public void Activate() {
+        DoActivate(dragCollider);
     }
 
     // Should be called during Update. If it returns true, then
@@ -75,6 +93,7 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
         this.feedbackBlock = feedbackBlock;
         this.dragCollisionBlock = collisionChecker;
 
+        feedbackBlock.Destroy<FeedbackEditorBlock>();
         feedbackOutline = feedbackBlock.GetComponent<Outline>();
         feedbackOutline.enabled = true;
 
@@ -92,12 +111,8 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
 
         pipColliders = dragCollisionBlock.GetComponentsInChildren<PipCollider>();
         currentRotation = dragCollisionBlock.transform.rotation;
-        foreach (Renderer renderer in dragCollisionBlock.GetComponentsInChildren<Renderer>()) {
-            Destroy(renderer);
-        }
-        foreach (Outline outline in dragCollisionBlock.GetComponentsInChildren<Outline>()) {
-            Destroy(outline);
-        }
+        dragCollisionBlock.DestroyInChildren<Renderer>();
+        dragCollisionBlock.DestroyInChildren<Outline>();
         foreach (GameObject go in dragCollisionBlock.Children(true)) {
             if (Tags.EDITOR_PIP.HasTag(go)) {
                 go.tag = Tags.TEMPLATE_PIP.TagName();

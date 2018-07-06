@@ -13,31 +13,27 @@ public class CreateBlockTool : BaseMoveBlockTool {
     private GameObject createCollisionChecker; 
     private GameObject createFeedback;
 
-    public override bool CanActivate() {
-        if (!base.CanActivate()) {
-            return false;
-        }
-
-        Ray ray = paletteCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-        return Physics.Raycast(ray, out hitInfo) && Tags.PALETTE_BLOCK.HasTag(hitInfo.collider);
-    }
-
-    public override void Activate() {
+    protected override Collider GetColliderForDrag() {
         Ray ray = paletteCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo) && Tags.PALETTE_BLOCK.HasTag(hitInfo.collider)) {
-            Block blockDetails = hitInfo.collider.GetComponent<Block>();
-            blockDef = BlockRegistry.GetDefinition(blockDetails.BlockType);
-
-            createFeedback = Instantiate(blockDef.EditorBlock);
-            createFeedback.name = blockDetails.BlockType + "_Feedback";
-
-            createCollisionChecker = Instantiate(blockDef.EditorBlock);
-            createCollisionChecker.name = blockDetails.BlockType + "_Checker";
-
-            Initialise(createFeedback, createCollisionChecker);
+            return hitInfo.collider;
+        } else {
+            return null;
         }
+    }
+
+    protected override void DoActivate(Collider collider) {
+        Block blockDetails = collider.GetComponent<Block>();
+        blockDef = BlockRegistry.GetDefinition(blockDetails.BlockType);
+
+        createFeedback = Instantiate(blockDef.EditorBlock);
+        createFeedback.name = blockDetails.BlockType + "_Feedback";
+
+        createCollisionChecker = Instantiate(blockDef.EditorBlock);
+        createCollisionChecker.name = blockDetails.BlockType + "_Checker";
+
+        Initialise(createFeedback, createCollisionChecker);
     }
 
     public override void Commit() {
@@ -50,6 +46,7 @@ public class CreateBlockTool : BaseMoveBlockTool {
             newBlock.transform.rotation = createFeedback.transform.rotation;
             newBlock.transform.parent = rootBlock.transform;
 
+            SelectionManager.Selection = newBlock;
             LinkBlock(newBlock);
         }
 

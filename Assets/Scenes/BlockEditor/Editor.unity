@@ -1910,11 +1910,11 @@ GameObject:
   - component: {fileID: 845203388}
   - component: {fileID: 845203389}
   - component: {fileID: 845203387}
+  - component: {fileID: 845203393}
+  - component: {fileID: 845203394}
   - component: {fileID: 845203391}
   - component: {fileID: 845203390}
   - component: {fileID: 845203392}
-  - component: {fileID: 845203393}
-  - component: {fileID: 845203394}
   m_Layer: 0
   m_Name: Cameras
   m_TagString: Untagged

@@ -8,38 +8,33 @@ public class MoveBlockTool : BaseMoveBlockTool {
 
     private GameObject originalBlock;
 
-    // Update is called once per frame
-    public override bool CanActivate() {
-        if (!base.CanActivate()) {
-            return false;
-        }
-
+    protected override Collider GetColliderForDrag() {
         Camera camera = CameraExtensions.FindCameraUnderMouse();
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo) && Tags.EDITOR_BLOCK.HasTag(hitInfo.collider)) {
-            return hitInfo.collider.gameObject.GetRoot().transform.parent != null;
-        } else {
-            return false;
+        RaycastHit hitInfo; 
+        
+        // Ignore pips when raycasting
+        if (Physics.Raycast(ray, out hitInfo)) { 
+            GameObject root = hitInfo.collider.gameObject.GetRoot();
+            if (Tags.EDITOR_BLOCK.HasTag(root) && root.transform.parent != null) {
+                return hitInfo.collider;
+            }
         }
+
+        return null;
     }
 
-    public override void Activate() {
-        Camera camera = CameraExtensions.FindCameraUnderMouse();
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo) && Tags.EDITOR_BLOCK.HasTag(hitInfo.collider)) {
-            originalBlock = hitInfo.collider.gameObject.GetRoot();
-            originalBlock.SetActive(false);
+    protected override void DoActivate(Collider collider) {
+        originalBlock = collider.gameObject.GetRoot();
+        originalBlock.SetActive(false);
 
-            moveCollisionChecker = Instantiate(originalBlock);
-            moveCollisionChecker.name += "_Checker";
+        moveCollisionChecker = Instantiate(originalBlock);
+        moveCollisionChecker.name += "_Checker";
 
-            moveFeedback = Instantiate(originalBlock);
-            moveFeedback.name += "_Feedback";
+        moveFeedback = Instantiate(originalBlock);
+        moveFeedback.name += "_Feedback";
 
-            Initialise(moveFeedback, moveCollisionChecker);
-        }
+        Initialise(moveFeedback, moveCollisionChecker);
     }
 
     public override void Commit() {

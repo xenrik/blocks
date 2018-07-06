@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 65534674137595002}
   - component: {fileID: 114244168127503838}
   - component: {fileID: 114527587948905224}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: EPip_Back
   m_TagString: EditorPip
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 65814334141747186}
   - component: {fileID: 114025317494763124}
   - component: {fileID: 114371187902984340}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: EPip_Front
   m_TagString: EditorPip
   m_Icon: {fileID: 0}
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 65698243973460408}
   - component: {fileID: 114725157075824936}
   - component: {fileID: 114876654408030528}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: EPip_Left
   m_TagString: EditorPip
   m_Icon: {fileID: 0}

@@ -8,14 +8,11 @@ public class ControllerManager : MonoBehaviour {
 
     public string MoveCamera;
 
-    private MouseOverFeedbackOld[] allFeedback;
-
     private Tool[] tools;
     private Tool currentTool;
 
     // Use this for initialization
     void Start () {
-        allFeedback = FindObjectsOfType<MouseOverFeedbackOld>();
         tools = GetComponents<Tool>();
 	}
 	
@@ -29,16 +26,12 @@ public class ControllerManager : MonoBehaviour {
             if (currentTool.StillActive()) {
                 currentTool.DoUpdate();
             } else {
-                currentTool.Commit();
+                currentTool.Commit(); 
                 currentTool = null;
-
-                EnableFeedback();
             }
         } else { 
             foreach (Tool tool in tools) {
                 if (tool.CanActivate()) {
-                    DisableFeedback();
-
                     tool.Activate();
                     currentTool = tool;
                     break;
@@ -46,16 +39,4 @@ public class ControllerManager : MonoBehaviour {
             }
         }
 	}
-
-    private void EnableFeedback() {
-        foreach (var feedback in allFeedback) {
-            feedback.enabled = true;
-        }
-    }
-
-    private void DisableFeedback() {
-        foreach (var feedback in allFeedback) {
-            feedback.enabled = false;
-        }
-    }
 }
