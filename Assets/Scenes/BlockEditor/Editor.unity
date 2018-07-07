@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1747,6 +1747,7 @@ GameObject:
   - component: {fileID: 802724226}
   - component: {fileID: 802724228}
   - component: {fileID: 802724227}
+  - component: {fileID: 802724229}
   m_Layer: 5
   m_Name: Properties
   m_TagString: Untagged
@@ -1805,6 +1806,25 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 802724225}
+--- !u!114 &802724229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 802724225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f7d31b3b8ed6db4b8f3298b38f009dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Origin: {x: 30, y: -30}
+  OffsetPerProperty: -30
+  StringPropertyPrefab: {fileID: 1448922351698418, guid: 9126e63c6983ee349b77147c0042f207,
+    type: 2}
+  NumberPropertyPrefab: {fileID: 1250544152850806, guid: 66a7413cc8b51de4daaae4297cfb6ad2,
+    type: 2}
+  BooleanPropertyPrefab: {fileID: 1820921742615616, guid: 256dd5d481db16245a35bc89c178c7dc,
+    type: 2}
 --- !u!1001 &809557662
 Prefab:
   m_ObjectHideFlags: 0
@@ -3202,10 +3222,10 @@ MonoBehaviour:
   m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3

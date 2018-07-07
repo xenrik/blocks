@@ -368,9 +368,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Properties:
-  - PropertyName: ButtonName
+  - PropertyName: Thrust
     Type: 0
     DefaultValue: 
+    Tooltip: Button Name
 --- !u!114 &114669586759106778
 MonoBehaviour:
   m_ObjectHideFlags: 1

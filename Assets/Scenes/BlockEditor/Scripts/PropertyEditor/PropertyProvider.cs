@@ -3,5 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PropertyProvider : MonoBehaviour {
-    public Property[] Properties;
+    public PropertyDefinition[] Properties;
 }
+ 

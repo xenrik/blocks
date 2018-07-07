@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     public string DragButtonName;
@@ -45,7 +46,9 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     }
 
     public bool CanActivate() {
-        if (Input.GetButtonDown(DragButtonName)) {
+        if (EventSystem.current.IsPointerOverGameObject()) { 
+            return false;
+        } else if (Input.GetButtonDown(DragButtonName)) {
             //Debug.Log($"Button down: {Input.mousePosition}");
             dragStartPosition = Input.mousePosition;
             dragCollider = GetColliderForDrag();

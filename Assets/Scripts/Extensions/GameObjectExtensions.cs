@@ -18,7 +18,7 @@ public static class GameObjectExtensions {
         }
     }
 
-    public static IEnumerable<GameObject> Children(this GameObject gameObject, bool recursive) {
+    public static IEnumerable<GameObject> Children(this GameObject gameObject, bool recursive = false) {
         var stack = new Stack<Transform>();
         stack.Push(gameObject.transform);
 

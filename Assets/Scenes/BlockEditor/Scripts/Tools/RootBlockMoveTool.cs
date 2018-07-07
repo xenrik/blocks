@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /**
  * A dummy move tool that stop the mouse from starting to drag other blocks
@@ -11,7 +12,7 @@ public class RootBlockMoveTool : MonoBehaviour, Tool {
 
     // Update is called once per frame
     public bool CanActivate() {
-        if (!Input.GetButton(DragButtonName)) { 
+        if (!Input.GetButton(DragButtonName) || EventSystem.current.IsPointerOverGameObject()) { 
             return false;
         }
 

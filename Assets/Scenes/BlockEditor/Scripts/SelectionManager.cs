@@ -35,7 +35,7 @@ public static class SelectionManager {
         public GameObject Selection { get; private set; }
 
         public SelectionChangedEvent(GameObject selection) {
-            this.Selection = Selection;
+            this.Selection = selection;
         }
     }
 }

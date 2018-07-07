@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System.Linq;
 
 public class BlockPersister : MonoBehaviour {
 
@@ -42,6 +43,7 @@ public class BlockPersister : MonoBehaviour {
         JsonUtility.FromJsonOverwrite(designJson, design);
 
         // Reset the root block
+        SelectionManager.Selection = null;
         foreach (Block block in GetComponentsInChildren<Block>()) {
             if (block.gameObject == gameObject) {
                 continue;
@@ -65,6 +67,18 @@ public class BlockPersister : MonoBehaviour {
             blockGo.transform.parent = gameObject.transform;
             blockGo.transform.localPosition = blockData.Position;
             blockGo.transform.localRotation = blockData.Rotation;
+
+            // Restore properties
+            if (blockData.Properties?.Length > 0) {
+                PropertyHolder properties = blockGo.GetComponent<PropertyHolder>();
+                if (properties == null) {
+                    properties = blockGo.AddComponent<PropertyHolder>();
+                }
+
+                foreach (var property in blockData.Properties) {
+                    properties[property.Name] = property.Value;
+                }
+            }
 
             blockMap[blockData.Id] = blockGo.GetComponent<Block>();
         }
@@ -91,6 +105,16 @@ public class BlockPersister : MonoBehaviour {
 
         foreach (var linkedBlock in block.LinkedBlocks) {
             data.LinkedBlocks.Add(GetBlockId(state, linkedBlock));
+        }
+
+        PropertyHolder properties = block.gameObject.GetComponent<PropertyHolder>();
+        if (properties != null) {
+            List<BlockProperty> persistedProperties = new List<BlockProperty>();
+            foreach (var property in properties) {
+                persistedProperties.Add(new BlockProperty(property.Key, property.Value));
+            }
+
+            data.Properties = persistedProperties.ToArray();
         }
 
         state.Design.Blocks.Add(data);
@@ -121,6 +145,18 @@ public class BlockPersister : MonoBehaviour {
         public Quaternion Rotation;
 
         public List<int> LinkedBlocks = new List<int>();
+        public BlockProperty[] Properties;
+    }
+
+    [System.Serializable]
+    private class BlockProperty {
+        public string Name;
+        public string Value;
+
+        public BlockProperty(string name, string value) {
+            this.Name = name;
+            this.Value = value;
+        }
     }
 
     /**

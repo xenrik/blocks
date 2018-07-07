@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class SelectionTool : MonoBehaviour, Tool {
     public string SelectionButton;
 
     public bool CanActivate() {
         // Note, we never return true, but do stuff anyway...
-        if (Input.GetButtonDown(SelectionButton)) { 
+        if (Input.GetButtonDown(SelectionButton) && !EventSystem.current.IsPointerOverGameObject()) { 
             Camera camera = CameraExtensions.FindCameraUnderMouse();
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
