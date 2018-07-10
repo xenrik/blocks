@@ -68,7 +68,7 @@ public class FeedbackPaletteBlock : MonoBehaviour {
             return null;
         }
 
-        GameObject gameObject = hitInfo.collider.gameObject.GetRoot();
+        GameObject gameObject = RootGameObject.GetRoot(hitInfo.collider.gameObject);
         if (Tags.PALETTE_BLOCK.HasTag(gameObject)) {
             return gameObject;
         }

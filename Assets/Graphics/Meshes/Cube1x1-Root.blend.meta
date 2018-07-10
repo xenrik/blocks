@@ -1,12 +1,11 @@
 fileFormatVersion: 2
-guid: 578a040371ef842419754f4e2f335f9e
+guid: 7de9e8986ca9e004b85628f9ea785c87
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
-    2100000: Material
-    2100002: Material__Cube1x1-Editor_png
+    2100000: Material__Cube1x1-Editor_png
     2300000: //RootNode
     3300000: //RootNode
     4300000: Cube

@@ -20,7 +20,7 @@ public class RootBlockMoveTool : MonoBehaviour, Tool {
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo) && Tags.EDITOR_BLOCK.HasTag(hitInfo.collider)) {
-            return hitInfo.collider.gameObject.GetRoot().transform.parent == null;
+            return RootGameObject.GetRoot(hitInfo.collider.gameObject).transform.parent == null;
         } else {
             return false;
         }

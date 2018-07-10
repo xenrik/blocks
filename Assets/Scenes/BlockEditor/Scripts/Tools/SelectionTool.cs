@@ -16,7 +16,7 @@ public class SelectionTool : MonoBehaviour, Tool {
                 return false;
             }
             
-            GameObject newSelection = hitInfo.collider.gameObject.GetRoot();
+            GameObject newSelection = RootGameObject.GetRoot(hitInfo.collider.gameObject);
             if (Tags.EDITOR_BLOCK.HasTag(newSelection)) {
                 SelectionManager.Selection = newSelection;
             }

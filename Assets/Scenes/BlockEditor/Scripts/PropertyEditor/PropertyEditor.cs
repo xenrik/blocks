@@ -18,6 +18,10 @@ public class PropertyEditor : MonoBehaviour {
         SelectionManager.OnSelectionChanged += OnSelectionChanged;		
 	}
 
+    private void OnDestroy() {
+        SelectionManager.OnSelectionChanged -= OnSelectionChanged;
+    }
+
     // Update is called once per frame
     void Update () {
 		

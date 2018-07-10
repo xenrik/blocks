@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 578a040371ef842419754f4e2f335f9e
+guid: d39e12db33de28540898b221f67be23f
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
@@ -12,7 +12,17 @@ ModelImporter:
     4300000: Cube
     7400000: Default Take
     9500000: //RootNode
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: f71c9f301e4cef34bb46bbe98948a6f5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material__Cube1x1-Editor_png
+    second: {fileID: 2100000, guid: f71c9f301e4cef34bb46bbe98948a6f5, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

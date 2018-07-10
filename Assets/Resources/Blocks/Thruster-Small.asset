@@ -16,7 +16,6 @@ MonoBehaviour:
     type: 2}
   EditorBlock: {fileID: 1669130446260912, guid: d02be9cb8ef9d914f9abcdb63c58af2c,
     type: 2}
-  EditorFeedbackBlock: {fileID: 0}
-  EditorCollisionChecker: {fileID: 0}
   GameplayBlock: {fileID: 1248839836955506, guid: 87c21725de5618d41a50f55d90f040e0,
     type: 2}
+  Mass: 1

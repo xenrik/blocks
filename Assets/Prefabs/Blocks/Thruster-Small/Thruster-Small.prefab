@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 95378917426936422}
   - component: {fileID: 64826708673961848}
   - component: {fileID: 114069189165249552}
+  - component: {fileID: 114194585043881424}
   m_Layer: 0
   m_Name: Thruster-Small
   m_TagString: Block
@@ -96,7 +97,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300000, guid: f992a2d94078fb541b2916480bdf610e, type: 3}
@@ -130,3 +131,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockType: Thruster-Small
+--- !u!114 &114194585043881424
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1248839836955506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d4f693dff0a3234f8c0d54a21e06fac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FireThrusterPropertyName: Thrust
+  Force: {x: 0, y: 0, z: 1}

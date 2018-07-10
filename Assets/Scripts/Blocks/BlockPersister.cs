@@ -6,6 +6,8 @@ using System.Linq;
 
 public class BlockPersister : MonoBehaviour {
 
+    public bool EditorMode = true;
+
     public void Save(string designName) {
         Design design = new Design();
         SaveState state = new SaveState();
@@ -62,7 +64,7 @@ public class BlockPersister : MonoBehaviour {
             }
 
             BlockDefinition blockDef = BlockRegistry.GetDefinition(blockData.Type);
-            GameObject blockGo = Instantiate(blockDef.EditorBlock);
+            GameObject blockGo = EditorMode ? Instantiate(blockDef.EditorBlock) : Instantiate(blockDef.GameplayBlock);
             blockGo.name = blockData.Type + "_" + blockData.Id;
             blockGo.transform.parent = gameObject.transform;
             blockGo.transform.localPosition = blockData.Position;

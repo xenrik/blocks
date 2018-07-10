@@ -51,7 +51,7 @@ public class FeedbackEditorBlock : MonoBehaviour {
             return null;
         }
 
-        GameObject gameObject = hitInfo.collider.gameObject.GetRoot();
+        GameObject gameObject = RootGameObject.GetRoot(hitInfo.collider.gameObject);
         if (Tags.EDITOR_BLOCK.HasTag(gameObject)) {
             return gameObject;
         }

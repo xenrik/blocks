@@ -95,7 +95,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300000, guid: 372f2cdd31ebe0845bc6937667b4a8ab, type: 3}
@@ -111,4 +111,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockType: Corner1x1
-  linkedBlocks: []

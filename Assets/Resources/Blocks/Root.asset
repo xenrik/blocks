@@ -9,13 +9,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2962f8c818fd877428eea259edcd8483, type: 3}
-  m_Name: Corner1x1
+  m_Name: Root
   m_EditorClassIdentifier: 
-  BlockType: Corner1x1
-  PaletteBlock: {fileID: 1845185501550240, guid: 1891420648bb13145ba098f425c363a4,
+  BlockType: Root
+  PaletteBlock: {fileID: 0}
+  EditorBlock: {fileID: 1217531860573934, guid: 6528c71640c867f4abfcb0bcfffa5a4d,
     type: 2}
-  EditorBlock: {fileID: 1425917744625156, guid: 38bab7e24487b374ebb21a28f947cdf3,
-    type: 2}
-  GameplayBlock: {fileID: 1532183192627556, guid: 10e177c776e50c84492a38e3104f3bba,
+  GameplayBlock: {fileID: 1798611540107676, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6,
     type: 2}
   Mass: 1

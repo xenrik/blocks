@@ -6,15 +6,15 @@ using System;
 using UnityEngine;
 
 public class CreateBlockTool : BaseMoveBlockTool {
-    public Camera paletteCamera;
-    public GameObject rootBlock;
+    public Camera PaletteCamera;
+    public GameObject RootBlock;
 
     private BlockDefinition blockDef;
     private GameObject createCollisionChecker; 
     private GameObject createFeedback;
 
     protected override Collider GetColliderForDrag() {
-        Ray ray = paletteCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = PaletteCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo) && Tags.PALETTE_BLOCK.HasTag(hitInfo.collider)) {
             return hitInfo.collider;
@@ -44,7 +44,7 @@ public class CreateBlockTool : BaseMoveBlockTool {
             newBlock.name = blockDef.BlockType + String.Format("_{0:HHmmss}", DateTime.Now);
             newBlock.transform.position = createFeedback.transform.position;
             newBlock.transform.rotation = createFeedback.transform.rotation;
-            newBlock.transform.parent = rootBlock.transform;
+            newBlock.transform.parent = RootBlock.transform;
 
             SelectionManager.Selection = newBlock;
             LinkBlock(newBlock);

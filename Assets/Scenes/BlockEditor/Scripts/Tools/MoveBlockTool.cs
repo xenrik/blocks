@@ -15,7 +15,7 @@ public class MoveBlockTool : BaseMoveBlockTool {
         
         // Ignore pips when raycasting
         if (Physics.Raycast(ray, out hitInfo)) { 
-            GameObject root = hitInfo.collider.gameObject.GetRoot();
+            GameObject root = RootGameObject.GetRoot(hitInfo.collider.gameObject);
             if (Tags.EDITOR_BLOCK.HasTag(root) && root.transform.parent != null) {
                 return hitInfo.collider;
             }
@@ -25,7 +25,7 @@ public class MoveBlockTool : BaseMoveBlockTool {
     }
 
     protected override void DoActivate(Collider collider) {
-        originalBlock = collider.gameObject.GetRoot();
+        originalBlock = RootGameObject.GetRoot(collider.gameObject);
         originalBlock.SetActive(false);
 
         moveCollisionChecker = Instantiate(originalBlock);
