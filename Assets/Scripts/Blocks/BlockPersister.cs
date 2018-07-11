@@ -56,6 +56,7 @@ public class BlockPersister : MonoBehaviour {
 
         // Generate the blocks
         var blockMap = new Dictionary<int, Block>();
+        float mass = 1;
         foreach (BlockData blockData in design.Blocks) {
             // For the root block, capture the current block but dont copy any other data
             if (blockData.Id == 1) {
@@ -82,6 +83,9 @@ public class BlockPersister : MonoBehaviour {
                 }
             }
 
+            // Update the mass
+            mass += blockDef.Mass;
+
             blockMap[blockData.Id] = blockGo.GetComponent<Block>();
         }
 
@@ -94,6 +98,12 @@ public class BlockPersister : MonoBehaviour {
             }
 
             block.SetLinks(linkedBlocks.ToArray());
+        }
+
+        // Set the mass
+        Rigidbody rigidbody = GetComponent<Rigidbody>();
+        if (rigidbody != null) {
+            rigidbody.mass = mass;
         }
     }
 
