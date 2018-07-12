@@ -11,7 +11,7 @@ public class CreateScriptableObjectWindow : EditorWindow {
     private string type;
     private string assetName;
 
-    [MenuItem("Assets/Create New Asset")]
+    [MenuItem("Blocks/Create New Asset")]
     public static void Create() {
         CreateScriptableObjectWindow window = EditorWindow.GetWindow<CreateScriptableObjectWindow>(true, "Create New Asset");
 
