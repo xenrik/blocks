@@ -100,21 +100,14 @@ public class CubifyMesh : EditorWindow {
 
     private Mesh GenerateNewMesh() {
         var mesh = meshFilter.sharedMesh;
+        var bounds = mesh.bounds;
+        for (float x = bounds.min.x; x < bounds.max.x; x += 1) {
+            for (float y = bounds.min.y; y < bounds.max.y; y += 1) {
+                for (float z = bounds.min.z; z < bounds.max.z; z += 1) {
 
-        // Add new vertices on a rounded point
-        var newVertices = new Dictionary<Vector3,int>();
-        foreach (var vertex in mesh.vertices) {
-            var newVertex = RoundVertex(vertex);
-            if (!newVertices.ContainsKey(newVertex)) {
-                newVertices[newVertex] = newVertices.Count;
+
+                }
             }
-        }
-
-        // Create new triangles and vertices as needed to cubify
-        var newTriangles = new List<int>();
-        foreach (var triangle in mesh.triangles) {
-            var roundedVertex = RoundVertex(mesh.vertices[triangle]);
-            newTriangles.Add(newVertices[roundedVertex]);
         }
 
         // Copy the UV for now
