@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestArea.unity
     guid: c96239ed5b0a30b41a2abaf48a15b618
+  - enabled: 1
+    path: Assets/Scenes/VoxelBuilder.unity
+    guid: c9d11ecd8fdabc74898eda0990caf7a7
   m_configObjects: {}
