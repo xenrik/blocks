@@ -33,6 +33,15 @@ public static class GameObjectExtensions {
         }
     }
 
+    public static IEnumerable<GameObject> SafeChildren(this GameObject gameObject, bool recursive = false) {
+        var list = new List<GameObject>();
+        foreach (var child in gameObject.Children()) {
+            list.Add(child);
+        }
+
+        return list;
+    }
+
     public static string GetFullName(this GameObject gameObject) {
         string parentName = gameObject.transform.parent?.gameObject.GetFullName();
         return parentName != null ? parentName + "." + gameObject.name : gameObject.name;

@@ -1,30 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class VoxelGenerator : MonoBehaviour {
 
     public Mesh PerimiterMesh;
 
-    private bool ready = false;
     private CollisionRecorder recorder;
     private GameObject voxelRoot;
+    private GameObject perimiterGO;
 
     // Use this for initialization
     void Start() {
         // Step 1 -- Create a GameObject with the perimiter mesh, attach a MeshCollider and a collision detection script
-        GameObject perimiterGO = new GameObject("PerimiterFinder");
+        perimiterGO = new GameObject("PerimiterFinder");
+        perimiterGO.SetActive(false);
+
         MeshFilter meshFilter = perimiterGO.AddComponent<MeshFilter>();
         meshFilter.sharedMesh = PerimiterMesh;
 
-        MeshCollider meshCollider = perimiterGO.AddComponent<MeshCollider>();
-        //meshCollider.isTrigger = true;
-
+        perimiterGO.AddComponent<MeshCollider>();
         recorder = perimiterGO.AddComponent<CollisionRecorder>();
 
         // Step 2 -- Generate a sequence of 1x1 Cubes with colliders using the bounds of the mesh so we can identify the cubes that are within the perimiter mesh
 
-        StartCoroutine(GenerateVoxels(20));
+        StartCoroutine(GenerateVoxels(10));
     }
 
     private IEnumerator GenerateVoxels(int scale) { 
@@ -38,13 +39,17 @@ public class VoxelGenerator : MonoBehaviour {
         Debug.Log($"Generating {voxelCount} voxels...");
         Debug.Log($"Bounds: {meshBounds.min}-{meshBounds.max}");
 
-        Vector3 colliderSize = new Vector3(scale - 0.5f, scale - 0.5f, scale - 0.5f);
+        float colliderSpace = 0.1f;
+        Vector3 colliderSize = new Vector3(scale - colliderSpace, scale - colliderSpace, scale - colliderSpace);
         for (float x = meshBounds.min.x; x <= meshBounds.max.x; x += scale) {
             for (float y = meshBounds.min.y; y <= meshBounds.max.y; y += scale) {
                 for (float z = meshBounds.min.z; z <= meshBounds.max.z; z += scale) {
-                    GameObject voxel = new GameObject("Voxel");
+                    GameObject voxel = new GameObject("voxel");
+                    voxel.SetActive(false);
+
                     voxel.transform.parent = voxelRoot.transform;
                     voxel.transform.position = new Vector3(x, y, z);
+                    voxel.transform.localScale = colliderSize;
 
                     Rigidbody rigidbody = voxel.AddComponent<Rigidbody>();
                     rigidbody.isKinematic = true;
@@ -52,10 +57,10 @@ public class VoxelGenerator : MonoBehaviour {
 
                     BoxCollider collider = voxel.AddComponent<BoxCollider>();
                     collider.isTrigger = true;
-                    collider.size = colliderSize;
+                    //collider.size = colliderSize;
 
                     ++count;
-                    if (count % 1000 == 0) {
+                    if (count % 100 == 0) {
                         Debug.Log($"Generated {count} voxels...");
                         yield return null;
                     }
@@ -63,17 +68,30 @@ public class VoxelGenerator : MonoBehaviour {
             }
         }
 
+        StartCoroutine(EnableVoxels());
+    }
+
+    private IEnumerator EnableVoxels() {
+        yield return null;
+
+        Debug.Log($"Enabling voxels...");
+        foreach (GameObject child in voxelRoot.Children()) {
+            child.SetActive(true);
+        }
+
+        perimiterGO.SetActive(true);
         StartCoroutine(DestroyVoxels());
     }
 
     private IEnumerator DestroyVoxels() {
-        yield return null;
+        Debug.Log($"There are: {recorder.Count()} collisions");
+        yield return new WaitForFixedUpdate();
+        Debug.Log($"There are: {recorder.Count()} collisions");
 
-        Debug.Log($"There were: {recorder.Count()} collisions");
 
         // Destroy objects on the root which have not been captured by the recorder
         int count = 0;
-        foreach (GameObject child in voxelRoot.Children()) {
+        foreach (GameObject child in voxelRoot.SafeChildren()) {
             if (recorder.HasCollision(child)) {
                 continue;
             }
@@ -86,6 +104,6 @@ public class VoxelGenerator : MonoBehaviour {
             }
         }
 
-        Debug.Log("Destroyed non-colliding voxels");
+        Debug.Log($"Destroyed {count} non-colliding voxels");
     }
 }
