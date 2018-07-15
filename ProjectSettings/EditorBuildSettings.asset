@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/VoxelBuilder.unity
     guid: c9d11ecd8fdabc74898eda0990caf7a7
+  - enabled: 1
+    path: Assets/Scenes/ScratchPad.unity
+    guid: a8faba52d412a4d428c798c4b7254a98
   m_configObjects: {}

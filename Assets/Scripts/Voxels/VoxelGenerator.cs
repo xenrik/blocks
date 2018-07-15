@@ -1,15 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 
 public class VoxelGenerator : MonoBehaviour {
 
     public Mesh PerimiterMesh;
 
+    public Text GenerateTotalText;
+    public Text GeneratedCountText;
+    public Text GeneratedPercentageText;
+
+    public Text DestroyTotalText;
+    public Text DestroyedCountText;
+    public Text DestroyedPercentageText;
+
     private CollisionRecorder recorder;
     private GameObject voxelRoot;
     private GameObject perimiterGO;
+    private int generatedCount;
 
     // Use this for initialization
     void Start() {
@@ -25,20 +35,19 @@ public class VoxelGenerator : MonoBehaviour {
 
         // Step 2 -- Generate a sequence of 1x1 Cubes with colliders using the bounds of the mesh so we can identify the cubes that are within the perimiter mesh
 
-        StartCoroutine(GenerateVoxels(10));
+        StartCoroutine(GenerateVoxels(5));
     }
 
     private IEnumerator GenerateVoxels(int scale) { 
         voxelRoot = new GameObject("VoxelRoot");
         Bounds meshBounds = PerimiterMesh.bounds;
-        int count = 0;
 
-        float voxelCount = ((meshBounds.max.x - meshBounds.min.x) / scale) *
+        float totalCount = ((meshBounds.max.x - meshBounds.min.x) / scale) *
             ((meshBounds.max.y - meshBounds.min.y) / scale) *
             ((meshBounds.max.z - meshBounds.min.z) / scale);
-        Debug.Log($"Generating {voxelCount} voxels...");
-        Debug.Log($"Bounds: {meshBounds.min}-{meshBounds.max}");
+        GenerateTotalText.text = string.Format("~ {0:F1}", totalCount);
 
+        generatedCount = 0;
         float colliderSpace = 0.1f;
         Vector3 colliderSize = new Vector3(scale - colliderSpace, scale - colliderSpace, scale - colliderSpace);
         for (float x = meshBounds.min.x; x <= meshBounds.max.x; x += scale) {
@@ -46,6 +55,7 @@ public class VoxelGenerator : MonoBehaviour {
                 for (float z = meshBounds.min.z; z <= meshBounds.max.z; z += scale) {
                     GameObject voxel = new GameObject("voxel");
                     voxel.SetActive(false);
+                    voxel.hideFlags = HideFlags.HideInHierarchy;
 
                     voxel.transform.parent = voxelRoot.transform;
                     voxel.transform.position = new Vector3(x, y, z);
@@ -59,15 +69,18 @@ public class VoxelGenerator : MonoBehaviour {
                     collider.isTrigger = true;
                     //collider.size = colliderSize;
 
-                    ++count;
-                    if (count % 100 == 0) {
-                        Debug.Log($"Generated {count} voxels...");
+                    ++generatedCount;
+                    if (generatedCount % 100 == 0) {
+                        GeneratedCountText.text = generatedCount.ToString();
+                        GeneratedPercentageText.text = string.Format("{0:F2}", Mathf.Min(100, (generatedCount / totalCount) * 100));
                         yield return null;
                     }
                 }
             }
         }
 
+        GeneratedCountText.text = generatedCount.ToString();
+        GeneratedPercentageText.text = string.Format("{0:F2} %", Mathf.Min(100, (generatedCount / totalCount) * 100));
         StartCoroutine(EnableVoxels());
     }
 
@@ -84,10 +97,10 @@ public class VoxelGenerator : MonoBehaviour {
     }
 
     private IEnumerator DestroyVoxels() {
-        Debug.Log($"There are: {recorder.Count()} collisions");
         yield return new WaitForFixedUpdate();
-        Debug.Log($"There are: {recorder.Count()} collisions");
 
+        float destroyTotal = generatedCount - recorder.Count();
+        DestroyTotalText.text = (generatedCount - recorder.Count()).ToString();
 
         // Destroy objects on the root which have not been captured by the recorder
         int count = 0;
@@ -99,11 +112,14 @@ public class VoxelGenerator : MonoBehaviour {
             Destroy(child);
             ++count;
             if (count % 100 == 0) {
-                Debug.Log($"Destroyed {count} voxels...");
+                DestroyedCountText.text = count.ToString();
+                DestroyedPercentageText.text = string.Format("{0:F2}", Mathf.Min(100, (count / destroyTotal) * 100));
                 yield return null;
             }
         }
 
-        Debug.Log($"Destroyed {count} non-colliding voxels");
+        DestroyedCountText.text = count.ToString();
+        DestroyedPercentageText.text = string.Format("{0:F2} %", Mathf.Min(100, (count / destroyTotal) * 100));
+        Debug.Log("Finished!");
     }
 }
