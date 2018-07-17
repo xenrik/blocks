@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System;
 using UnityEngine;
 
@@ -38,6 +39,12 @@ public class VoxelMap : ScriptableObject, IEnumerable<KeyValuePair<Vector3,int>>
     [HideInInspector]
     public string Data;
 
+    [HideInInspector]
+    public string DebugData;
+
+    // If true we populate the DebugData property
+    private static readonly bool DebugEnabled = true;
+
     // The map of voxels for this object.
     private Dictionary<Vector3, int> voxelMap = new Dictionary<Vector3, int>();
 
@@ -53,13 +60,24 @@ public class VoxelMap : ScriptableObject, IEnumerable<KeyValuePair<Vector3,int>>
 
         MemoryStream buffer = new MemoryStream();
         byte[] bytes;
+        DebugData = "";
+        StringBuilder debugBuffer = new StringBuilder();
         foreach (var mapEntry in voxelMap) {
             bytes = BitConverter.GetBytes(mapEntry.Key.x); buffer.Write(bytes, 0, bytes.Length);
             bytes = BitConverter.GetBytes(mapEntry.Key.y); buffer.Write(bytes, 0, bytes.Length);
             bytes = BitConverter.GetBytes(mapEntry.Key.z); buffer.Write(bytes, 0, bytes.Length);
 
             bytes = BitConverter.GetBytes(mapEntry.Value); buffer.Write(bytes, 0, bytes.Length);
+
+            if (DebugEnabled) {
+                if (debugBuffer.Length > 0) {
+                    debugBuffer.Append(", ");
+                }
+
+                debugBuffer.Append($"{mapEntry.Key}:{mapEntry.Value}");
+            }
         }
+        DebugData = "[" + debugBuffer.ToString() + "]";
 
         bytes = buffer.ToArray();
         Data = Convert.ToBase64String(bytes);
@@ -82,17 +100,6 @@ public class VoxelMap : ScriptableObject, IEnumerable<KeyValuePair<Vector3,int>>
 
             Vector3 position = new Vector3(x, y, z);
             voxelMap[position] = voxelId;
-        }
-    }
-
-    /**
-     * Restore the map from its serialized form
-     */
-    private void Awake() {
-        if (Data != null) {
-            AfterDeserialize();
-        } else {
-            Debug.Log("No data to restore");
         }
     }
 

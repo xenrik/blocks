@@ -38,7 +38,7 @@ public class VoxelMapGenerator : MonoBehaviour {
         Stopwatch timer = new Stopwatch();
         timer.Start();
 
-        VoxelMap voxelMap = new VoxelMap();
+        VoxelMap voxelMap = ScriptableObject.CreateInstance<VoxelMap>();
 
         Mesh perimiterMesh = Perimiter.GetComponent<MeshFilter>().sharedMesh;
         perimiterMesh = Perimiter.transform.ScaleMesh(perimiterMesh);
@@ -65,15 +65,20 @@ public class VoxelMapGenerator : MonoBehaviour {
             }));
         }
 
-        Debug.Log("Generating voxels to check...");
+        Vector3 min = meshBounds.min;
+        min.x += scale / 2.0f; min.y += scale / 2.0f; min.z += scale / 2.0f;
+
+        Vector3 max = meshBounds.max;
+        max.x -= scale / 2.0f; max.y -= scale / 2.0f; max.z -= scale / 2.0f;
+        Debug.Log($"Generating voxels to check (bounds: {min}-{max})...");
 
         Stopwatch lastYield = new Stopwatch();
         lastYield.Start();
-        for (float x = meshBounds.min.x; x <= meshBounds.max.x; x += scale) {
+        for (float x = min.x; x <= max.x; x += scale) {
             voxelOrigin.x = x;
-            for (float y = meshBounds.min.y; y <= meshBounds.max.y; y += scale) {
+            for (float y = min.y; y <= max.y; y += scale) {
                 voxelOrigin.y = y;
-                for (float z = meshBounds.min.z; z <= meshBounds.max.z; z += scale) {
+                for (float z = min.z; z <= max.z; z += scale) {
                     voxelOrigin.z = z;
                     voxelsToCheck.Add(voxelOrigin);
 
@@ -88,7 +93,6 @@ public class VoxelMapGenerator : MonoBehaviour {
             }
         }
         voxelsToCheck.CompleteAdding();
-        Debug.Log("Completed Adding...");
 
         GeneratedCountText.text = generatedCount.ToString();
         GeneratedPercentageText.text = string.Format("{0:F2} %", Mathf.Min(100, (generatedCount / totalCount) * 100));
@@ -117,10 +121,18 @@ public class VoxelMapGenerator : MonoBehaviour {
 
         TimeTakenText.text = string.Format("{0:F2}s", timer.ElapsedMilliseconds / 1000.0f);
 
-        Debug.Log("Saving Map...");
+        Debug.Log("Serializing Map...");
+        var task = Task.Factory.StartNew(() => {
+            voxelMap.BeforeSerialize();
+        });
+
+        while (!task.IsCompleted) {
+            yield return null;
+        }
+
+        Debug.Log("Saving...");
 
         string uniquePath = AssetDatabase.GenerateUniqueAssetPath("Assets/voxelMap.asset");
-        voxelMap.BeforeSerialize();
         AssetDatabase.CreateAsset(voxelMap, uniquePath);
         AssetDatabase.SaveAssets();
 
@@ -137,7 +149,6 @@ public class VoxelMapGenerator : MonoBehaviour {
     }
 
     private void CheckVoxels(Bounds bounds, int[] triangles, Vector3[] vertices) {
-        Debug.Log("Consumer working");
         while (true) {
             Vector3 voxelOrigin;
             if (voxelsToCheck.TryTake(out voxelOrigin, 100)) {
@@ -145,7 +156,6 @@ public class VoxelMapGenerator : MonoBehaviour {
                     voxelsToGenerate.Add(voxelOrigin);
                 }
             } else if (voxelsToCheck.IsAddingCompleted) {
-                Debug.Log("Consumer finished");
                 return;
             }
         }

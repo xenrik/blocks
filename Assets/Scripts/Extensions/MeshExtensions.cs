@@ -51,8 +51,10 @@ public static class MeshExtensions {
         // to see if it actually is...
 
         // Find a point which is definitely outside the mesh
-        Vector3 origin = bounds.center;
-        origin.x = bounds.min.x - 1;
+        Vector3 origin = bounds.min;
+        origin.x -= 0.3f;
+        origin.y -= 0.5f;
+        origin.z -= 0.7f;
 
         // Check the faces of the mesh, looking for intersections with a ray from the origin
         // to the point

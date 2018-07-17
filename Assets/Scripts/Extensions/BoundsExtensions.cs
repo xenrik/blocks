@@ -42,6 +42,7 @@ public static class TransformExtensions {
             newVertices[i] = transform.TransformPoint(mesh.vertices[i]);
         }
         newMesh.vertices = newVertices;
+        newMesh.RecalculateBounds();
 
         return newMesh;
     }
@@ -58,6 +59,7 @@ public static class TransformExtensions {
             newVertices[i].Scale(transform.localScale);
         }
         newMesh.vertices = newVertices;
+        newMesh.RecalculateBounds();
 
         return newMesh;
     }
