@@ -32,11 +32,30 @@ public static class TransformExtensions {
         return newBounds;
     }
 
+    /**
+     * Produces a new mesh by taking the given mesh and applying this transform to it
+     */
     public static Mesh TransformMesh(this Transform transform, Mesh mesh) {
         Mesh newMesh = Object.Instantiate(mesh);
         Vector3[] newVertices = new Vector3[mesh.vertexCount];
         for (int i = 0; i < newVertices.Length; ++i) {
             newVertices[i] = transform.TransformPoint(mesh.vertices[i]);
+        }
+        newMesh.vertices = newVertices;
+
+        return newMesh;
+    }
+
+    /**
+     * Take the given mesh and apply the scale from this transform to it to
+     * produce a new mesh
+     */
+    public static Mesh ScaleMesh(this Transform transform, Mesh mesh) {
+        Mesh newMesh = Object.Instantiate(mesh);
+        Vector3[] newVertices = new Vector3[mesh.vertexCount];
+        for (int i = 0; i < newVertices.Length; ++i) {
+            newVertices[i] = mesh.vertices[i];
+            newVertices[i].Scale(transform.localScale);
         }
         newMesh.vertices = newVertices;
 

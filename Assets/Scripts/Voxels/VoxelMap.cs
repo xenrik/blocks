@@ -9,7 +9,7 @@ using UnityEngine;
  * It only describes the id of each voxel at a given position, relative to the
  * origin of the object.
  */
-public class VoxelMap : ScriptableObject {
+public class VoxelMap : ScriptableObject, IEnumerable<KeyValuePair<Vector3,int>> {
 
     public int this[Vector3 position] {
         get {
@@ -22,6 +22,7 @@ public class VoxelMap : ScriptableObject {
         }
 
         set {
+            hashCode = null;
             voxelMap[position] = value;
         }
     }
@@ -33,25 +34,22 @@ public class VoxelMap : ScriptableObject {
         }
     }
 
-    // The data for this map when serialized
-    [SerializeField]
-    public string Data {
-        get {
-            return SerializeMap();
-        }
-        set {
-            DeserializeMap(value);
-        }
-    }
+    /** The map in string form */
+    [HideInInspector]
+    public string Data;
 
     // The map of voxels for this object.
     private Dictionary<Vector3, int> voxelMap = new Dictionary<Vector3, int>();
 
+    // The hashcode for the map
+    private int? hashCode;
+
     /**
-     * Build the serialized form of the map
+     * Before you serialize this scriptable object call this method to ensure the
+     * data is in synch with the map
      */
-    private string SerializeMap() {
-        Debug.Log("Serializing...");
+    public void BeforeSerialize() {
+        Debug.Log("Getting voxel map ready to serialize");
 
         MemoryStream buffer = new MemoryStream();
         byte[] bytes;
@@ -64,15 +62,14 @@ public class VoxelMap : ScriptableObject {
         }
 
         bytes = buffer.ToArray();
-        return Convert.ToBase64String(bytes);
+        Data = Convert.ToBase64String(bytes);
     }
 
-    /**
-     * Restore the map from its serialized form
-     */
-    private void DeserializeMap(string dataString) {
+    public void AfterDeserialize() {
+        Debug.Log("Restoring voxel map");
+
         voxelMap.Clear();
-        byte[] data = Convert.FromBase64String(dataString);
+        byte[] data = Convert.FromBase64String(Data);
         int bytePos = 0;
         while (bytePos < data.Length) {
             float x = BitConverter.ToSingle(data, bytePos); bytePos += sizeof(float);
@@ -86,4 +83,38 @@ public class VoxelMap : ScriptableObject {
         }
     }
 
+    /**
+     * Restore the map from its serialized form
+     */
+    private void Awake() {
+        if (Data != null) {
+            AfterDeserialize();
+        }
+    }
+
+    public override int GetHashCode() {
+        if (hashCode == null) {
+            CalculateHashCode();
+        }
+
+        return hashCode ?? 0;
+    }
+
+    private int CalculateHashCode() {
+        int hash = 37;
+        foreach (var entry in voxelMap) {
+            hash += 3 * entry.Key.GetHashCode();
+            hash += 41 * entry.Value.GetHashCode();
+        }
+
+        return hash;
+    }
+
+    public IEnumerator<KeyValuePair<Vector3, int>> GetEnumerator() {
+        return voxelMap.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() {
+        return voxelMap.GetEnumerator();
+    }
 }

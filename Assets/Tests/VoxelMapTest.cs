@@ -21,11 +21,12 @@ public class VoxelMapTest {
         map[new Vector3(0, 0, 1)] = 3;
         map[new Vector3(1, 1, 1)] = 4;
 
-        string json = JsonUtility.ToJson(map);
-        Debug.Log($"JSON: {json}");
+        map.BeforeSerialize();
+        Debug.Log($"Data: {map.Data}");
 
         VoxelMap newMap = ScriptableObject.CreateInstance<VoxelMap>();
-        JsonUtility.FromJsonOverwrite(json, newMap);
+        newMap.Data = map.Data;
+        newMap.AfterDeserialize();
 
         Assert.AreEqual(map.Count, newMap.Count);
         Assert.AreEqual(map[new Vector3(0, 0, 0)], newMap[new Vector3(0, 0, 0)]);
@@ -34,7 +35,7 @@ public class VoxelMapTest {
         Assert.AreEqual(map[new Vector3(0, 0, 1)], newMap[new Vector3(0, 0, 1)]);
         Assert.AreEqual(map[new Vector3(1, 1, 1)], newMap[new Vector3(1, 1, 1)]);
 
-        string newJson = JsonUtility.ToJson(newMap);
-        Assert.AreEqual(json, newJson);
+        newMap.BeforeSerialize();
+        Assert.AreEqual(map.Data, newMap.Data);
     }
 }

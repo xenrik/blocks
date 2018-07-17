@@ -782,6 +782,7 @@ GameObject:
   - component: {fileID: 454730168}
   - component: {fileID: 454730169}
   - component: {fileID: 454730170}
+  - component: {fileID: 454730171}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -897,7 +898,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 454730163}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8e7970db18280b441a3c34dd676fea6b, type: 3}
   m_Name: 
@@ -905,6 +906,27 @@ MonoBehaviour:
   Perimiter: {fileID: 556239425}
   Material: {fileID: 0}
   Scale: 2
+  GenerateTotalText: {fileID: 957587455}
+  GeneratedCountText: {fileID: 322066227}
+  GeneratedPercentageText: {fileID: 1911440725}
+  DestroyTotalText: {fileID: 1749819023}
+  DestroyedCountText: {fileID: 928763224}
+  DestroyedPercentageText: {fileID: 2060536699}
+  TimeTakenText: {fileID: 2095952269}
+--- !u!114 &454730171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 454730163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1928fe3d58c63de4190898279bf54282, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Perimiter: {fileID: 556239425}
+  Material: {fileID: 0}
+  Scale: 5
   GenerateTotalText: {fileID: 957587455}
   GeneratedCountText: {fileID: 322066227}
   GeneratedPercentageText: {fileID: 1911440725}
