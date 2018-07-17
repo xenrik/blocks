@@ -22,7 +22,7 @@ public class VoxelMap : ScriptableObject, IEnumerable<KeyValuePair<Vector3,int>>
         }
 
         set {
-            hashCode = null;
+            hashCode = 0;
             voxelMap[position] = value;
         }
     }
@@ -42,7 +42,7 @@ public class VoxelMap : ScriptableObject, IEnumerable<KeyValuePair<Vector3,int>>
     private Dictionary<Vector3, int> voxelMap = new Dictionary<Vector3, int>();
 
     // The hashcode for the map
-    private int? hashCode;
+    private int hashCode;
 
     /**
      * Before you serialize this scriptable object call this method to ensure the
@@ -69,6 +69,8 @@ public class VoxelMap : ScriptableObject, IEnumerable<KeyValuePair<Vector3,int>>
         Debug.Log("Restoring voxel map");
 
         voxelMap.Clear();
+        hashCode = 0;
+
         byte[] data = Convert.FromBase64String(Data);
         int bytePos = 0;
         while (bytePos < data.Length) {
@@ -89,15 +91,17 @@ public class VoxelMap : ScriptableObject, IEnumerable<KeyValuePair<Vector3,int>>
     private void Awake() {
         if (Data != null) {
             AfterDeserialize();
+        } else {
+            Debug.Log("No data to restore");
         }
     }
 
     public override int GetHashCode() {
-        if (hashCode == null) {
-            CalculateHashCode();
+        if (hashCode == 0) {
+            hashCode = CalculateHashCode();
         }
 
-        return hashCode ?? 0;
+        return hashCode;
     }
 
     private int CalculateHashCode() {
