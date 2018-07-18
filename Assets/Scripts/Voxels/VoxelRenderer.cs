@@ -1,21 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 public class VoxelRenderer : MonoBehaviour {
 
     /** The map we are rendering */
     public TextAsset VoxelMapData;
     public float VoxelScale;
+    public ProgressMonitor ProgressMonitor;
 
     private VoxelMap voxelMap;
     private int mapHashCode;
 
-    //private MeshFilter meshFilter;
-
     private GameObject meshGameObject;
-    private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
 
     private float halfScale;
@@ -26,7 +26,6 @@ public class VoxelRenderer : MonoBehaviour {
        //meshFilter = meshGameObject.AddComponent<MeshFilter>();
        //meshRenderer = meshGameObject.AddComponent<MeshRenderer>();
 
-        meshFilter = GetComponent<MeshFilter>();
         meshRenderer = GetComponent<MeshRenderer>();
         meshRenderer.enabled = false;
 
@@ -39,12 +38,16 @@ public class VoxelRenderer : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (mapHashCode != voxelMap.GetHashCode()) {
-            BuildMesh();
             mapHashCode = voxelMap.GetHashCode();
+
+            StartCoroutine(BuildMesh());
         }
 	}
 
-    private void BuildMesh() {
+    private IEnumerator BuildMesh() {
+        Stopwatch timer = new Stopwatch();
+        timer.Start();
+
         Debug.Log("Building Mesh...");
 
         // Work out which faces we need. The int represents the direction of face:
@@ -53,7 +56,13 @@ public class VoxelRenderer : MonoBehaviour {
         // 3 - Both (i.e. not needed)
 
         Dictionary<Vector3,Face> faces = new Dictionary<Vector3,Face>();
+        ProgressMonitor.SetTotal(voxelMap.Count);
         foreach (var entry in voxelMap) {
+            ProgressMonitor.
+            if (NeedsYield(timer)) {
+                yield return null;
+            }
+
             foreach (FaceDirection face in System.Enum.GetValues(typeof(FaceDirection))) {
                 PopulateFace(faces, entry.Key, face);
             }
@@ -65,8 +74,13 @@ public class VoxelRenderer : MonoBehaviour {
         //var vertices = new List<Vector3>();
         var colors = new List<Color>();
         var triangles = new List<int>();
+
         int faceCount = 0;
         foreach (var face in faces.Values) {
+            if (NeedsYield(timer)) {
+                yield return null;
+            }
+
             if (face.ignored) {
                 continue;
             }
@@ -82,44 +96,51 @@ public class VoxelRenderer : MonoBehaviour {
             if (colors.Count <= b) { colors.Add(face.color); }
             if (colors.Count <= c) { colors.Add(face.color); }
             if (colors.Count <= d) { colors.Add(face.color); }
-
-            /*
-            int a = vertices.Count; vertices.Add(face.a);
-            int b = vertices.Count; vertices.Add(face.b);
-            int c = vertices.Count; vertices.Add(face.c);
-            int d = vertices.Count; vertices.Add(face.d);
-
-            colors.Add(face.color); colors.Add(face.color);
-            colors.Add(face.color); colors.Add(face.color);
-            */
-
+            
             triangles.Add(a); triangles.Add(b); triangles.Add(c);
             triangles.Add(b); triangles.Add(d); triangles.Add(c);
 
             if (vertices.Count > 65534) {
                 Debug.Log("Vertex limit hit!");
-                break;
+                BuildMesh(vertices, triangles, colors);
+
+                vertices.Clear();
+                triangles.Clear();
+                colors.Clear();
             }
         }
         Debug.Log($"Rendered {faceCount} faces");
 
-        Mesh mesh = new Mesh();
+        if (vertices.Count > 0) {
+            BuildMesh(vertices, triangles, colors);
+        }
 
-        // Sort the vertices and add to the mesh
-        var vertexList = vertices.ToList();
-        vertexList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
-        mesh.SetVertices(vertexList.Select(pair => pair.Key).ToList());
-        //mesh.vertices = vertices.ToArray();
-
-        // Assign the triangles
-        mesh.triangles = triangles.ToArray();
-        mesh.colors = colors.ToArray();
-
-        // Set onto the filter and we're done!
-        meshFilter.mesh = mesh;
+        // We're done!
         meshRenderer.enabled = true;
 
         Debug.Log("Done!");
+    }
+
+    private void BuildMesh(Dictionary<Vector3, int> vertices, List<int> triangles, List<Color> colors) {
+        Mesh mesh = new Mesh();
+
+        var vertexList = vertices.ToList();
+        vertexList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+        mesh.SetVertices(vertexList.Select(pair => pair.Key).ToList());
+        mesh.triangles = triangles.ToArray();
+        mesh.colors = colors.ToArray();
+        mesh.RecalculateBounds();
+
+        GameObject meshGO = new GameObject();
+        meshGO.transform.parent = gameObject.transform;
+        meshGO.transform.localPosition = Vector3.zero;
+        meshGO.transform.localRotation = Quaternion.identity;
+
+        MeshFilter filter = meshGO.AddComponent<MeshFilter>();
+        filter.sharedMesh = mesh;
+
+        MeshRenderer renderer = meshGO.AddComponent<MeshRenderer>();
+        renderer.materials = meshRenderer.materials;
     }
 
     private void PopulateFace(Dictionary<Vector3, Face> faces, Vector3 origin, FaceDirection dir) {
@@ -139,6 +160,16 @@ public class VoxelRenderer : MonoBehaviour {
             face.ignored = true;
         }
     }
+
+    private bool NeedsYield(Stopwatch lastYeild) {
+        if (lastYeild.ElapsedMilliseconds > 100) {
+            lastYeild.Restart();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     private class Face {
         public Vector3 a;
