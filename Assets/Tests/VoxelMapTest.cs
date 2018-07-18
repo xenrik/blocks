@@ -9,7 +9,7 @@ public class VoxelMapTest {
 
     [SetUp]
     public void SetUp() {
-        map = ScriptableObject.CreateInstance<VoxelMap>();
+        map = new VoxelMap();
     }
 
     [Test]
@@ -21,12 +21,10 @@ public class VoxelMapTest {
         map[new Vector3(0, 0, 1)] = 3;
         map[new Vector3(1, 1, 1)] = 4;
 
-        map.BeforeSerialize();
-        Debug.Log($"Data: {map.Data}");
+        Debug.Log($"Data: {map.ToJson()}");
 
-        VoxelMap newMap = ScriptableObject.CreateInstance<VoxelMap>();
-        newMap.Data = map.Data;
-        newMap.AfterDeserialize();
+        VoxelMap newMap = new VoxelMap();
+        newMap.FromJson(map.ToJson());
 
         Assert.AreEqual(map.Count, newMap.Count);
         Assert.AreEqual(map[new Vector3(0, 0, 0)], newMap[new Vector3(0, 0, 0)]);
@@ -35,7 +33,6 @@ public class VoxelMapTest {
         Assert.AreEqual(map[new Vector3(0, 0, 1)], newMap[new Vector3(0, 0, 1)]);
         Assert.AreEqual(map[new Vector3(1, 1, 1)], newMap[new Vector3(1, 1, 1)]);
 
-        newMap.BeforeSerialize();
-        Assert.AreEqual(map.Data, newMap.Data);
+        Assert.AreEqual(map.ToJson(), newMap.ToJson());
     }
 }

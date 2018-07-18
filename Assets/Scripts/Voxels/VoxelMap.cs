@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System;
 using UnityEngine;
@@ -10,7 +11,10 @@ using UnityEngine;
  * It only describes the id of each voxel at a given position, relative to the
  * origin of the object.
  */
-public class VoxelMap : ScriptableObject, IEnumerable<KeyValuePair<Vector3,int>> {
+public class VoxelMap : IEnumerable<KeyValuePair<Vector3,int>> {
+
+    // If true we populate the debug properties
+    private static readonly bool DEBUG = false;
 
     public int this[Vector3 position] {
         get {
@@ -23,7 +27,7 @@ public class VoxelMap : ScriptableObject, IEnumerable<KeyValuePair<Vector3,int>>
         }
 
         set {
-            hashCode = 0;
+            SetDirty();
             voxelMap[position] = value;
         }
     }
@@ -35,80 +39,59 @@ public class VoxelMap : ScriptableObject, IEnumerable<KeyValuePair<Vector3,int>>
         }
     }
 
-    /** The map in string form */
-    [HideInInspector]
-    public string Data;
-
-    [HideInInspector]
-    public string DebugData;
-
-    // If true we populate the DebugData property
-    private static readonly bool DebugEnabled = true;
-
     // The map of voxels for this object.
     private Dictionary<Vector3, int> voxelMap = new Dictionary<Vector3, int>();
 
     // The hashcode for the map
-    private int hashCode;
+    private int hashCode = -1;
+
+    // The map in binary format
+    private string data;
+
+    // The map in string format (only populated in debug mode)
+    private string dataString;
 
     /**
-     * Before you serialize this scriptable object call this method to ensure the
-     * data is in synch with the map
+     * Returns this map in json format
      */
-    public void BeforeSerialize() {
-        Debug.Log("Getting voxel map ready to serialize");
-
-        MemoryStream buffer = new MemoryStream();
-        byte[] bytes;
-        DebugData = "";
-        StringBuilder debugBuffer = new StringBuilder();
-        foreach (var mapEntry in voxelMap) {
-            bytes = BitConverter.GetBytes(mapEntry.Key.x); buffer.Write(bytes, 0, bytes.Length);
-            bytes = BitConverter.GetBytes(mapEntry.Key.y); buffer.Write(bytes, 0, bytes.Length);
-            bytes = BitConverter.GetBytes(mapEntry.Key.z); buffer.Write(bytes, 0, bytes.Length);
-
-            bytes = BitConverter.GetBytes(mapEntry.Value); buffer.Write(bytes, 0, bytes.Length);
-
-            if (DebugEnabled) {
-                if (debugBuffer.Length > 0) {
-                    debugBuffer.Append(", ");
-                }
-
-                debugBuffer.Append($"{mapEntry.Key}:{mapEntry.Value}");
-            }
+    public string ToJson() {
+        if (data == null) {
+            SaveToDataString();
         }
-        DebugData = "[" + debugBuffer.ToString() + "]";
 
-        bytes = buffer.ToArray();
-        Data = Convert.ToBase64String(bytes);
+        JsonHelper helper = new JsonHelper();
+        helper.Data = data;
+        helper.DataString = dataString;
+
+        return JsonUtility.ToJson(helper);
     }
 
-    public void AfterDeserialize() {
-        Debug.Log("Restoring voxel map");
+    /**
+     * Restore a voxel map from its json format. This will replace
+     * any data held by the current instance
+     */
+    public void FromJson(string json) {
+        JsonHelper helper = JsonUtility.FromJson<JsonHelper>(json);
+        data = helper.Data;
+        dataString = helper.DataString;
 
-        voxelMap.Clear();
-        hashCode = 0;
-
-        byte[] data = Convert.FromBase64String(Data);
-        int bytePos = 0;
-        while (bytePos < data.Length) {
-            float x = BitConverter.ToSingle(data, bytePos); bytePos += sizeof(float);
-            float y = BitConverter.ToSingle(data, bytePos); bytePos += sizeof(float);
-            float z = BitConverter.ToSingle(data, bytePos); bytePos += sizeof(float);
-
-            int voxelId = BitConverter.ToInt32(data, bytePos); bytePos += sizeof(int);
-
-            Vector3 position = new Vector3(x, y, z);
-            voxelMap[position] = voxelId;
-        }
+        RestoreFromDataString();
     }
 
     public override int GetHashCode() {
-        if (hashCode == 0) {
+        if (hashCode == -1) {
             hashCode = CalculateHashCode();
         }
 
         return hashCode;
+    }
+
+    public IEnumerator<KeyValuePair<Vector3, int>> GetEnumerator() {
+        return voxelMap.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() {
+        return voxelMap.GetEnumerator();
     }
 
     private int CalculateHashCode() {
@@ -121,11 +104,73 @@ public class VoxelMap : ScriptableObject, IEnumerable<KeyValuePair<Vector3,int>>
         return hash;
     }
 
-    public IEnumerator<KeyValuePair<Vector3, int>> GetEnumerator() {
-        return voxelMap.GetEnumerator();
+    private void SetDirty() {
+        hashCode = -1;
+        data = null;
+        dataString = null;
     }
 
-    IEnumerator IEnumerable.GetEnumerator() {
-        return voxelMap.GetEnumerator();
+    private void SaveToDataString() {
+        Debug.Log("Serializing voxel map");
+
+        MemoryStream buffer = new MemoryStream();
+        byte[] bytes;
+        data = "";
+        dataString = "";
+        StringBuilder debugBuffer = new StringBuilder();
+
+        using (DeflateStream stream = new DeflateStream(buffer, CompressionLevel.Optimal)) {
+            stream.WriteLong(voxelMap.Count);
+            foreach (var mapEntry in voxelMap) {
+                stream.WriteFloat(mapEntry.Key.x);
+                stream.WriteFloat(mapEntry.Key.y);
+                stream.WriteFloat(mapEntry.Key.z);
+
+                stream.WriteInt(mapEntry.Value);
+
+                if (DEBUG) {
+                    if (debugBuffer.Length > 0) {
+                        debugBuffer.Append(", ");
+                    }
+
+                    debugBuffer.Append($"{mapEntry.Key}:{mapEntry.Value}");
+                }
+            }
+        }
+
+        if (DEBUG) {
+            dataString = "[" + debugBuffer.ToString() + "]";
+        }
+        bytes = buffer.ToArray();
+        data = Convert.ToBase64String(bytes);
+    }
+
+    public void RestoreFromDataString() {
+        Debug.Log("Restoring voxel map");
+
+        voxelMap.Clear();
+        hashCode = -1;
+
+        byte[] bytes = Convert.FromBase64String(data);
+        MemoryStream input = new MemoryStream(bytes);
+        byte[] buffer = new byte[Mathf.Max(sizeof(float), sizeof(int))];
+        using (DeflateStream stream = new DeflateStream(input, CompressionMode.Decompress)) {
+            long voxelCount = stream.ReadLong();
+            while (voxelCount > 0) {
+                Vector3 position;
+                position.x = stream.ReadFloat();
+                position.y = stream.ReadFloat();
+                position.z = stream.ReadFloat();
+
+                voxelMap[position] = stream.ReadInt();
+                --voxelCount;
+            }
+        }
+    }
+
+    private class JsonHelper {
+        public string Data;
+        public string DataString;
     }
 }
+

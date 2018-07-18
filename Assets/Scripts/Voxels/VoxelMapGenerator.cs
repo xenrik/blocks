@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,7 +39,7 @@ public class VoxelMapGenerator : MonoBehaviour {
         Stopwatch timer = new Stopwatch();
         timer.Start();
 
-        VoxelMap voxelMap = ScriptableObject.CreateInstance<VoxelMap>();
+        VoxelMap voxelMap = new VoxelMap();
 
         Mesh perimiterMesh = Perimiter.GetComponent<MeshFilter>().sharedMesh;
         perimiterMesh = Perimiter.transform.ScaleMesh(perimiterMesh);
@@ -119,23 +120,23 @@ public class VoxelMapGenerator : MonoBehaviour {
             }
         }
 
-        TimeTakenText.text = string.Format("{0:F2}s", timer.ElapsedMilliseconds / 1000.0f);
-
         Debug.Log("Serializing Map...");
-        var task = Task.Factory.StartNew(() => {
-            voxelMap.BeforeSerialize();
+        var task = Task<string>.Factory.StartNew(() => {
+            return voxelMap.ToJson();
         });
 
         while (!task.IsCompleted) {
+            TimeTakenText.text = string.Format("{0:F2}s", timer.ElapsedMilliseconds / 1000.0f);
             yield return null;
         }
 
         Debug.Log("Saving...");
 
-        string uniquePath = AssetDatabase.GenerateUniqueAssetPath("Assets/voxelMap.asset");
-        AssetDatabase.CreateAsset(voxelMap, uniquePath);
-        AssetDatabase.SaveAssets();
+        string uniquePath = AssetDatabase.GenerateUniqueAssetPath("map.json");
+        string fullPath = Application.dataPath + "/" + uniquePath;
+        File.WriteAllText(fullPath, task.Result);
 
+        TimeTakenText.text = string.Format("{0:F2}s", timer.ElapsedMilliseconds / 1000.0f);
         Debug.Log("Finished...");
     }
 

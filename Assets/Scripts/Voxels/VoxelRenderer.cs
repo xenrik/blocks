@@ -6,9 +6,10 @@ using UnityEngine;
 public class VoxelRenderer : MonoBehaviour {
 
     /** The map we are rendering */
-    public VoxelMap VoxelMap;
+    public TextAsset VoxelMapData;
     public float VoxelScale;
 
+    private VoxelMap voxelMap;
     private int mapHashCode;
 
     //private MeshFilter meshFilter;
@@ -30,24 +31,16 @@ public class VoxelRenderer : MonoBehaviour {
         meshRenderer.enabled = false;
 
         halfScale = VoxelScale / 2.0f;
+
+        voxelMap = new VoxelMap();
+        voxelMap.FromJson(VoxelMapData.text);
     }
 	
 	// Update is called once per frame
 	void Update () {
-		if (VoxelMap == null) {
-            Debug.Log("No voxel map");
-            return;
-        } else if (VoxelMap.Count == 0) {
-            VoxelMap.AfterDeserialize();
-            if (VoxelMap.Count == 0) {
-                Debug.Log("No voxels on map after deserialize!");
-                return;
-            }
-        }
-
-        if (mapHashCode != VoxelMap.GetHashCode()) {
+        if (mapHashCode != voxelMap.GetHashCode()) {
             BuildMesh();
-            mapHashCode = VoxelMap.GetHashCode();
+            mapHashCode = voxelMap.GetHashCode();
         }
 	}
 
@@ -60,7 +53,7 @@ public class VoxelRenderer : MonoBehaviour {
         // 3 - Both (i.e. not needed)
 
         Dictionary<Vector3,Face> faces = new Dictionary<Vector3,Face>();
-        foreach (var entry in VoxelMap) {
+        foreach (var entry in voxelMap) {
             foreach (FaceDirection face in System.Enum.GetValues(typeof(FaceDirection))) {
                 PopulateFace(faces, entry.Key, face);
             }
