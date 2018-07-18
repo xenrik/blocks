@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using Stopwatch = System.Diagnostics.Stopwatch;
 
@@ -10,7 +12,8 @@ public class VoxelRenderer : MonoBehaviour {
     /** The map we are rendering */
     public TextAsset VoxelMapData;
     public float VoxelScale;
-    public ProgressMonitor ProgressMonitor;
+
+    public UIProgressMonitor ProgressMonitor;
 
     private VoxelMap voxelMap;
     private int mapHashCode;
@@ -48,6 +51,9 @@ public class VoxelRenderer : MonoBehaviour {
         Stopwatch timer = new Stopwatch();
         timer.Start();
 
+        Stopwatch yieldTimer = new Stopwatch();
+        yieldTimer.Start();
+
         Debug.Log("Building Mesh...");
 
         // Work out which faces we need. The int represents the direction of face:
@@ -55,18 +61,38 @@ public class VoxelRenderer : MonoBehaviour {
         // 2 - Counter Clockwise face
         // 3 - Both (i.e. not needed)
 
-        Dictionary<Vector3,Face> faces = new Dictionary<Vector3,Face>();
-        ProgressMonitor.SetTotal(voxelMap.Count);
+        ConcurrentDictionary<Vector3,Face> faces = new ConcurrentDictionary<Vector3,Face>();
+        ProgressMonitor.Begin("Building Mesh");
+        ProgressMonitor.BeginSubtask("Generating Faces", voxelMap.Count);
+        var directions = System.Enum.GetValues(typeof(FaceDirection));
+        /*
+        var options = new ParallelOptions();
+        options.MaxDegreeOfParallelism = 4;
+        var task = Task.Factory.StartNew(() => {
+            Parallel.ForEach(voxelMap, options,
+                (entry) => {
+                    ProgressMonitor.Worked(1);
+                    foreach (FaceDirection face in directions) {
+                        PopulateFace(faces, entry.Key, face);
+                    }
+                });
+        });
+           
+        while (!task.IsCompleted) {
+            yield return null;
+        } 
+        */
+
         foreach (var entry in voxelMap) {
-            ProgressMonitor.
-            if (NeedsYield(timer)) {
+            ProgressMonitor.Worked(1);
+            if (NeedsYield(yieldTimer)) {
                 yield return null;
             }
 
-            foreach (FaceDirection face in System.Enum.GetValues(typeof(FaceDirection))) {
+            foreach (FaceDirection face in directions) {
                 PopulateFace(faces, entry.Key, face);
             }
-        }
+        };
 
         // Build the mesh including and faces that have only clockwise or counter-clockwise
         // directions (not both)
@@ -75,9 +101,11 @@ public class VoxelRenderer : MonoBehaviour {
         var colors = new List<Color>();
         var triangles = new List<int>();
 
+        ProgressMonitor.BeginSubtask("Generating Mesh", faces.Count);
         int faceCount = 0;
         foreach (var face in faces.Values) {
-            if (NeedsYield(timer)) {
+            ProgressMonitor.Worked(1);
+            if (NeedsYield(yieldTimer)) {
                 yield return null;
             }
 
@@ -117,11 +145,12 @@ public class VoxelRenderer : MonoBehaviour {
 
         // We're done!
         meshRenderer.enabled = true;
+        ProgressMonitor.Finished();
 
-        Debug.Log("Done!");
+        Debug.Log($"Completed in {timer.ElapsedMilliseconds/1000.0f:F2}s");
     }
 
-    private void BuildMesh(Dictionary<Vector3, int> vertices, List<int> triangles, List<Color> colors) {
+    private void BuildMesh(IDictionary<Vector3, int> vertices, List<int> triangles, List<Color> colors) {
         Mesh mesh = new Mesh();
 
         var vertexList = vertices.ToList();
@@ -143,7 +172,7 @@ public class VoxelRenderer : MonoBehaviour {
         renderer.materials = meshRenderer.materials;
     }
 
-    private void PopulateFace(Dictionary<Vector3, Face> faces, Vector3 origin, FaceDirection dir) {
+    private void PopulateFace(IDictionary<Vector3, Face> faces, Vector3 origin, FaceDirection dir) {
         switch (dir) {
         case FaceDirection.TOP: origin.y -= halfScale; break;
         case FaceDirection.BOTTOM: origin.y += halfScale; break;
