@@ -27,8 +27,8 @@ public class VoxelMapGenerator : MonoBehaviour {
 
     private int generatedCount;
 
-    private BlockingCollection<Vector3> voxelsToGenerate = new BlockingCollection<Vector3>();
-    private BlockingCollection<Vector3> voxelsToCheck = new BlockingCollection<Vector3>();
+    private BlockingCollection<IntVector3> voxelsToGenerate = new BlockingCollection<IntVector3>();
+    private BlockingCollection<IntVector3> voxelsToCheck = new BlockingCollection<IntVector3>();
 
     // Use this for initialization
     void Start() {
@@ -54,7 +54,6 @@ public class VoxelMapGenerator : MonoBehaviour {
         generatedCount = 0;
         float colliderSpace = 0f;
         Vector3 colliderSize = new Vector3(scale - colliderSpace, scale - colliderSpace, scale - colliderSpace);
-        Vector3 voxelOrigin;
 
         Bounds bounds = perimiterMesh.bounds;
         int[] triangles = perimiterMesh.triangles;
@@ -66,20 +65,24 @@ public class VoxelMapGenerator : MonoBehaviour {
             }));
         }
 
-        Vector3 min = meshBounds.min;
-        min.x += scale / 2.0f; min.y += scale / 2.0f; min.z += scale / 2.0f;
+        Vector3 minFloat = meshBounds.min;
+        minFloat.x += scale / 2.0f; minFloat.y += scale / 2.0f; minFloat.z += scale / 2.0f;
+        IntVector3 min = new IntVector3(minFloat);
 
-        Vector3 max = meshBounds.max;
-        max.x -= scale / 2.0f; max.y -= scale / 2.0f; max.z -= scale / 2.0f;
+        Vector3 maxFloat = meshBounds.max;
+        maxFloat.x -= scale / 2.0f; maxFloat.y -= scale / 2.0f; maxFloat.z -= scale / 2.0f;
+        IntVector3 max = new IntVector3(maxFloat);
+
         Debug.Log($"Generating voxels to check (bounds: {min}-{max})...");
 
+        IntVector3 voxelOrigin;
         Stopwatch lastYield = new Stopwatch();
         lastYield.Start();
-        for (float x = min.x; x <= max.x; x += scale) {
+        for (int x = min.x; x <= max.x; x += scale) {
             voxelOrigin.x = x;
-            for (float y = min.y; y <= max.y; y += scale) {
+            for (int y = min.y; y <= max.y; y += scale) {
                 voxelOrigin.y = y;
-                for (float z = min.z; z <= max.z; z += scale) {
+                for (int z = min.z; z <= max.z; z += scale) {
                     voxelOrigin.z = z;
                     voxelsToCheck.Add(voxelOrigin);
 
@@ -153,9 +156,9 @@ public class VoxelMapGenerator : MonoBehaviour {
 
     private void CheckVoxels(Bounds bounds, int[] triangles, Vector3[] vertices) {
         while (true) {
-            Vector3 voxelOrigin;
+            IntVector3 voxelOrigin;
             if (voxelsToCheck.TryTake(out voxelOrigin, 100)) {
-                if (MeshExtensions.Contains(bounds, triangles, vertices, voxelOrigin)) {
+                if (MeshExtensions.Contains(bounds, triangles, vertices, voxelOrigin.AsVector3())) {
                     voxelsToGenerate.Add(voxelOrigin);
                 }
             } else if (voxelsToCheck.IsAddingCompleted) {

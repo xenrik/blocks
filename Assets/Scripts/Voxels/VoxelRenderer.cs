@@ -91,26 +91,26 @@ public class VoxelRenderer : MonoBehaviour {
                 yield return null;
             }
 
-            Vector3 origin = entry.Key;
+            IntVector3 origin = entry.Key;
 
             foreach (FaceDirection face in directions) {
                 switch (face) {
-                case FaceDirection.TOP: origin.y -= halfScale; break;
-                case FaceDirection.BOTTOM: origin.y += halfScale; break;
-                case FaceDirection.LEFT: origin.x -= halfScale; break;
-                case FaceDirection.RIGHT: origin.x += halfScale; break;
-                case FaceDirection.BACK: origin.z -= halfScale; break;
-                case FaceDirection.FRONT: origin.z += halfScale; break;
+                case FaceDirection.TOP: origin.y--; break;
+                case FaceDirection.BOTTOM: origin.y++; break;
+                case FaceDirection.LEFT: origin.x--; break;
+                case FaceDirection.RIGHT: origin.x++; break;
+                case FaceDirection.BACK: origin.z--; break;
+                case FaceDirection.FRONT: origin.z++; break;
                 }
 
-                min[0] = Mathf.RoundToInt(Mathf.Min(min[0], origin.x));
-                max[0] = Mathf.RoundToInt(Mathf.Max(max[0], origin.x));
+                min[0] = Mathf.Min(min[0], origin.x);
+                max[0] = Mathf.Max(max[0], origin.x);
 
-                min[1] = Mathf.RoundToInt(Mathf.Min(min[1], origin.y));
-                max[1] = Mathf.RoundToInt(Mathf.Max(max[1], origin.y));
+                min[1] = Mathf.Min(min[1], origin.y);
+                max[1] = Mathf.Max(max[1], origin.y);
 
-                min[2] = Mathf.RoundToInt(Mathf.Min(min[2], origin.z));
-                max[2] = Mathf.RoundToInt(Mathf.Max(max[2], origin.z));
+                min[2] = Mathf.Min(min[2], origin.z);
+                max[2] = Mathf.Max(max[2], origin.z);
             }
         }
 
@@ -124,21 +124,21 @@ public class VoxelRenderer : MonoBehaviour {
                 yield return null;
             }
 
-            Vector3 origin = entry.Key;
+            IntVector3 origin = entry.Key;
 
             foreach (FaceDirection face in directions) {
                 switch (face) {
-                case FaceDirection.TOP: origin.y -= halfScale; break;
-                case FaceDirection.BOTTOM: origin.y += halfScale; break;
-                case FaceDirection.LEFT: origin.x -= halfScale; break;
-                case FaceDirection.RIGHT: origin.x += halfScale; break;
-                case FaceDirection.BACK: origin.z -= halfScale; break;
-                case FaceDirection.FRONT: origin.z += halfScale; break;
+                case FaceDirection.TOP: origin.y--; break;
+                case FaceDirection.BOTTOM: origin.y++; break;
+                case FaceDirection.LEFT: origin.x--; break;
+                case FaceDirection.RIGHT: origin.x++; break;
+                case FaceDirection.BACK: origin.z--; break;
+                case FaceDirection.FRONT: origin.z++; break;
                 }
 
-                int x = Mathf.RoundToInt(origin.x) - min[0];
-                int y = Mathf.RoundToInt(origin.y) - min[1];
-                int z = Mathf.RoundToInt(origin.z) - min[2];
+                int x = origin.x - min[0];
+                int y = origin.y - min[1];
+                int z = origin.z - min[2];
 
                 if (x < 0 || y < 0 || z < 0 ||
                     x >= faces.GetLength(0) ||
@@ -161,21 +161,21 @@ public class VoxelRenderer : MonoBehaviour {
                 yield return null;
             }
 
-            Vector3 origin = entry.Key;
+            IntVector3 origin = entry.Key;
 
             foreach (FaceDirection dir in directions) {
                 switch (dir) {
-                case FaceDirection.TOP: origin.y -= halfScale; break;
-                case FaceDirection.BOTTOM: origin.y += halfScale; break;
-                case FaceDirection.LEFT: origin.x -= halfScale; break;
-                case FaceDirection.RIGHT: origin.x += halfScale; break;
-                case FaceDirection.BACK: origin.z -= halfScale; break;
-                case FaceDirection.FRONT: origin.z += halfScale; break;
+                case FaceDirection.TOP: origin.y--; break;
+                case FaceDirection.BOTTOM: origin.y++; break;
+                case FaceDirection.LEFT: origin.x--; break;
+                case FaceDirection.RIGHT: origin.x++; break;
+                case FaceDirection.BACK: origin.z--; break;
+                case FaceDirection.FRONT: origin.z++; break;
                 }
 
-                int x = Mathf.RoundToInt(origin.x) - min[0];
-                int y = Mathf.RoundToInt(origin.y) - min[1];
-                int z = Mathf.RoundToInt(origin.z) - min[2];
+                int x = origin.x - min[0];
+                int y = origin.y - min[1];
+                int z = origin.z - min[2];
 
                 if (faces[x, y, z]) {
                     Face face = new Face(origin, dir, halfScale);

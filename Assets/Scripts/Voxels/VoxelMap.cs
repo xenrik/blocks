@@ -11,45 +11,80 @@ using UnityEngine;
  * It only describes the id of each voxel at a given position, relative to the
  * origin of the object.
  */
-public class VoxelMap : IEnumerable<KeyValuePair<Vector3,int>> {
+public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
 
     // If true we populate the debug properties
-    private static readonly bool DEBUG = false;
+    private static readonly bool DEBUG = true;
 
-    public int this[Vector3 position] {
+    public int this[int x, int y, int z] {
         get {
-            int voxelId;
-            if (voxelMap.TryGetValue(position, out voxelId)) {
-                return voxelId;
-            } else {
-                return -1;
-            }
+            return array[(z * pageSize) + (y * columns) + x];
         }
 
         set {
-            SetDirty();
-            voxelMap[position] = value;
+            if (x > columns || y > rows || z > pages) {
+                resize(x, y, z);
+            }
+
+            array[(z * pageSize) + (y * columns) + x] = value;
         }
     }
 
     /** The number of voxels in the map */
-    public int Count {
+    public long Count {
         get {
-            return voxelMap.Count;
+            return count;
         }
     }
 
-    // The map of voxels for this object.
-    private Dictionary<Vector3, int> voxelMap = new Dictionary<Vector3, int>();
+    private int columns;
+    private int rows;
+    private int pages;
+
+    private int pageSize;
+
+    private long count;
+
+    // The map in full format (runtime)
+    private int[] array;
+
+    // The map in compressed format (storage)
+    private string data;
+
+    // The map in string format (debug)
+    private string dataString;
 
     // The hashcode for the map
     private int hashCode = -1;
 
-    // The map in binary format
-    private string data;
+    public VoxelMap() {
+    }
 
-    // The map in string format (only populated in debug mode)
-    private string dataString;
+    public VoxelMap(int maxX, int maxY, int maxZ) {
+        resize(maxX, maxY, maxZ);
+    }
+
+    private void resize(int x, int y, int z) {
+        int newColumns = Mathf.Max(x + 1, columns);
+        int newRows = Mathf.Max(y + 1, rows);
+        int newPages = Mathf.Max(z + 1, pages);
+        int newPageSize = newColumns * newRows;
+
+        int size = newColumns * newRows * newPages;
+        int[] newArray = new int[size];
+        if (array != null) {
+            for (int sz = 0; sz < pages; ++z) {
+                for (int sy = 0; sy < rows; ++y) {
+                    System.Buffer.BlockCopy(array, (sz * rows) + sy * columns, newArray, (sz * newRows) + sy * newColumns, columns);
+                }
+            }
+        }
+
+        columns = newColumns;
+        rows = newRows;
+        pages = newPages;
+        pageSize = newPageSize;
+    }
 
     /**
      * Returns this map in json format
@@ -86,7 +121,7 @@ public class VoxelMap : IEnumerable<KeyValuePair<Vector3,int>> {
         return hashCode;
     }
 
-    public IEnumerator<KeyValuePair<Vector3, int>> GetEnumerator() {
+    public IEnumerator<KeyValuePair<IntVector3, int>> GetEnumerator() {
         return voxelMap.GetEnumerator();
     }
 
@@ -122,9 +157,9 @@ public class VoxelMap : IEnumerable<KeyValuePair<Vector3,int>> {
         using (DeflateStream stream = new DeflateStream(buffer, CompressionLevel.Optimal)) {
             stream.WriteLong(voxelMap.Count);
             foreach (var mapEntry in voxelMap) {
-                stream.WriteFloat(mapEntry.Key.x);
-                stream.WriteFloat(mapEntry.Key.y);
-                stream.WriteFloat(mapEntry.Key.z);
+                stream.WriteInt(mapEntry.Key.x);
+                stream.WriteInt(mapEntry.Key.y);
+                stream.WriteInt(mapEntry.Key.z);
 
                 stream.WriteInt(mapEntry.Value);
 
@@ -157,10 +192,10 @@ public class VoxelMap : IEnumerable<KeyValuePair<Vector3,int>> {
         using (DeflateStream stream = new DeflateStream(input, CompressionMode.Decompress)) {
             long voxelCount = stream.ReadLong();
             while (voxelCount > 0) {
-                Vector3 position;
-                position.x = stream.ReadFloat();
-                position.y = stream.ReadFloat();
-                position.z = stream.ReadFloat();
+                IntVector3 position;
+                position.x = stream.ReadInt();
+                position.y = stream.ReadInt();
+                position.z = stream.ReadInt();
 
                 voxelMap[position] = stream.ReadInt();
                 --voxelCount;
@@ -172,5 +207,6 @@ public class VoxelMap : IEnumerable<KeyValuePair<Vector3,int>> {
         public string Data;
         public string DataString;
     }
+    
 }
 
