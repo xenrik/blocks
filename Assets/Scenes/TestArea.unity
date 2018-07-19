@@ -1443,6 +1443,7 @@ MonoBehaviour:
   ShowSubtaskUnits: 1
   ShowTotalPercentage: 1
   ShowSubtaskPercentage: 1
+  HideWhenInactive: 1
 --- !u!1 &1868496122
 GameObject:
   m_ObjectHideFlags: 0
