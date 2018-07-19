@@ -45,7 +45,6 @@ public class BlockPersister : MonoBehaviour {
         JsonUtility.FromJsonOverwrite(designJson, design);
 
         // Reset the root block
-        SelectionManager.Selection = null;
         foreach (Block block in GetComponentsInChildren<Block>()) {
             if (block.gameObject == gameObject) {
                 continue;

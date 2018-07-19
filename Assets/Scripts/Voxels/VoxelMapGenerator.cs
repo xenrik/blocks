@@ -158,7 +158,7 @@ public class VoxelMapGenerator : MonoBehaviour {
         while (true) {
             IntVector3 voxelOrigin;
             if (voxelsToCheck.TryTake(out voxelOrigin, 100)) {
-                if (MeshExtensions.Contains(bounds, triangles, vertices, voxelOrigin.AsVector3())) {
+                if (MeshExtensions.Contains(bounds, triangles, vertices, voxelOrigin)) {
                     voxelsToGenerate.Add(voxelOrigin);
                 }
             } else if (voxelsToCheck.IsAddingCompleted) {

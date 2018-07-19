@@ -1,0 +1,10 @@
+{
+    "name": "TestArea",
+    "references": [
+        "CommonScripts"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

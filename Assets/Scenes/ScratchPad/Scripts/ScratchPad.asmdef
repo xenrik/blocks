@@ -1,0 +1,11 @@
+{
+    "name": "ScratchPad",
+    "references": [
+        "CommonScripts",
+        "ThirdParty"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
