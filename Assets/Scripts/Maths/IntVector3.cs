@@ -47,6 +47,10 @@ public struct IntVector3 {
         return $"[{x},{y},{z}]";
     }
 
+    public static IntVector3 operator-(IntVector3 lhs, IntVector3 rhs) {
+        return new IntVector3(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
+    }
+
     public static implicit operator Vector3(IntVector3 v) {
         return new Vector3(v.x, v.y, v.z);
     }

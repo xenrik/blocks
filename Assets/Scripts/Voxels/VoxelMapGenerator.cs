@@ -107,7 +107,7 @@ public class VoxelMapGenerator : MonoBehaviour {
         while (true) {
             if (voxelsToGenerate.TryTake(out voxelOrigin)) {
                 destroyTotal = Mathf.Max(destroyTotal, voxelsToGenerate.Count);
-                voxelMap[voxelOrigin] = 1;
+                voxelMap[voxelOrigin - min] = 1;
 
                 ++voxelCount;
                 DestroyedCountText.text = voxelCount.ToString();
@@ -135,11 +135,9 @@ public class VoxelMapGenerator : MonoBehaviour {
 
         Debug.Log("Saving...");
 
-        /*
         string uniquePath = AssetDatabase.GenerateUniqueAssetPath("map.json");
         string fullPath = Application.dataPath + "/" + uniquePath;
         File.WriteAllText(fullPath, task.Result);
-        */
 
         TimeTakenText.text = string.Format("{0:F2}s", timer.ElapsedMilliseconds / 1000.0f);
         Debug.Log("Finished...");

@@ -13,13 +13,10 @@ using UnityEngine;
  */
 public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
 
-    // If true we populate the debug properties
-    private static readonly bool DEBUG = true;
-
     public int this[int x, int y, int z] {
         get {
-            int index = (z * pageSize) + (y * columns) + x;
-            if (x < 0 || y < 0 || z < 0 || index >= array.Length) {
+            int index = (z * pageSize) + (y * Columns) + x;
+            if (x < 0 || y < 0 || z < 0 || array == null || index >= array.Length) {
                 throw new IndexOutOfRangeException();
             } else {
                 return array[index];
@@ -31,11 +28,11 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
                 throw new IndexOutOfRangeException();
             }
 
-            if (x > columns || y > rows || z > pages) {
-                ResizeToFit(x, y, z);
+            if (x >= Columns || y >= Rows || z >= Pages) {
+                Expand(x, y, z);
             }
 
-            int index = (z * pageSize) + (y * columns) + x;
+            int index = (z * pageSize) + (y * Columns) + x;
             int oldValue = array[index];
             int newValue = Mathf.Max(0, value);
             if (oldValue != value) {
@@ -66,9 +63,43 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         get; private set;
     }
 
-    private int columns;
-    private int rows;
-    private int pages;
+    /** 
+     * The number of columns in the map (that is, the current maximum 'x'
+     * value
+     */
+    public int Columns {
+        get; private set;
+    }
+
+    /** 
+     * The number of rows in the map (that is, the current maximum 'y'
+     * value
+     */
+    public int Rows {
+        get; private set;
+    }
+
+    /** 
+     * The number of pages in the map (that is, the current maximum 'z'
+     * value
+     */
+    public int Pages {
+        get; private set;
+    }
+
+    /** 
+     * Returns the current size of the map. 
+     */
+    public int Size {
+        get {
+            return array != null ? array.Length : 0;
+        }
+    }
+
+    // If true we populate the debug properties
+    public bool DebugEnabled {
+        get; set;
+    }
 
     private int pageSize;
 
@@ -88,16 +119,19 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
     }
 
     public VoxelMap(int maxX, int maxY, int maxZ) {
-        ResizeToFit(maxX, maxY, maxZ);
+        Expand(maxX, maxY, maxZ);
     }
 
-    private void ResizeToFit(int x, int y, int z) {
-        int newColumns = Mathf.Max(x + 1, columns);
-        int newRows = Mathf.Max(y + 1, rows);
-        int newPages = Mathf.Max(z + 1, pages);
+    /**
+     * Expand the map to fix the voxel at the given position
+     */
+    public void Expand(int x, int y, int z) {
+        int newColumns = Mathf.Max(x + 1, Columns);
+        int newRows = Mathf.Max(y + 1, Rows);
+        int newPages = Mathf.Max(z + 1, Pages);
         int newPageSize = newColumns * newRows;
 
-        if (newColumns == columns && newRows == rows && newPages == pages) {
+        if (newColumns == Columns && newRows == Rows && newPages == Pages) {
             // Nothing to do
             return;
         }
@@ -105,20 +139,28 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         int size = newColumns * newRows * newPages;
         int[] newArray = new int[size];
         if (array != null) {
-            for (int sz = 0; sz < pages; ++sz) {
-                for (int sy = 0; sy < rows; ++sy) {
-                    Buffer.BlockCopy(array, (sz * pageSize) + sy * columns, newArray, (sz * newPages) + sy * newColumns, sizeof(int) * columns);
+            for (int sz = 0; sz < Pages; ++sz) {
+                for (int sy = 0; sy < Rows; ++sy) {
+                    int source = (sz * pageSize) + sy * Columns;
+                    int target = (sz * newPageSize) + sy * newColumns;
+
+                    Buffer.BlockCopy(array, sizeof(int) * source, newArray, sizeof(int) * target, sizeof(int) * Columns);
                 }
             }
         }
 
-        columns = newColumns;
-        rows = newRows;
-        pages = newPages;
+        Columns = newColumns;
+        Rows = newRows;
+        Pages = newPages;
         pageSize = newPageSize;
+        array = newArray;
     }
 
-    private void Compress() {
+    /**
+     * Compress the map. This will resize it to the bounds of the 
+     * last voxel which is non-zero
+     */
+    public void Compress() {
         if (array == null) {
             return;
         }
@@ -127,39 +169,48 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         int newRows = 0;
         int newPages = 0;
 
-        for (int z = 0; z < pages; ++z) {
-            for (int y = 0; y < rows; ++y) {
-                for (int x = 0; x < columns; ++x) {
-                    int index = (z * pageSize) + (y * columns) + x;
+        for (int z = 0; z < Pages; ++z) {
+            for (int y = 0; y < Rows; ++y) {
+                for (int x = 0; x < Columns; ++x) {
+                    int index = (z * pageSize) + (y * Columns) + x;
                     int value = array[index];
 
                     if (value != 0) {
-                        newColumns = Mathf.Max(newColumns, x);
-                        newRows = Mathf.Max(newRows, y);
-                        newPages = Mathf.Max(newPages, z);
+                        newColumns = Mathf.Max(newColumns, x + 1);
+                        newRows = Mathf.Max(newRows, y + 1);
+                        newPages = Mathf.Max(newPages, z + 1);
                     }
                 }
             }
         }
 
-        if (newColumns == columns && newRows == rows && newPages == pages) {
+        if (newColumns == Columns && newRows == Rows && newPages == Pages) {
             // Nothing to do
             return;
         }
 
         int newPageSize = newRows * newColumns;
         int size = newColumns * newRows * newPages;
-        int[] newArray = new int[size];
-        for (int sz = 0; sz < newPages; ++sz) {
-            for (int sy = 0; sy < newRows; ++sy) {
-                Buffer.BlockCopy(array, (sz * pageSize) + sy * columns, newArray, (sz * newPageSize) + sy * newColumns, sizeof(int) * columns);
+        int[] newArray;
+        if (size == 0) {
+            newArray = null;
+        } else {
+            newArray = new int[size];
+            for (int sz = 0; sz < newPages; ++sz) {
+                for (int sy = 0; sy < newRows; ++sy) {
+                    int source = (sz * pageSize) + sy * Columns;
+                    int target = (sz * newPageSize) + sy * newColumns;
+
+                    Buffer.BlockCopy(array, sizeof(int) * source, newArray, sizeof(int) * target, sizeof(int) * newColumns);
+                }
             }
         }
 
-        columns = newColumns;
-        rows = newRows;
-        pages = newPages;
+        Columns = newColumns;
+        Rows = newRows;
+        Pages = newPages;
         pageSize = newPageSize;
+        array = newArray;
     }
 
     /**
@@ -199,10 +250,10 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
     }
 
     public IEnumerator<KeyValuePair<IntVector3, int>> GetEnumerator() {
-        for (int z = 0; z < pages; ++z) {
-            for (int y = 0; y < rows; ++y) {
-                for (int x = 0; x < columns; ++x) {
-                    int index = (z * pageSize) + (y * columns) + x;
+        for (int z = 0; z < Pages; ++z) {
+            for (int y = 0; y < Rows; ++y) {
+                for (int x = 0; x < Columns; ++x) {
+                    int index = (z * pageSize) + (y * Columns) + x;
                     yield return new KeyValuePair<IntVector3,int>(new IntVector3(x, y, z), array[index]);
                 }
             }
@@ -215,10 +266,10 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
 
     private int CalculateHashCode() {
         int hash = 37;
-        for (int z = 0; z < pages; ++z) {
-            for (int y = 0; y < rows; ++y) {
-                for (int x = 0; x < columns; ++x) {
-                    int index = (z * pageSize) + (y * columns) + x;
+        for (int z = 0; z < Pages; ++z) {
+            for (int y = 0; y < Rows; ++y) {
+                for (int x = 0; x < Columns; ++x) {
+                    int index = (z * pageSize) + (y * Columns) + x;
                     int value = array[index];
 
                     hash += (index * value);
@@ -246,24 +297,24 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
 
         using (DeflateStream stream = new DeflateStream(buffer, CompressionLevel.Optimal)) {
             stream.WriteInt(array.Length);
-            stream.WriteInt(columns);
-            stream.WriteInt(rows);
-            stream.WriteInt(pages);
+            stream.WriteInt(Columns);
+            stream.WriteInt(Rows);
+            stream.WriteInt(Pages);
 
-            if (DEBUG) {
-                debugBuffer.Append($"{{columns:{columns},rows:{rows},pages:{pages},array:[");
+            if (DebugEnabled) {
+                debugBuffer.Append($"{{columns:{Columns},rows:{Rows},pages:{Pages},array:[");
             }
 
             foreach (int i in array) {
                 stream.WriteInt(i);
 
-                if (DEBUG) {
+                if (DebugEnabled) {
                     debugBuffer.Append(i);
                     debugBuffer.Append(",");
                 }
             }
 
-            if (DEBUG) {
+            if (DebugEnabled) {
                 debugBuffer.Remove(debugBuffer.Length - 1, 1);
                 debugBuffer.Append("]}");
             }
@@ -283,10 +334,10 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
             int arrayLength = stream.ReadInt();
 
             array = new int[arrayLength];
-            columns = stream.ReadInt();
-            rows = stream.ReadInt();
-            pages = stream.ReadInt();
-            pageSize = columns * rows;
+            Columns = stream.ReadInt();
+            Rows = stream.ReadInt();
+            Pages = stream.ReadInt();
+            pageSize = Columns * Rows;
             hashCode = -1;
             Count = 0;
 
