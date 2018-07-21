@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public struct IntVector3 {
+    public static readonly IntVector3 ZERO = new IntVector3(0, 0, 0);
     public int x;
     public int y;
     public int z;
@@ -23,6 +24,10 @@ public struct IntVector3 {
         x = Mathf.RoundToInt(vector3.x);
         y = Mathf.RoundToInt(vector3.y);
         z = Mathf.RoundToInt(vector3.z);
+    }
+
+    public IntVector3 Translate(int x, int y, int z) {
+        return new IntVector3(this.x + x, this.y + y, this.z + z);
     }
 
     public override int GetHashCode() {

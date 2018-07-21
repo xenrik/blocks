@@ -1191,8 +1191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2213b31119f6de14fae6cf23a7e9d1d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VoxelMapData: {fileID: 4900000, guid: dfaf4fe3556ef374d8e7300795d205a9, type: 3}
-  VoxelScale: 2
+  VoxelMapData: {fileID: 4900000, guid: 03e91d63a5112e74b8462ae06339142c, type: 3}
   ProgressMonitor: {fileID: 1504568491}
 --- !u!4 &1391795950
 Transform:

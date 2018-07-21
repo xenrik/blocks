@@ -40,6 +40,7 @@ public class VoxelMapGenerator : MonoBehaviour {
         timer.Start();
 
         VoxelMap voxelMap = new VoxelMap();
+        voxelMap.Scale = scale;
 
         Mesh perimiterMesh = Perimiter.GetComponent<MeshFilter>().sharedMesh;
         perimiterMesh = Perimiter.transform.ScaleMesh(perimiterMesh);
@@ -104,10 +105,16 @@ public class VoxelMapGenerator : MonoBehaviour {
         Debug.Log("Generating Voxels...");
         int loopCount = 0;
         float destroyTotal = totalCount;
+        IntVector3 scaledOrigin;
         while (true) {
             if (voxelsToGenerate.TryTake(out voxelOrigin)) {
                 destroyTotal = Mathf.Max(destroyTotal, voxelsToGenerate.Count);
-                voxelMap[voxelOrigin - min] = 1;
+                scaledOrigin = voxelOrigin - min;
+                scaledOrigin.x /= scale;
+                scaledOrigin.y /= scale;
+                scaledOrigin.z /= scale;
+
+                voxelMap[scaledOrigin] = 1;
 
                 ++voxelCount;
                 DestroyedCountText.text = voxelCount.ToString();

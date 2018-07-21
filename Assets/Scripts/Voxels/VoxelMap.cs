@@ -17,7 +17,7 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         get {
             int index = (z * pageSize) + (y * Columns) + x;
             if (x < 0 || y < 0 || z < 0 || array == null || index >= array.Length) {
-                throw new IndexOutOfRangeException();
+                throw new IndexOutOfRangeException($"Specified voxel ({x},{y},{z}) is out of bounds: ({Columns},{Rows},{Pages})");
             } else {
                 return array[index];
             }
@@ -94,6 +94,15 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         get {
             return array != null ? array.Length : 0;
         }
+    }
+
+    /**
+     * Sets the scale of this voxel map. Doesn't affect how the
+     * map is stored, or the values within the map, just information
+     * for when the map is rendered.
+     */
+    public float Scale {
+        get; set;
     }
 
     // If true we populate the debug properties
@@ -223,6 +232,11 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         }
 
         JsonHelper helper = new JsonHelper();
+        helper.Columns = Columns;
+        helper.Rows = Rows;
+        helper.Pages = Pages;
+        helper.Scale = Scale;
+
         helper.Data = data;
         helper.DataString = dataString;
 
@@ -235,8 +249,15 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
      */
     public void FromJson(string json) {
         JsonHelper helper = JsonUtility.FromJson<JsonHelper>(json);
+        Columns = helper.Columns;
+        Rows = helper.Rows;
+        Pages = helper.Pages;
+        Scale = helper.Scale;
+        pageSize = Columns * Rows;
+
         data = helper.Data;
         dataString = helper.DataString;
+        hashCode = -1;
 
         RestoreFromData();
     }
@@ -297,12 +318,8 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
 
         using (DeflateStream stream = new DeflateStream(buffer, CompressionLevel.Optimal)) {
             stream.WriteInt(array.Length);
-            stream.WriteInt(Columns);
-            stream.WriteInt(Rows);
-            stream.WriteInt(Pages);
-
             if (DebugEnabled) {
-                debugBuffer.Append($"{{columns:{Columns},rows:{Rows},pages:{Pages},array:[");
+                debugBuffer.Append("[");
             }
 
             foreach (int i in array) {
@@ -316,7 +333,7 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
 
             if (DebugEnabled) {
                 debugBuffer.Remove(debugBuffer.Length - 1, 1);
-                debugBuffer.Append("]}");
+                debugBuffer.Append("]");
             }
         }
 
@@ -334,11 +351,6 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
             int arrayLength = stream.ReadInt();
 
             array = new int[arrayLength];
-            Columns = stream.ReadInt();
-            Rows = stream.ReadInt();
-            Pages = stream.ReadInt();
-            pageSize = Columns * Rows;
-            hashCode = -1;
             Count = 0;
 
             for (int i = 0; i < arrayLength; ++i) {
@@ -351,6 +363,12 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
     }
 
     private class JsonHelper {
+        public int Columns;
+        public int Rows;
+        public int Pages;
+
+        public float Scale;
+
         public string Data;
         public string DataString;
     }
