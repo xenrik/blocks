@@ -59,21 +59,25 @@ public class VoxelRenderer : MonoBehaviour {
         // side.
 
         var directions = System.Enum.GetValues(typeof(FaceDirection));
-        ProgressMonitor.Begin("Building Mesh", voxelMap.Count);
+        ProgressMonitor.Begin("Building Mesh", voxelMap.Size);
 
         Dictionary<Vector3, int> vertices = new Dictionary<Vector3, int>();
         //List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
         List<Color> colours = new List<Color>();
         bool doBreak = false;
-        foreach (var voxel in voxelMap ) {
-            foreach (FaceDirection dir in directions) {
-                ProgressMonitor.Worked(1);
-                if (NeedsYield(yieldTimer)) {
-                    yield return null;
-                }
+        foreach (var voxel in voxelMap) {
+            ProgressMonitor.Worked(1);
+            if (NeedsYield(yieldTimer)) {
+                yield return null;
+            }
 
-                if (voxel.Value != 0 && GetAdjacentVoxel(voxelMap, voxel.Key, dir) == 0) {
+            if (voxel.Value == 0) {
+                continue;
+            }
+
+            foreach (FaceDirection dir in directions) {
+                if (GetAdjacentVoxel(voxelMap, voxel.Key, dir) == 0) {
                     // Render face
                     Face face = new Face(voxel.Key, dir, halfScale);
 

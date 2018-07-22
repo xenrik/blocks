@@ -81,7 +81,7 @@ public class UIProgressMonitor : MonoBehaviour, ProgressMonitor {
             taskText = taskName;
             if (totalWork != -1) {
                 if (ShowTotalUnits) {
-                    taskText += $" - {completedWork} / {totalWork}";
+                    taskText += $" - {completedWork:F} / {totalWork:F}";
                 }
                 if (ShowTotalPercentage) {
                     taskText += $" ({((completedWork / totalWork)*100):F2} %)";
@@ -97,7 +97,7 @@ public class UIProgressMonitor : MonoBehaviour, ProgressMonitor {
             subtaskText = subtaskName;
             if (subtaskWork != -1) {
                 if (ShowSubtaskUnits) {
-                    subtaskText += $" - {completedSubtaskWork} / {subtaskWork}";
+                    subtaskText += $" - {completedSubtaskWork:D} / {subtaskWork:D}";
                 }
                 if (ShowSubtaskPercentage) {
                     subtaskText += $" ({((completedSubtaskWork / subtaskWork)*100):F2} %)";
