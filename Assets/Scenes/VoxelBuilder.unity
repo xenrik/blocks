@@ -1011,7 +1011,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Perimiter: {fileID: 100000, guid: efe8d0dc884f11045a7247b54894db07, type: 3}
   Material: {fileID: 0}
-  Scale: 2
+  Scale: 1
   GenerateTotalText: {fileID: 957587455}
   GeneratedCountText: {fileID: 322066227}
   GeneratedPercentageText: {fileID: 1911440725}
