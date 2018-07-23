@@ -4,17 +4,29 @@ using UnityEngine;
 
 /**
  * Used to get instances of block definitions
- */ 
+ */
+[CreateAssetMenu(menuName = "Scriptable Objects/Blocks/Block Registry")]
 public class BlockRegistry : ScriptableObject {
     /** Lazy loaded on first access */
     private static BlockRegistry registry;
+
+    public BlockDefinition this[string blockType] {
+        get {
+            BlockDefinition result = null;
+            if (blockMap.TryGetValue(blockType, out result)) {
+                return result;
+            } else {
+                return null;
+            }
+        }
+    }
 
     [SerializeField]
     private BlockDefinition[] Blocks;
 
     private Dictionary<string, BlockDefinition> blockMap;
 
-    private static BlockRegistry GetRegistry() {
+    public static BlockRegistry GetRegistry() {
         if (registry == null) {
             registry = Resources.Load<BlockRegistry>("BlockRegistry");
             registry.Initialise();
@@ -37,12 +49,5 @@ public class BlockRegistry : ScriptableObject {
         foreach (var block in Blocks) {
             blockMap[block.BlockType] = block;
         }
-    }
-
-    public static BlockDefinition GetDefinition(string blockType) {
-        BlockDefinition result = null;
-        GetRegistry()?.blockMap.TryGetValue(blockType, out result);
-
-        return result;
     }
 }

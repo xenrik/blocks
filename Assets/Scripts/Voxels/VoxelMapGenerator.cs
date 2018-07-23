@@ -53,8 +53,6 @@ public class VoxelMapGenerator : MonoBehaviour {
 
         int voxelCount = 0;
         generatedCount = 0;
-        float colliderSpace = 0f;
-        Vector3 colliderSize = new Vector3(scale - colliderSpace, scale - colliderSpace, scale - colliderSpace);
 
         Bounds bounds = perimiterMesh.bounds;
         int[] triangles = perimiterMesh.triangles;

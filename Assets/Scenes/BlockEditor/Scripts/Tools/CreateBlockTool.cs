@@ -25,7 +25,7 @@ public class CreateBlockTool : BaseMoveBlockTool {
 
     protected override void DoActivate(Collider collider) {
         Block blockDetails = collider.GetComponent<Block>();
-        blockDef = BlockRegistry.GetDefinition(blockDetails.BlockType);
+        blockDef = BlockRegistry.GetRegistry()[blockDetails.BlockType];
 
         createFeedback = Instantiate(blockDef.EditorBlock);
         createFeedback.name = blockDetails.BlockType + "_Feedback";

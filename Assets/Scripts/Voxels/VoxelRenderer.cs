@@ -18,19 +18,11 @@ public class VoxelRenderer : MonoBehaviour {
     private int mapHashCode;
 
     private GameObject meshGameObject;
-    private MeshRenderer meshRenderer;
 
     private float halfScale;
 
     // Use this for initialization
     void Start() {
-        //meshGameObject = new GameObject("VoxelMesh");
-        //meshFilter = meshGameObject.AddComponent<MeshFilter>();
-        //meshRenderer = meshGameObject.AddComponent<MeshRenderer>();
-
-        meshRenderer = GetComponent<MeshRenderer>();
-        meshRenderer.enabled = false;
-
         voxelMap = new VoxelMap();
         voxelMap.FromJson(VoxelMapData.text);
 
@@ -61,11 +53,7 @@ public class VoxelRenderer : MonoBehaviour {
         var directions = System.Enum.GetValues(typeof(FaceDirection));
         ProgressMonitor.Begin("Building Mesh", voxelMap.Size);
 
-        Dictionary<Vector3, int> vertices = new Dictionary<Vector3, int>();
-        //List<Vector3> vertices = new List<Vector3>();
-        List<int> triangles = new List<int>();
-        List<Color> colours = new List<Color>();
-        bool doBreak = false;
+        Dictionary<int, VoxelMesh> meshes = new Dictionary<int, VoxelMesh>();
         foreach (var voxel in voxelMap) {
             ProgressMonitor.Worked(1);
             if (NeedsYield(yieldTimer)) {
@@ -76,67 +64,40 @@ public class VoxelRenderer : MonoBehaviour {
                 continue;
             }
 
+            VoxelMesh voxelMesh;
+            if (!meshes.TryGetValue(voxel.Value, out voxelMesh)) {
+                voxelMesh = new VoxelMesh();
+
+                VoxelDefinition voxelDef = VoxelRegistry.GetRegistry()[voxel.Value];
+                GameObject voxelPrefab = voxelDef.VoxelPrefab;
+                voxelMesh.Material = voxelPrefab.GetComponent<MeshRenderer>().sharedMaterial;
+
+                meshes[voxel.Value] = voxelMesh;
+            }
+
             foreach (FaceDirection dir in directions) {
                 if (GetAdjacentVoxel(voxelMap, voxel.Key, dir) == 0) {
                     // Render face
                     Face face = new Face(voxel.Key, dir, halfScale);
+                    voxelMesh.Add(face);
 
-                    int a = vertices.AddIfAbsent(face.a, vertices.Count);
-                    int b = vertices.AddIfAbsent(face.b, vertices.Count);
-                    int c = vertices.AddIfAbsent(face.c, vertices.Count);
-                    int d = vertices.AddIfAbsent(face.d, vertices.Count);
-
-                    //int a = vertices.Count; vertices.Add(face.a);
-                    //int b = vertices.Count; vertices.Add(face.b);
-                    //int c = vertices.Count; vertices.Add(face.c);
-                    //int d = vertices.Count; vertices.Add(face.d);
-
-                    if (colours.Count <= a) { colours.Add(face.color); }
-                    if (colours.Count <= b) { colours.Add(face.color); }
-                    if (colours.Count <= c) { colours.Add(face.color); }
-                    if (colours.Count <= d) { colours.Add(face.color); }
-
-                    triangles.Add(a); triangles.Add(b); triangles.Add(c);
-                    triangles.Add(b); triangles.Add(d); triangles.Add(c);
-
-                    if (vertices.Count > 65534) {
-                        Debug.Log("Vertex limit hit!");
-
-                        var vertexList = vertices.ToList();
-                        vertexList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
-                        BuildMesh(vertexList.Select(pair => pair.Key).ToList(), triangles, colours);
-                        //BuildMesh(vertices, triangles, colours);
-
-                        vertices.Clear();
-                        triangles.Clear();
-                        colours.Clear();
-
-                        //doBreak = true;
-                        //break;
+                    if (voxelMesh.Vertices.Count > 65500) {
+                        BuildMesh(voxelMesh);
+                        meshes.Remove(voxel.Value);
                     }
                 } // else don't need a face here
             }
-
-            if (doBreak) {
-                break;
-            }
         }
 
-        if (vertices.Count > 0) {
-            var vertexList = vertices.ToList();
-            vertexList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
-            BuildMesh(vertexList.Select(pair => pair.Key).ToList(), triangles, colours);
-            //BuildMesh(vertices, triangles, colours);
+        foreach (VoxelMesh voxelMesh in meshes.Values) {
+            BuildMesh(voxelMesh);
         }
 
         // We're done!
-        meshRenderer.enabled = true;
         ProgressMonitor.Finished();
 
         Debug.Log($"Completed in {timer.ElapsedMilliseconds / 1000.0f:F2}s");
     }
-
-    int count = 0;
 
     private int GetAdjacentVoxel(VoxelMap map, IntVector3 key, FaceDirection dir) {
         IntVector3 adjacentVoxel;
@@ -160,20 +121,17 @@ public class VoxelRenderer : MonoBehaviour {
             adjacentVoxel.z >= map.Pages) {
             return 0;
         } else {
-            if (count < 20) {
-                ++count;
-                Debug.Log($"{key} - {adjacentVoxel} - {dir} = {voxelMap[adjacentVoxel]}");
-            }
             return voxelMap[adjacentVoxel];
         }
     }
 
-    private void BuildMesh(List<Vector3> vertices, List<int> triangles, List<Color> colours) {
+    private void BuildMesh(VoxelMesh voxelMesh) {
         Mesh mesh = new Mesh();
 
-        mesh.SetVertices(vertices);
-        mesh.triangles = triangles.ToArray();
-        mesh.colors = colours.ToArray();
+        mesh.SetVertices(voxelMesh.GetVertices());
+        mesh.triangles = voxelMesh.Triangles.ToArray();
+        mesh.colors = voxelMesh.Colours.ToArray();
+        mesh.uv = voxelMesh.Uvs.ToArray();
         mesh.RecalculateBounds();
 
         GameObject meshGO = new GameObject();
@@ -185,7 +143,7 @@ public class VoxelRenderer : MonoBehaviour {
         filter.sharedMesh = mesh;
 
         MeshRenderer renderer = meshGO.AddComponent<MeshRenderer>();
-        renderer.materials = meshRenderer.materials;
+        renderer.material = voxelMesh.Material;
     }
     
     private bool NeedsYield(Stopwatch lastYeild) {
@@ -349,5 +307,39 @@ public class VoxelRenderer : MonoBehaviour {
         TOP, BOTTOM,
         LEFT, RIGHT,
         BACK, FRONT
+    }
+
+    private class VoxelMesh {
+        public Dictionary<Vector3, int> Vertices = new Dictionary<Vector3, int>();
+        public List<Vector2> Uvs = new List<Vector2>();
+        public List<int> Triangles = new List<int>();
+        public List<Color> Colours = new List<Color>();
+        public Material Material;
+
+        public void Add(Face face) {
+            int posA = Vertices.AddIfAbsent(face.a, Vertices.Count);
+            int posB = Vertices.AddIfAbsent(face.b, Vertices.Count);
+            int posC = Vertices.AddIfAbsent(face.c, Vertices.Count);
+            int posD = Vertices.AddIfAbsent(face.d, Vertices.Count);
+
+            if (posA >= Uvs.Count) { Uvs.Add(new Vector2(0, 0)); }
+            if (posB >= Uvs.Count) { Uvs.Add(new Vector2(1, 0)); }
+            if (posC >= Uvs.Count) { Uvs.Add(new Vector2(0, 1)); }
+            if (posD >= Uvs.Count) { Uvs.Add(new Vector2(1, 1)); }
+
+            if (posA >= Colours.Count) { Colours.Add(face.color); }
+            if (posB >= Colours.Count) { Colours.Add(face.color); }
+            if (posC >= Colours.Count) { Colours.Add(face.color); }
+            if (posD >= Colours.Count) { Colours.Add(face.color); }
+
+            Triangles.AddRange(new int[] { posA, posB, posC });
+            Triangles.AddRange(new int[] { posB, posD, posC });
+        }
+
+        public List<Vector3> GetVertices() {
+            var vertexList = Vertices.ToList();
+            vertexList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+            return vertexList.Select(pair => pair.Key).ToList();
+        }
     }
 }

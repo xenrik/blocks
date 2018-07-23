@@ -63,7 +63,7 @@ public class BlockPersister : MonoBehaviour {
                 continue;
             }
 
-            BlockDefinition blockDef = BlockRegistry.GetDefinition(blockData.Type);
+            BlockDefinition blockDef = BlockRegistry.GetRegistry()[blockData.Type];
             GameObject blockGo = EditorMode ? Instantiate(blockDef.EditorBlock) : Instantiate(blockDef.GameplayBlock);
             blockGo.name = blockData.Type + "_" + blockData.Id;
             blockGo.transform.parent = gameObject.transform;

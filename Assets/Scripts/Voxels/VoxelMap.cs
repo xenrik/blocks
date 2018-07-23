@@ -35,13 +35,13 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
             int index = (z * pageSize) + (y * Columns) + x;
             int oldValue = array[index];
             int newValue = Mathf.Max(0, value);
-            if (oldValue != value) {
+            if (oldValue != newValue) {
                 SetDirty();
-                array[index] = value;
+                array[index] = newValue;
 
                 if (oldValue == 0) {
                     ++Count;
-                } else if (value == 0) {
+                } else if (newValue == 0) {
                     --Count;
                 }
             }

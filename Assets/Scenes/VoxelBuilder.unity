@@ -864,9 +864,6 @@ GameObject:
   - component: {fileID: 454730166}
   - component: {fileID: 454730165}
   - component: {fileID: 454730164}
-  - component: {fileID: 454730168}
-  - component: {fileID: 454730169}
-  - component: {fileID: 454730170}
   - component: {fileID: 454730171}
   m_Layer: 0
   m_Name: Main Camera
@@ -938,66 +935,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &454730168
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 454730163}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9d3ba54f4dcf3446aa7ec71345da365, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PerimiterMesh: {fileID: 4300000, guid: efe8d0dc884f11045a7247b54894db07, type: 3}
-  GenerateTotalText: {fileID: 957587455}
-  GeneratedCountText: {fileID: 322066227}
-  GeneratedPercentageText: {fileID: 1911440725}
-  DestroyTotalText: {fileID: 1749819023}
-  DestroyedCountText: {fileID: 928763224}
-  DestroyedPercentageText: {fileID: 2060536699}
---- !u!114 &454730169
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 454730163}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c0ad78bcda074343a3d149acd3d7556, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Perimiter: {fileID: 556239425}
-  Material: {fileID: 0}
-  Scale: 2
-  GenerateTotalText: {fileID: 957587455}
-  GeneratedCountText: {fileID: 322066227}
-  GeneratedPercentageText: {fileID: 1911440725}
-  DestroyTotalText: {fileID: 1749819023}
-  DestroyedCountText: {fileID: 928763224}
-  DestroyedPercentageText: {fileID: 2060536699}
-  TimeTakenText: {fileID: 2095952269}
---- !u!114 &454730170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 454730163}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e7970db18280b441a3c34dd676fea6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Perimiter: {fileID: 556239425}
-  Material: {fileID: 0}
-  Scale: 2
-  GenerateTotalText: {fileID: 957587455}
-  GeneratedCountText: {fileID: 322066227}
-  GeneratedPercentageText: {fileID: 1911440725}
-  DestroyTotalText: {fileID: 1749819023}
-  DestroyedCountText: {fileID: 928763224}
-  DestroyedPercentageText: {fileID: 2060536699}
-  TimeTakenText: {fileID: 2095952269}
 --- !u!114 &454730171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1009,7 +946,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1928fe3d58c63de4190898279bf54282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Perimiter: {fileID: 100000, guid: efe8d0dc884f11045a7247b54894db07, type: 3}
+  Perimiter: {fileID: 97035480}
   Material: {fileID: 0}
   Scale: 1
   GenerateTotalText: {fileID: 957587455}
@@ -1200,10 +1137,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: efe8d0dc884f11045a7247b54894db07, type: 3}
   m_IsPrefabParent: 0
---- !u!1 &556239425 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 100000, guid: efe8d0dc884f11045a7247b54894db07, type: 3}
-  m_PrefabInternal: {fileID: 556239424}
 --- !u!1 &734641021
 GameObject:
   m_ObjectHideFlags: 0
