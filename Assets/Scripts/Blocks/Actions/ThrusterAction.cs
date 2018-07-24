@@ -11,9 +11,10 @@ public class ThrusterAction : MonoBehaviour {
 
     private GameObject root;
     private Rigidbody rootBody;
+    private ParticleSystem.EmissionModule emissionModule;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         PropertyHolder properties = GetComponent<PropertyHolder>();
         if (properties == null) {
             Debug.Log($"No properties: {gameObject}");
@@ -26,12 +27,18 @@ public class ThrusterAction : MonoBehaviour {
 
         root = gameObject.GetRoot();
         rootBody = root.GetComponent<Rigidbody>();
+        emissionModule = gameObject.GetComponentInChildren<ParticleSystem>().emission;
+        emissionModule.enabled = false;
 	}
 	
 	void FixedUpdate () {
 		if (Input.GetKey(keyName)) {
             Vector3 directedForce = transform.rotation * Force;
             rootBody.AddForceAtPosition(directedForce, transform.position);
+
+            emissionModule.enabled = true;
+        } else {
+            emissionModule.enabled = false;
         }
 	}
 }

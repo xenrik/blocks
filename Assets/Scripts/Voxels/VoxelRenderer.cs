@@ -26,7 +26,7 @@ public class VoxelRenderer : MonoBehaviour {
         voxelMap = new VoxelMap();
         voxelMap.FromJson(VoxelMapData.text);
 
-        halfScale = voxelMap.Scale / 2.0f;
+        halfScale = voxelMap.Scale; // / 2.0f;
     }
 
     // Update is called once per frame
