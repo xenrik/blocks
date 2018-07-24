@@ -946,9 +946,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1928fe3d58c63de4190898279bf54282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Perimiter: {fileID: 97035480}
+  Perimiter: {fileID: 556239425}
   Material: {fileID: 0}
-  Scale: 1
+  Scale: 2
+  DebugEnabled: 1
+  VoxelIds: 0100000002000000
   GenerateTotalText: {fileID: 957587455}
   GeneratedCountText: {fileID: 322066227}
   GeneratedPercentageText: {fileID: 1911440725}
@@ -1137,6 +1139,10 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: efe8d0dc884f11045a7247b54894db07, type: 3}
   m_IsPrefabParent: 0
+--- !u!1 &556239425 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100000, guid: efe8d0dc884f11045a7247b54894db07, type: 3}
+  m_PrefabInternal: {fileID: 556239424}
 --- !u!1 &734641021
 GameObject:
   m_ObjectHideFlags: 0

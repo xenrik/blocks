@@ -8,9 +8,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8598369a5837376429abf85e54e8ec9c, type: 3}
-  m_Name: VoxelRegistry
+  m_Script: {fileID: 11500000, guid: 3dd298509af79fe4fbd5134c0191976c, type: 3}
+  m_Name: Stone
   m_EditorClassIdentifier: 
-  Voxels:
-  - {fileID: 11400000, guid: 8c1d0c2bc1841d64bb3c128c2e5f205d, type: 2}
-  - {fileID: 11400000, guid: 8619a4a589fbc6f439757cd00bb1120b, type: 2}
+  VoxelId: 2
+  VoxelName: Stone
+  VoxelPrefab: {fileID: 100000, guid: 84a3f80ae5d670144a562f4220a661aa, type: 3}

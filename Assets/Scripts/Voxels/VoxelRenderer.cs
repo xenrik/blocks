@@ -70,7 +70,9 @@ public class VoxelRenderer : MonoBehaviour {
 
                 VoxelDefinition voxelDef = VoxelRegistry.GetRegistry()[voxel.Value];
                 GameObject voxelPrefab = voxelDef.VoxelPrefab;
+
                 voxelMesh.Material = voxelPrefab.GetComponent<MeshRenderer>().sharedMaterial;
+                voxelMesh.PrefabUvs = voxelPrefab.GetComponent<MeshFilter>().sharedMesh.uv;
 
                 meshes[voxel.Value] = voxelMesh;
             }
@@ -156,6 +158,26 @@ public class VoxelRenderer : MonoBehaviour {
     }
 
     private class Face {
+        private static readonly float THIRD   = 1.0f / 3.0f;
+        private static readonly float THIRD_2 = 2.0f / 3.0f;
+
+        private static readonly Vector2 UV_00 = new Vector2(0, 0);
+        private static readonly Vector2 UV_01 = new Vector2(0, THIRD);
+        private static readonly Vector2 UV_02 = new Vector2(0, THIRD_2);
+        private static readonly Vector2 UV_03 = new Vector2(0, 1);
+        private static readonly Vector2 UV_10 = new Vector2(THIRD, 0);
+        private static readonly Vector2 UV_11 = new Vector2(THIRD, THIRD);
+        private static readonly Vector2 UV_12 = new Vector2(THIRD, THIRD_2);
+        private static readonly Vector2 UV_13 = new Vector2(THIRD, 1);
+        private static readonly Vector2 UV_20 = new Vector2(THIRD_2, 0);
+        private static readonly Vector2 UV_21 = new Vector2(THIRD_2, THIRD);
+        private static readonly Vector2 UV_22 = new Vector2(THIRD_2, THIRD_2);
+        private static readonly Vector2 UV_23 = new Vector2(THIRD_2, 1);
+        private static readonly Vector2 UV_30 = new Vector2(1, 0);
+        private static readonly Vector2 UV_31 = new Vector2(1, THIRD);
+        private static readonly Vector2 UV_32 = new Vector2(1, THIRD_2);
+        private static readonly Vector2 UV_33 = new Vector2(1, 1);
+
         public int count;
 
         private float[] p = new float[5];
@@ -225,6 +247,74 @@ public class VoxelRenderer : MonoBehaviour {
                 case FaceDirection.BACK: return new Vector3(p[2], p[4], p[0]);
 
                 default: return Vector3.zero;
+                }
+            }
+        }
+
+        public Vector2 uva {
+            get {
+                switch (dir) {
+                case FaceDirection.TOP: return UV_22;
+                case FaceDirection.BOTTOM: return UV_10;
+
+                case FaceDirection.LEFT: return UV_20;
+                case FaceDirection.RIGHT: return UV_31;
+
+                case FaceDirection.FRONT: return UV_11;
+                case FaceDirection.BACK: return UV_13;
+
+                default: return Vector2.zero;
+                }
+            }
+        }
+
+        public Vector2 uvb {
+            get {
+                switch (dir) {
+                case FaceDirection.TOP: return UV_21;
+                case FaceDirection.BOTTOM: return UV_00;
+
+                case FaceDirection.LEFT: return UV_10;
+                case FaceDirection.RIGHT: return UV_30;
+
+                case FaceDirection.FRONT: return UV_01;
+                case FaceDirection.BACK: return UV_12;
+
+                default: return Vector2.zero;
+                }
+            }
+        }
+
+        public Vector2 uvc {
+            get {
+                switch (dir) {
+                case FaceDirection.TOP: return UV_12;
+                case FaceDirection.BOTTOM: return UV_11;
+
+                case FaceDirection.LEFT: return UV_21;
+                case FaceDirection.RIGHT: return UV_21;
+
+                case FaceDirection.FRONT: return UV_12;
+                case FaceDirection.BACK: return UV_03;
+
+                default: return Vector2.zero;
+                }
+            }
+        }
+
+        public Vector2 uvd {
+            get {
+                switch (dir) {
+                case FaceDirection.TOP: return UV_11;
+                case FaceDirection.BOTTOM: return UV_01;
+
+                case FaceDirection.LEFT: return UV_11;
+                case FaceDirection.RIGHT: return UV_20;
+
+                case FaceDirection.FRONT: return UV_02;
+                case FaceDirection.BACK: return UV_02;
+
+                default: return Vector2.zero;
                 }
             }
         }
@@ -309,9 +399,10 @@ public class VoxelRenderer : MonoBehaviour {
         BACK, FRONT
     }
 
-    private class VoxelMesh {
+    private class VoxelMeshWithDictionary {
         public Dictionary<Vector3, int> Vertices = new Dictionary<Vector3, int>();
         public List<Vector2> Uvs = new List<Vector2>();
+        public Vector2[] PrefabUvs;
         public List<int> Triangles = new List<int>();
         public List<Color> Colours = new List<Color>();
         public Material Material;
@@ -341,5 +432,41 @@ public class VoxelRenderer : MonoBehaviour {
             vertexList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
             return vertexList.Select(pair => pair.Key).ToList();
         }
+    }
+
+    private class VoxelMeshWithList {
+        public List<Vector3> Vertices = new List<Vector3>();
+        public List<Vector2> Uvs = new List<Vector2>();
+        public Vector2[] PrefabUvs;
+        public List<int> Triangles = new List<int>();
+        public List<Color> Colours = new List<Color>();
+        public Material Material;
+
+        public void Add(Face face) {
+            int posA = Vertices.Count; Vertices.Add(face.a);
+            int posB = Vertices.Count; Vertices.Add(face.b);
+            int posC = Vertices.Count; Vertices.Add(face.c);
+            int posD = Vertices.Count; Vertices.Add(face.d);
+
+            Uvs.Add(face.uva);
+            Uvs.Add(face.uvb);
+            Uvs.Add(face.uvc);
+            Uvs.Add(face.uvd);
+
+            Colours.Add(face.color);
+            Colours.Add(face.color);
+            Colours.Add(face.color);
+            Colours.Add(face.color);
+
+            Triangles.AddRange(new int[] { posA, posB, posC });
+            Triangles.AddRange(new int[] { posB, posD, posC });
+        }
+
+        public List<Vector3> GetVertices() {
+            return Vertices;
+        }
+    }
+
+    private class VoxelMesh : VoxelMeshWithList {
     }
 }

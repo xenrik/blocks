@@ -14,6 +14,9 @@ public class VoxelMapGenerator : MonoBehaviour {
     public GameObject Perimiter;
     public Material Material;
     public int Scale;
+    public bool DebugEnabled;
+
+    public int[] VoxelIds;
 
     public Text GenerateTotalText;
     public Text GeneratedCountText;
@@ -41,6 +44,7 @@ public class VoxelMapGenerator : MonoBehaviour {
 
         VoxelMap voxelMap = new VoxelMap();
         voxelMap.Scale = scale;
+        voxelMap.DebugEnabled = DebugEnabled;
 
         Mesh perimiterMesh = Perimiter.GetComponent<MeshFilter>().sharedMesh;
         perimiterMesh = Perimiter.transform.ScaleMesh(perimiterMesh);
@@ -112,7 +116,7 @@ public class VoxelMapGenerator : MonoBehaviour {
                 scaledOrigin.y /= scale;
                 scaledOrigin.z /= scale;
 
-                voxelMap[scaledOrigin] = 1;
+                voxelMap[scaledOrigin] = VoxelIds[Random.Range(0, VoxelIds.Length)];
 
                 ++voxelCount;
                 DestroyedCountText.text = voxelCount.ToString();
