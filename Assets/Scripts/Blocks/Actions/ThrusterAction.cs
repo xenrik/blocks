@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ThrusterAction : MonoBehaviour {
@@ -7,10 +8,12 @@ public class ThrusterAction : MonoBehaviour {
     public string FireThrusterPropertyName;
     public Vector3 Force;
 
-    private string keyName;
+    private string[] keyNames;
 
     private GameObject root;
     private Rigidbody rootBody;
+
+    private new ParticleSystem particleSystem;
     private ParticleSystem.EmissionModule emissionModule;
 
     // Use this for initialization
@@ -20,19 +23,26 @@ public class ThrusterAction : MonoBehaviour {
             Debug.Log($"No properties: {gameObject}");
         }
 
-        keyName = properties[FireThrusterPropertyName];
-        if (keyName == null) {
+        string keyNameProperty = properties[FireThrusterPropertyName];
+        if (keyNameProperty == null) {
             Debug.Log($"No key bound to fire thrusters: {gameObject}");
+        } else {
+            keyNames = keyNameProperty.Split(',');
         }
 
         root = gameObject.GetRoot();
         rootBody = root.GetComponent<Rigidbody>();
-        emissionModule = gameObject.GetComponentInChildren<ParticleSystem>().emission;
+
+        particleSystem = gameObject.GetComponentInChildren<ParticleSystem>();
+        emissionModule = particleSystem.emission;
         emissionModule.enabled = false;
+
+        particleSystem.Play();
 	}
 	
 	void FixedUpdate () {
-		if (Input.GetKey(keyName)) {
+        bool keyDown = keyNames.Any(keyName => Input.GetKey(keyName));
+		if (keyDown) {
             Vector3 directedForce = transform.rotation * Force;
             rootBody.AddForceAtPosition(directedForce, transform.position);
 
@@ -40,5 +50,5 @@ public class ThrusterAction : MonoBehaviour {
         } else {
             emissionModule.enabled = false;
         }
-	}
+    }
 }
