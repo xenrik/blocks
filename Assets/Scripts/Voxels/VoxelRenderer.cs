@@ -146,6 +146,8 @@ public class VoxelRenderer : MonoBehaviour {
 
         MeshRenderer renderer = meshGO.AddComponent<MeshRenderer>();
         renderer.material = voxelMesh.Material;
+
+        meshGO.AddComponent<MeshCollider>();
     }
     
     private bool NeedsYield(Stopwatch lastYeild) {

@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4808704635313034}
   - component: {fileID: 33741126729212784}
   - component: {fileID: 23007289181422888}
-  - component: {fileID: 95378917426936422}
   - component: {fileID: 64826708673961848}
   - component: {fileID: 114069189165249552}
   - component: {fileID: 114194585043881424}
@@ -69,7 +68,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1248839836955506}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.16, y: 21.81, z: -10.057553}
+  m_LocalPosition: {x: 32.371902, y: -5.1731186, z: -7.709398}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4233596060634782}
@@ -132,24 +131,6 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300000, guid: f992a2d94078fb541b2916480bdf610e, type: 3}
---- !u!95 &95378917426936422
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1248839836955506}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: f992a2d94078fb541b2916480bdf610e, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114069189165249552
 MonoBehaviour:
   m_ObjectHideFlags: 1
