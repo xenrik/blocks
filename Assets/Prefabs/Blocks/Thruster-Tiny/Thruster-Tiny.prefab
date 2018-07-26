@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 114069189165249552}
   - component: {fileID: 114194585043881424}
   m_Layer: 0
-  m_Name: Thruster-Small
+  m_Name: Thruster-Tiny
   m_TagString: Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -116,7 +116,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1248839836955506}
-  m_Mesh: {fileID: 4300000, guid: f992a2d94078fb541b2916480bdf610e, type: 3}
+  m_Mesh: {fileID: 4300000, guid: d83797b1bca31f94583ba766872e22ac, type: 3}
 --- !u!64 &64826708673961848
 MeshCollider:
   m_ObjectHideFlags: 1
@@ -130,7 +130,7 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 14
   m_SkinWidth: 0.01
-  m_Mesh: {fileID: 4300000, guid: f992a2d94078fb541b2916480bdf610e, type: 3}
+  m_Mesh: {fileID: 4300000, guid: d83797b1bca31f94583ba766872e22ac, type: 3}
 --- !u!114 &114069189165249552
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e514dbf74bb4e2c4a81e1d152186e148, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockType: Thruster-Small
+  blockType: Thruster-Tiny
 --- !u!114 &114194585043881424
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FireThrusterPropertyName: Thrust
-  Force: {x: 0, y: 0, z: 3}
+  Force: {x: 0, y: 0, z: 1}
 --- !u!198 &198231673587988510
 ParticleSystem:
   m_ObjectHideFlags: 1
