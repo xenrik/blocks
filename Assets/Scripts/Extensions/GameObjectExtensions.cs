@@ -60,5 +60,36 @@ public static class GameObjectExtensions {
             GameObject.Destroy(component);
         }
     }
+
+    /**
+     * Returns an array of the parents of this game object
+     */
+    public static GameObject[] GetParents(this GameObject gameObject) {
+        List<GameObject> parents = new List<GameObject>();
+        gameObject = gameObject.transform.parent.gameObject;
+        while (gameObject != null) {
+            parents.Add(gameObject);
+            gameObject = gameObject.transform.parent.gameObject;
+        }
+
+        return parents.ToArray();
+    }
+
+    /**
+     * Returns true if this game object shares ancestry (i.e. has a common parent)
+     * with another game object. 
+     */
+    public static bool SharesAncestry(this GameObject gameObject, GameObject other) {
+        HashSet<GameObject> myParents = new HashSet<GameObject>(GetParents(gameObject));
+        HashSet<GameObject> theirParents = new HashSet<GameObject>(GetParents(other));
+
+        foreach (GameObject theirParent in theirParents) {
+            if (myParents.Contains(theirParent)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 

@@ -21,6 +21,8 @@ public class ThrusterAction : MonoBehaviour {
         PropertyHolder properties = GetComponent<PropertyHolder>();
         if (properties == null) {
             Debug.Log($"No properties: {gameObject}");
+            this.enabled = false;
+            return;
         }
 
         string keyNameProperty = properties[FireThrusterPropertyName];
