@@ -105,6 +105,14 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         get; set;
     }
 
+    /**
+     * The offset the map should be positioned with respect to
+     * its game object when rendered
+     */
+    public IntVector3 Offset {
+        get; set;
+    }
+
     // If true we populate the debug properties
     public bool DebugEnabled {
         get; set;
@@ -236,6 +244,7 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         helper.Rows = Rows;
         helper.Pages = Pages;
         helper.Scale = Scale;
+        helper.Offset = new int[] { Offset.x, Offset.y, Offset.z };
 
         helper.Data = data;
         helper.DataString = dataString;
@@ -253,6 +262,10 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         Rows = helper.Rows;
         Pages = helper.Pages;
         Scale = helper.Scale;
+        if (helper.Offset?.Length == 3) {
+            Offset = new IntVector3(helper.Offset[0], helper.Offset[1], helper.Offset[2]);
+        }
+
         pageSize = Columns * Rows;
 
         data = helper.Data;
@@ -368,6 +381,7 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         public int Pages;
 
         public float Scale;
+        public int[] Offset;
 
         public string Data;
         public string DataString;

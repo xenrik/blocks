@@ -7,9 +7,11 @@ public class LaserAction : MonoBehaviour {
 
     public string FireLaserPropertyName;
     public GameObject LaserPrefab;
+    public GameObject CollisionPrefab;
 
     private string[] keyNames;
     private GameObject laser;
+    private GameObject collision;
 
     // Use this for initialization
     void Start () {
@@ -31,7 +33,7 @@ public class LaserAction : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
         bool keyDown = keyNames.Any(keyName => Input.GetKey(keyName));
         if (keyDown && laser == null) {
             FireLaser();
@@ -46,6 +48,9 @@ public class LaserAction : MonoBehaviour {
         laser = Instantiate(LaserPrefab);
         laser.transform.parent = gameObject.transform;
         laser.transform.localPosition = Vector3.zero;
+
+        collision = Instantiate(CollisionPrefab);
+        collision.SetActive(false);
     }
 
     private void StopLaser() {
@@ -59,24 +64,28 @@ public class LaserAction : MonoBehaviour {
             return;
         }
 
-        RaycastHit hit = new RaycastHit();
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-        Vector3 target;
-        if (Physics.Raycast(ray, out hit) && !hit.collider.gameObject.SharesAncestry(gameObject)) {
-            target = hit.collider.gameObject.transform.position;
-        } else {
-            Vector3 mousePosition = Input.mousePosition;
-            //Vector3 forward10 = laser.transform.position - (laser.transform.rotation * (Vector3.forward * 10));
-            mousePosition.z = 50;
+        Vector3 mousePosition = Input.mousePosition;
+        mousePosition.z = 50;
 
-            target = camera.ScreenToWorldPoint(mousePosition);
+        Vector3 target = camera.ScreenToWorldPoint(mousePosition);
+        RaycastHit hit = new RaycastHit();
+        Ray ray = new Ray(laser.transform.position, target - laser.transform.position);
+        if (Physics.Raycast(ray, out hit)) { 
+            target = hit.point;
+
+            collision.transform.position = target;
+            collision.SetActive(true);
+        } else {
+            collision.SetActive(false);
         }
 
         float length = (target - laser.transform.position).magnitude;
         Vector3 scale = laser.transform.localScale;
         scale.z = length;
-        laser.transform.localScale = scale;
 
+        laser.transform.localScale = scale;
         laser.transform.LookAt(target);
+
+
     }
 }

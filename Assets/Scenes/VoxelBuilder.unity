@@ -155,7 +155,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: b3362bf508bbfae4083fdc8f816bd3b4, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b3362bf508bbfae4083fdc8f816bd3b4, type: 3}
@@ -999,7 +999,7 @@ MonoBehaviour:
   Perimiter: {fileID: 73361625}
   Material: {fileID: 0}
   Scale: 1
-  DebugEnabled: 1
+  DebugEnabled: 0
   VoxelIds: 0100000002000000
   GenerateTotalText: {fileID: 957587455}
   GeneratedCountText: {fileID: 322066227}

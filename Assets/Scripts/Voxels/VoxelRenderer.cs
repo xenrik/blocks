@@ -26,7 +26,7 @@ public class VoxelRenderer : MonoBehaviour {
         voxelMap = new VoxelMap();
         voxelMap.FromJson(VoxelMapData.text);
 
-        halfScale = voxelMap.Scale; // / 2.0f;
+        halfScale = voxelMap.Scale / 2.0f;
     }
 
     // Update is called once per frame
@@ -84,7 +84,7 @@ public class VoxelRenderer : MonoBehaviour {
                     voxelMesh.Add(face);
 
                     if (voxelMesh.Vertices.Count > 65500) {
-                        BuildMesh(voxelMesh);
+                        BuildMesh(voxelMesh, voxelMap.Offset);
                         meshes.Remove(voxel.Value);
                     }
                 } // else don't need a face here
@@ -92,7 +92,7 @@ public class VoxelRenderer : MonoBehaviour {
         }
 
         foreach (VoxelMesh voxelMesh in meshes.Values) {
-            BuildMesh(voxelMesh);
+            BuildMesh(voxelMesh, voxelMap.Offset);
         }
 
         // We're done!
@@ -127,7 +127,7 @@ public class VoxelRenderer : MonoBehaviour {
         }
     }
 
-    private void BuildMesh(VoxelMesh voxelMesh) {
+    private void BuildMesh(VoxelMesh voxelMesh, Vector3 offset) {
         Mesh mesh = new Mesh();
 
         mesh.SetVertices(voxelMesh.GetVertices());
@@ -138,7 +138,7 @@ public class VoxelRenderer : MonoBehaviour {
 
         GameObject meshGO = new GameObject();
         meshGO.transform.parent = gameObject.transform;
-        meshGO.transform.localPosition = Vector3.zero;
+        meshGO.transform.localPosition = offset;
         meshGO.transform.localRotation = Quaternion.identity;
 
         MeshFilter filter = meshGO.AddComponent<MeshFilter>();

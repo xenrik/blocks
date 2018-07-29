@@ -66,10 +66,10 @@ public static class GameObjectExtensions {
      */
     public static GameObject[] GetParents(this GameObject gameObject) {
         List<GameObject> parents = new List<GameObject>();
-        gameObject = gameObject.transform.parent.gameObject;
-        while (gameObject != null) {
-            parents.Add(gameObject);
-            gameObject = gameObject.transform.parent.gameObject;
+        Transform transform = gameObject.transform.parent;
+        while (transform != null) {
+            parents.Add(transform.gameObject);
+            transform = transform.parent;
         }
 
         return parents.ToArray();

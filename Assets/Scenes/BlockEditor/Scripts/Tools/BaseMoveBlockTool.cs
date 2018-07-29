@@ -183,7 +183,7 @@ public abstract class BaseMoveBlockTool : MonoBehaviour, Tool {
     private void UpdateCurrentBlock(Camera currentCamera) {
         // Get the mouse position and initialise the rotation
         Vector3 mousePosition = Input.mousePosition;
-        mousePosition.z = 10;
+        mousePosition.z = 5;
 
         // Move the dragged block for the next frame
         dragCollisionBlock.transform.position = currentCamera.ScreenToWorldPoint(mousePosition);

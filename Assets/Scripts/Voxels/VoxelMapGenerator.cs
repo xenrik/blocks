@@ -42,10 +42,6 @@ public class VoxelMapGenerator : MonoBehaviour {
         Stopwatch timer = new Stopwatch();
         timer.Start();
 
-        VoxelMap voxelMap = new VoxelMap();
-        voxelMap.Scale = scale;
-        voxelMap.DebugEnabled = DebugEnabled;
-
         Mesh perimiterMesh = Perimiter.GetComponent<MeshFilter>().sharedMesh;
         perimiterMesh = Perimiter.transform.ScaleMesh(perimiterMesh);
 
@@ -105,6 +101,11 @@ public class VoxelMapGenerator : MonoBehaviour {
         GeneratedPercentageText.text = string.Format("{0:F2} %", Mathf.Min(100, (generatedCount / totalCount) * 100));
 
         Debug.Log("Generating Voxels...");
+        VoxelMap voxelMap = new VoxelMap();
+        voxelMap.Scale = scale;
+        voxelMap.DebugEnabled = DebugEnabled;
+        voxelMap.Offset = min;
+
         int loopCount = 0;
         float destroyTotal = totalCount;
         IntVector3 scaledOrigin;
