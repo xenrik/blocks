@@ -56,6 +56,32 @@ public class LaserAction : MonoBehaviour {
     private void StopLaser() {
         Destroy(laser);
         laser = null;
+
+        StartCoroutine(DestroyParticles(collision));
+        collision = null;
+    }
+
+    private IEnumerator DestroyParticles(GameObject collision) {
+        ParticleSystem[] particles = collision.GetComponentsInChildren<ParticleSystem>();
+        foreach (var ps in particles) {
+            var emission = ps.emission;
+            emission.enabled = false;
+        }
+
+        bool loop = true;
+        while (loop) {
+            loop = false;
+            foreach (var ps in particles) {
+                if (ps.particleCount > 0) {
+                    loop = true;
+                    break;
+                }
+            }
+
+            yield return null;
+        }
+
+        Destroy(collision);
     }
 
     private void UpdateLaser() {
@@ -68,24 +94,46 @@ public class LaserAction : MonoBehaviour {
         mousePosition.z = 50;
 
         Vector3 target = camera.ScreenToWorldPoint(mousePosition);
-        RaycastHit hit = new RaycastHit();
-        Ray ray = new Ray(laser.transform.position, target - laser.transform.position);
-        if (Physics.Raycast(ray, out hit)) { 
-            target = hit.point;
-
-            collision.transform.position = target;
-            collision.SetActive(true);
-        } else {
-            collision.SetActive(false);
+        Vector3 delta = target - laser.transform.position;
+        if (delta.magnitude > 30) {
+            delta = delta.normalized * 30.0f;
+            target = laser.transform.position + delta;
         }
 
-        float length = (target - laser.transform.position).magnitude;
+        // First check if the mouse pointer is over a mesh
+        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+        bool hit = false;
+        if (Physics.Raycast(ray, out hitInfo, 50.0f)) {
+            target = hitInfo.point;
+
+            // Protect a second ray to see if the point we are aiming at would collide first
+            ray = new Ray(laser.transform.position, target - laser.transform.position);
+            if (Physics.Raycast(ray, out hitInfo, 50.0f)) {
+                target = hitInfo.point;
+            }
+
+            hit = true;
+        } 
+
+        if (!hit) {
+            // If not protect a ray from the origin to the target
+            ray = new Ray(laser.transform.position, delta);
+            if (Physics.Raycast(ray, out hitInfo, delta.magnitude)) {
+                target = hitInfo.point;
+                hit = true;
+            }
+        }
+
+        delta = target - laser.transform.position;
         Vector3 scale = laser.transform.localScale;
-        scale.z = length;
+        scale.z = delta.magnitude;
 
         laser.transform.localScale = scale;
         laser.transform.LookAt(target);
 
-
+        delta = delta.normalized * (delta.magnitude - 0.1f);
+        collision.SetActive(hit);
+        collision.transform.position = laser.transform.position + delta;
     }
 }

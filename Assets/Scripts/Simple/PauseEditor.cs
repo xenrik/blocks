@@ -5,7 +5,7 @@ using UnityEditor;
 
 public class PauseEditor : MonoBehaviour {
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKey(KeyCode.Space) && Input.GetKey(KeyCode.LeftControl)) {
             Debug.Break();
         }
 	}
