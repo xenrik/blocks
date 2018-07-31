@@ -50,7 +50,11 @@ public class LaserAction : MonoBehaviour {
         laser.transform.localPosition = Vector3.zero;
 
         collision = Instantiate(CollisionPrefab);
-        collision.SetActive(false);
+        ParticleSystem[] particles = collision.GetComponentsInChildren<ParticleSystem>();
+        foreach (var ps in particles) {
+            var emission = ps.emission;
+            emission.enabled = false;
+        }
     }
 
     private void StopLaser() {
@@ -133,7 +137,12 @@ public class LaserAction : MonoBehaviour {
         laser.transform.LookAt(target);
 
         delta = delta.normalized * (delta.magnitude - 0.1f);
-        collision.SetActive(hit);
+
         collision.transform.position = laser.transform.position + delta;
+        ParticleSystem[] particles = collision.GetComponentsInChildren<ParticleSystem>();
+        foreach (var ps in particles) {
+            var emission = ps.emission;
+            emission.enabled = hit;
+        }
     }
 }

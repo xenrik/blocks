@@ -139,6 +139,78 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         Expand(maxX, maxY, maxZ);
     }
 
+    private int sign(int n) {
+        return n >= 0 ? 1 : -1;
+    }
+
+    private int distance(int x, int y) {
+        return (int)Mathf.Sqrt(x * x + y * y);
+    }
+
+    /**
+     * Find the nearest voxel to the given point (in local space)
+     * that is non-zero. Returns true if a non-zero voxel is found.
+     */
+    public bool FindNearestVoxel(Vector3 point, out IntVector3 voxel) {
+        int x = Mathf.Clamp(Mathf.RoundToInt(point.x / Scale), 0, Columns);
+        int y = Mathf.Clamp(Mathf.RoundToInt(point.y / Scale), 0, Rows);
+        int z = Mathf.Clamp(Mathf.RoundToInt(point.z / Scale), 0, Pages);
+        
+        // Check the given point first
+        int index = (z * pageSize) + (y * Columns) + x;
+        if (array[index] != 0) {
+            voxel = new IntVector3(x, y, z);
+            return true;
+        }
+
+        // Otherwise move out from the given point in expanding
+        // spheres until we find an occupied voxel
+        int radius = 1;
+        while (true) {
+            // For the current radius, find the ring we need to iterate on the
+            // surface of the 'sphere'
+
+        }
+        for (int dz = 0; dz < Pages; ++dz) {
+            if (z + dz < Pages || z - dz >= 0) {
+                int radius = 1;
+                while (true) {
+                    int distance
+                }
+            }
+        }
+
+        int radius = 1;
+        int dx, dy, nx, ny;
+        for (int dz = 0; dz < Pages; ++dz) {
+            dx = radius;
+            dy = 0;
+
+            while (dx != radius || dy != radius) {
+                index = ((z + dz) * pageSize) + ((y + dy) * Columns) + (x + dx);
+                if (index < array.Length && array[index] != 0) {
+                    voxel = new IntVector3(x + dx, y + dy, z + dz);
+                    return true;
+                }
+
+                nx = -sign(dy);
+                ny = sign(dx);
+
+                if (nx != 0 && distance(dx + nx, dy) == radius) {
+                    dx += nx;
+                } else if (ny != 0 && distance(dx, dy + ny) == radius) {
+                    dy += ny;
+                } else {
+                    dx += nx;
+                    dy += ny;
+                }
+            }
+        }
+
+        voxel = IntVector3.ZERO;
+        return false;
+    }
+
     /**
      * Expand the map to fix the voxel at the given position
      */
@@ -321,8 +393,6 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
     }
 
     private void BuildData() {
-        Debug.Log("Serializing voxel map");
-
         MemoryStream buffer = new MemoryStream();
         byte[] bytes;
         data = "";
@@ -355,9 +425,7 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         dataString = debugBuffer.ToString();
     }
 
-    public void RestoreFromData() {
-        Debug.Log("Restoring voxel map");
-
+    private void RestoreFromData() {
         byte[] bytes = Convert.FromBase64String(data);
         MemoryStream input = new MemoryStream(bytes);
         using (DeflateStream stream = new DeflateStream(input, CompressionMode.Decompress)) {
