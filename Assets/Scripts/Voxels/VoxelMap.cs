@@ -15,10 +15,11 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
 
     public int this[int x, int y, int z] {
         get {
-            int index = (z * pageSize) + (y * Columns) + x;
-            if (x < 0 || y < 0 || z < 0 || array == null || index >= array.Length) {
+            if (x < 0 || y < 0 || z < 0 || 
+                x >= Columns || y >= Rows || z >= Pages) {
                 throw new IndexOutOfRangeException($"Specified voxel ({x},{y},{z}) is out of bounds: ({Columns},{Rows},{Pages})");
             } else {
+                int index = (z * pageSize) + (y * Columns) + x;
                 return array[index];
             }
         }
@@ -133,18 +134,24 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
     private int hashCode = -1;
 
     public VoxelMap() {
+        Scale = 1;
+        Offset = IntVector3.ZERO;
     }
 
-    public VoxelMap(int maxX, int maxY, int maxZ) {
+    public VoxelMap(int maxX, int maxY, int maxZ) : this() {
         Expand(maxX, maxY, maxZ);
     }
 
     private int sign(int n) {
-        return n >= 0 ? 1 : -1;
+        return n < 0 ? -1 :
+            n > 0 ? 1 :
+            0;
     }
 
     private int distance(int x, int y) {
-        return (int)Mathf.Sqrt(x * x + y * y);
+        return x == 0 ? y :
+            y == 0 ? x :
+            (int)Mathf.Sqrt(x * x + y * y);
     }
 
     /**
@@ -165,46 +172,61 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
 
         // Otherwise move out from the given point in expanding
         // spheres until we find an occupied voxel
-        int radius = 1;
-        while (true) {
+        int sphereRadius = 1;
+        while (sphereRadius < Pages) {
             // For the current radius, find the ring we need to iterate on the
             // surface of the 'sphere'
 
-        }
-        for (int dz = 0; dz < Pages; ++dz) {
-            if (z + dz < Pages || z - dz >= 0) {
-                int radius = 1;
-                while (true) {
-                    int distance
+            // First we iterate through all possible z positions on this radius
+            for (int dz = -sphereRadius; dz <= sphereRadius; ++dz) {
+                int cz = dz + z;
+                if (cz < 0 || cz >= Pages) {
+                    continue;
+                }
+
+                // For each 'z', find the largest x that is on the sphere radius
+                // This will be the radius of the ring along the z axis we
+                // need to check
+                int ringRadius = int.MaxValue;
+                for (int tx = 1; tx <= sphereRadius; ++tx) {
+                    if (distance(tx, dz) == sphereRadius) {
+                        ringRadius = tx;
+                        break;
+                    }
+                }
+
+                // We have a ring for this z, run through it looking for voxels
+                if (ringRadius != int.MaxValue) {
+                    int dx = ringRadius;
+                    int dy = 0;
+
+                    do {
+                        int cx = x + dx;
+                        int cy = y + dy;
+                        if (cx >= 0 && cx < Columns && cy >= 0 && cy < Rows) {
+                            index = ((z + dz) * pageSize) + ((y + dy) * Columns) + (x + dx);
+                            if (array[index] != 0) {
+                                voxel = new IntVector3(x + dx, y + dy, z + dz);
+                                return true;
+                            }
+                        }
+
+                        int nx = -sign(dy);
+                        int ny = sign(dx);
+
+                        if (nx != 0 && distance(dx + nx, dy) == ringRadius) {
+                            dx += nx;
+                        } else if (ny != 0 && distance(dx, dy + ny) == ringRadius) {
+                            dy += ny;
+                        } else {
+                            dx += nx;
+                            dy += ny;
+                        }
+                    } while (dx != ringRadius || dy != 0);
                 }
             }
-        }
 
-        int radius = 1;
-        int dx, dy, nx, ny;
-        for (int dz = 0; dz < Pages; ++dz) {
-            dx = radius;
-            dy = 0;
-
-            while (dx != radius || dy != radius) {
-                index = ((z + dz) * pageSize) + ((y + dy) * Columns) + (x + dx);
-                if (index < array.Length && array[index] != 0) {
-                    voxel = new IntVector3(x + dx, y + dy, z + dz);
-                    return true;
-                }
-
-                nx = -sign(dy);
-                ny = sign(dx);
-
-                if (nx != 0 && distance(dx + nx, dy) == radius) {
-                    dx += nx;
-                } else if (ny != 0 && distance(dx, dy + ny) == radius) {
-                    dy += ny;
-                } else {
-                    dx += nx;
-                    dy += ny;
-                }
-            }
+            ++sphereRadius;
         }
 
         voxel = IntVector3.ZERO;

@@ -108,6 +108,7 @@ public class LaserAction : MonoBehaviour {
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         bool hit = false;
+        VoxelRenderer voxelRenderer = null;
         if (Physics.Raycast(ray, out hitInfo, 50.0f)) {
             target = hitInfo.point;
 
@@ -117,6 +118,7 @@ public class LaserAction : MonoBehaviour {
                 target = hitInfo.point;
             }
 
+            voxelRenderer = hitInfo.collider.gameObject.GetComponentInParent<VoxelRenderer>();
             hit = true;
         } 
 
@@ -126,6 +128,14 @@ public class LaserAction : MonoBehaviour {
             if (Physics.Raycast(ray, out hitInfo, delta.magnitude)) {
                 target = hitInfo.point;
                 hit = true;
+            }
+        } else if (voxelRenderer != null) {
+            IntVector3 nearestVoxel;
+            Vector3 localPosition = target - voxelRenderer.gameObject.transform.position;
+            if (voxelRenderer.VoxelMap.FindNearestVoxel(localPosition, out nearestVoxel)) {
+                Debug.Log($"Nearest voxel: {nearestVoxel}");
+            } else {
+                Debug.Log("No voxel found?");
             }
         }
 

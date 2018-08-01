@@ -212,4 +212,31 @@ public class VoxelMapTest {
 
         Assert.AreEqual(0, map[9, 9, 9]);
     }
+
+    [Test]
+    public void TestFindNearestVoxel_Exact() {
+        map[2, 2, 2] = 1;
+
+        IntVector3 voxel;
+        Assert.IsTrue(map.FindNearestVoxel(new Vector3(2, 2, 2), out voxel));
+        Assert.AreEqual(new IntVector3(2, 2, 2), voxel);
+    }
+
+    [Test]
+    public void TestFindNearestVoxel_NotFound() {
+        map.Expand(2, 2, 2);
+
+        IntVector3 voxel;
+        Assert.IsFalse(map.FindNearestVoxel(new Vector3(2, 2, 2), out voxel));
+    }
+
+    [Test]
+    public void TestFindNearestVoxel_Nearest() {
+        map[3, 3, 3] = 1;
+        map[0, 0, 0] = 2;
+
+        IntVector3 voxel;
+        Assert.IsTrue(map.FindNearestVoxel(new Vector3(2, 2, 2), out voxel));
+        Assert.AreEqual(new IntVector3(3, 3, 3), voxel);
+    }
 }

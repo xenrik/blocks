@@ -14,7 +14,10 @@ public class VoxelRenderer : MonoBehaviour {
 
     public UIProgressMonitor ProgressMonitor;
 
-    private VoxelMap voxelMap;
+    public VoxelMap VoxelMap {
+        get; private set;
+    }
+
     private int mapHashCode;
 
     private GameObject meshGameObject;
@@ -23,16 +26,16 @@ public class VoxelRenderer : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        voxelMap = new VoxelMap();
-        voxelMap.FromJson(VoxelMapData.text);
+        VoxelMap = new VoxelMap();
+        VoxelMap.FromJson(VoxelMapData.text);
 
-        halfScale = voxelMap.Scale / 2.0f;
+        halfScale = VoxelMap.Scale / 2.0f;
     }
 
     // Update is called once per frame
     void Update() {
-        if (mapHashCode != voxelMap.GetHashCode()) {
-            mapHashCode = voxelMap.GetHashCode();
+        if (mapHashCode != VoxelMap.GetHashCode()) {
+            mapHashCode = VoxelMap.GetHashCode();
 
             StartCoroutine(BuildMesh());
         }
@@ -51,10 +54,10 @@ public class VoxelRenderer : MonoBehaviour {
         // side.
 
         var directions = System.Enum.GetValues(typeof(FaceDirection));
-        ProgressMonitor.Begin("Building Mesh", voxelMap.Size);
+        ProgressMonitor.Begin("Building Mesh", VoxelMap.Size);
 
         Dictionary<int, VoxelMesh> meshes = new Dictionary<int, VoxelMesh>();
-        foreach (var voxel in voxelMap) {
+        foreach (var voxel in VoxelMap) {
             ProgressMonitor.Worked(1);
             if (NeedsYield(yieldTimer)) {
                 yield return null;
@@ -78,13 +81,13 @@ public class VoxelRenderer : MonoBehaviour {
             }
 
             foreach (FaceDirection dir in directions) {
-                if (GetAdjacentVoxel(voxelMap, voxel.Key, dir) == 0) {
+                if (GetAdjacentVoxel(VoxelMap, voxel.Key, dir) == 0) {
                     // Render face
                     Face face = new Face(voxel.Key, dir, halfScale);
                     voxelMesh.Add(face);
 
                     if (voxelMesh.Vertices.Count > 65500) {
-                        BuildMesh(voxelMesh, voxelMap.Offset);
+                        BuildMesh(voxelMesh, VoxelMap.Offset);
                         meshes.Remove(voxel.Value);
                     }
                 } // else don't need a face here
@@ -92,7 +95,7 @@ public class VoxelRenderer : MonoBehaviour {
         }
 
         foreach (VoxelMesh voxelMesh in meshes.Values) {
-            BuildMesh(voxelMesh, voxelMap.Offset);
+            BuildMesh(voxelMesh, VoxelMap.Offset);
         }
 
         // We're done!
@@ -123,7 +126,7 @@ public class VoxelRenderer : MonoBehaviour {
             adjacentVoxel.z >= map.Pages) {
             return 0;
         } else {
-            return voxelMap[adjacentVoxel];
+            return VoxelMap[adjacentVoxel];
         }
     }
 
