@@ -9,9 +9,13 @@ public class LaserAction : MonoBehaviour {
     public GameObject LaserPrefab;
     public GameObject CollisionPrefab;
 
+    public GameObject HighlightBlockPrefab;
+
     private string[] keyNames;
     private GameObject laser;
     private GameObject collision;
+    private GameObject highlight;
+    private GameObject highlight2;
 
     // Use this for initialization
     void Start () {
@@ -55,11 +59,23 @@ public class LaserAction : MonoBehaviour {
             var emission = ps.emission;
             emission.enabled = false;
         }
+
+        highlight = Instantiate(HighlightBlockPrefab);
+        highlight.GetComponent<Outline>().OutlineColor = Color.red;
+
+        highlight2 = Instantiate(HighlightBlockPrefab);
+        highlight2.GetComponent<Outline>().OutlineColor = Color.blue;
     }
 
     private void StopLaser() {
         Destroy(laser);
         laser = null;
+
+        Destroy(highlight);
+        highlight = null;
+
+        Destroy(highlight2);
+        highlight2 = null;
 
         StartCoroutine(DestroyParticles(collision));
         collision = null;
@@ -129,13 +145,41 @@ public class LaserAction : MonoBehaviour {
                 target = hitInfo.point;
                 hit = true;
             }
+            highlight.SetActive(false);
         } else if (voxelRenderer != null) {
-            IntVector3 nearestVoxel;
+
+            VoxelMap voxelMap = voxelRenderer.VoxelMap;
             Vector3 localPosition = target - voxelRenderer.gameObject.transform.position;
-            if (voxelRenderer.VoxelMap.FindNearestVoxel(localPosition, out nearestVoxel)) {
+
+            Vector3 point;
+            point.x = localPosition.x / voxelMap.Scale - voxelMap.Offset.x;
+            point.y = localPosition.y / voxelMap.Scale - voxelMap.Offset.y;
+            point.z = localPosition.z / voxelMap.Scale - voxelMap.Offset.z;
+
+            // Clamp to the bounds of the map
+            int x = Mathf.Clamp(Mathf.RoundToInt(point.x), 0, voxelMap.Columns);
+            int y = Mathf.Clamp(Mathf.RoundToInt(point.y), 0, voxelMap.Rows);
+            int z = Mathf.Clamp(Mathf.RoundToInt(point.z), 0, voxelMap.Pages);
+
+            Vector3 position2 = new Vector3(x, y, z);
+            position2 *= voxelMap.Scale;
+            position2 += voxelMap.Offset;
+            position2 += voxelRenderer.gameObject.transform.position;
+            highlight2.transform.position = position2;
+
+            IntVector3 nearestVoxel;
+            if (voxelMap.FindNearestVoxel(localPosition, out nearestVoxel)) {
                 Debug.Log($"Nearest voxel: {nearestVoxel}");
+                Vector3 position = nearestVoxel;
+                position *= voxelMap.Scale;
+                position += voxelMap.Offset;
+                position += voxelRenderer.gameObject.transform.position;
+
+                highlight.transform.position = position;
+                highlight.SetActive(true);
             } else {
                 Debug.Log("No voxel found?");
+                highlight.SetActive(false);
             }
         }
 

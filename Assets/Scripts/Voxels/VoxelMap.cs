@@ -149,20 +149,26 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
     }
 
     private int distance(int x, int y) {
-        return x == 0 ? y :
-            y == 0 ? x :
+        return x == 0 ? Mathf.Abs(y) :
+            y == 0 ? Mathf.Abs(x) :
             (int)Mathf.Sqrt(x * x + y * y);
     }
 
     /**
-     * Find the nearest voxel to the given point (in local space)
+     * Find the nearest voxel to the given point (in local space, but excluding any offset)
      * that is non-zero. Returns true if a non-zero voxel is found.
      */
     public bool FindNearestVoxel(Vector3 point, out IntVector3 voxel) {
-        int x = Mathf.Clamp(Mathf.RoundToInt(point.x / Scale), 0, Columns);
-        int y = Mathf.Clamp(Mathf.RoundToInt(point.y / Scale), 0, Rows);
-        int z = Mathf.Clamp(Mathf.RoundToInt(point.z / Scale), 0, Pages);
-        
+        // Adjust the point by the offset and scale now so we don't need to keep doing it later
+        point.x = point.x / Scale - Offset.x;
+        point.y = point.y / Scale - Offset.y;
+        point.z = point.z / Scale - Offset.z;
+
+        // Clamp to the bounds of the map
+        int x = Mathf.Clamp(Mathf.RoundToInt(point.x), 0, Columns);
+        int y = Mathf.Clamp(Mathf.RoundToInt(point.y), 0, Rows);
+        int z = Mathf.Clamp(Mathf.RoundToInt(point.z), 0, Pages);
+
         // Check the given point first
         int index = (z * pageSize) + (y * Columns) + x;
         if (array[index] != 0) {
@@ -173,9 +179,15 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         // Otherwise move out from the given point in expanding
         // spheres until we find an occupied voxel
         int sphereRadius = 1;
+
+        float closestDistance;
+        IntVector3 closestVoxel = IntVector3.ZERO;
+        
         while (sphereRadius < Pages) {
             // For the current radius, find the ring we need to iterate on the
             // surface of the 'sphere'
+
+            closestDistance = float.MaxValue;
 
             // First we iterate through all possible z positions on this radius
             for (int dz = -sphereRadius; dz <= sphereRadius; ++dz) {
@@ -206,8 +218,14 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
                         if (cx >= 0 && cx < Columns && cy >= 0 && cy < Rows) {
                             index = ((z + dz) * pageSize) + ((y + dy) * Columns) + (x + dx);
                             if (array[index] != 0) {
-                                voxel = new IntVector3(x + dx, y + dy, z + dz);
-                                return true;
+                                IntVector3 currentVoxel = new IntVector3(x + dx, y + dy, z + dz);
+                                Vector3 voxelOrigin = currentVoxel;
+                                voxelOrigin.x += Scale / 2; voxelOrigin.y += Scale / 2; voxelOrigin.z += Scale / 2;
+                                float currentDistance = (voxelOrigin - point).magnitude;
+                                if (currentDistance < closestDistance) {
+                                    closestVoxel = currentVoxel;
+                                    closestDistance = currentDistance;
+                                }
                             }
                         }
 
@@ -224,6 +242,12 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
                         }
                     } while (dx != ringRadius || dy != 0);
                 }
+            }
+
+            // Use the closest voxel if there was one
+            if (closestDistance < float.MaxValue) {
+                voxel = closestVoxel;
+                return true;
             }
 
             ++sphereRadius;
