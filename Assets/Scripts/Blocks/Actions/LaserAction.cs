@@ -14,8 +14,6 @@ public class LaserAction : MonoBehaviour {
     private string[] keyNames;
     private GameObject laser;
     private GameObject collision;
-    private GameObject highlight;
-    private GameObject highlight2;
 
     // Use this for initialization
     void Start () {
@@ -59,23 +57,11 @@ public class LaserAction : MonoBehaviour {
             var emission = ps.emission;
             emission.enabled = false;
         }
-
-        highlight = Instantiate(HighlightBlockPrefab);
-        highlight.GetComponent<Outline>().OutlineColor = Color.red;
-
-        highlight2 = Instantiate(HighlightBlockPrefab);
-        highlight2.GetComponent<Outline>().OutlineColor = Color.blue;
     }
 
     private void StopLaser() {
         Destroy(laser);
         laser = null;
-
-        Destroy(highlight);
-        highlight = null;
-
-        Destroy(highlight2);
-        highlight2 = null;
 
         StartCoroutine(DestroyParticles(collision));
         collision = null;
@@ -145,7 +131,6 @@ public class LaserAction : MonoBehaviour {
                 target = hitInfo.point;
                 hit = true;
             }
-            highlight.SetActive(false);
         } else if (voxelRenderer != null) {
 
             VoxelMap voxelMap = voxelRenderer.VoxelMap;
@@ -161,25 +146,22 @@ public class LaserAction : MonoBehaviour {
             int y = Mathf.Clamp(Mathf.RoundToInt(point.y), 0, voxelMap.Rows);
             int z = Mathf.Clamp(Mathf.RoundToInt(point.z), 0, voxelMap.Pages);
 
-            Vector3 position2 = new Vector3(x, y, z);
-            position2 *= voxelMap.Scale;
-            position2 += voxelMap.Offset;
-            position2 += voxelRenderer.gameObject.transform.position;
-            highlight2.transform.position = position2;
+            //Vector3 position2 = new Vector3(x, y, z);
+            //position2 *= voxelMap.Scale;
+            //position2 += voxelMap.Offset;
+            //position2 += voxelRenderer.gameObject.transform.position;
+            //DebugUI.DrawCubeCentred(position2, new Vector3(voxelMap.Scale, voxelMap.Scale, voxelMap.Scale), voxelRenderer.gameObject.transform.rotation, Color.blue);
 
             IntVector3 nearestVoxel;
             if (voxelMap.FindNearestVoxel(localPosition, out nearestVoxel)) {
-                Debug.Log($"Nearest voxel: {nearestVoxel}");
                 Vector3 position = nearestVoxel;
                 position *= voxelMap.Scale;
                 position += voxelMap.Offset;
                 position += voxelRenderer.gameObject.transform.position;
 
-                highlight.transform.position = position;
-                highlight.SetActive(true);
-            } else {
-                Debug.Log("No voxel found?");
-                highlight.SetActive(false);
+                DebugUI.DrawCubeCentred(position, new Vector3(voxelMap.Scale, voxelMap.Scale, voxelMap.Scale), voxelRenderer.gameObject.transform.rotation, Color.red);
+                
+
             }
         }
 
