@@ -160,8 +160,8 @@ public class LaserAction : MonoBehaviour {
                 position += voxelRenderer.gameObject.transform.position;
 
                 DebugUI.DrawCubeCentred(position, new Vector3(voxelMap.Scale, voxelMap.Scale, voxelMap.Scale), voxelRenderer.gameObject.transform.rotation, Color.red);
-                
 
+                voxelRenderer.RemoveVoxel(nearestVoxel);
             }
         }
 
