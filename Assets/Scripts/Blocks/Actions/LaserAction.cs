@@ -15,6 +15,9 @@ public class LaserAction : MonoBehaviour {
     private GameObject laser;
     private GameObject collision;
 
+    private IntVector3 lastVoxel = IntVector3.UNDEFINED;
+    private float lastVoxelTimer;
+
     // Use this for initialization
     void Start () {
         PropertyHolder properties = GetComponentInParent<PropertyHolder>();
@@ -129,10 +132,13 @@ public class LaserAction : MonoBehaviour {
             ray = new Ray(laser.transform.position, delta);
             if (Physics.Raycast(ray, out hitInfo, delta.magnitude)) {
                 target = hitInfo.point;
+                voxelRenderer = hitInfo.collider.gameObject.GetComponentInParent<VoxelRenderer>();
+
                 hit = true;
             }
-        } else if (voxelRenderer != null) {
+        }
 
+        if (hit && voxelRenderer != null) {
             VoxelMap voxelMap = voxelRenderer.VoxelMap;
             Vector3 localPosition = target - voxelRenderer.gameObject.transform.position;
 
@@ -146,23 +152,30 @@ public class LaserAction : MonoBehaviour {
             int y = Mathf.Clamp(Mathf.RoundToInt(point.y), 0, voxelMap.Rows);
             int z = Mathf.Clamp(Mathf.RoundToInt(point.z), 0, voxelMap.Pages);
 
-            //Vector3 position2 = new Vector3(x, y, z);
-            //position2 *= voxelMap.Scale;
-            //position2 += voxelMap.Offset;
-            //position2 += voxelRenderer.gameObject.transform.position;
-            //DebugUI.DrawCubeCentred(position2, new Vector3(voxelMap.Scale, voxelMap.Scale, voxelMap.Scale), voxelRenderer.gameObject.transform.rotation, Color.blue);
-
             IntVector3 nearestVoxel;
             if (voxelMap.FindNearestVoxel(localPosition, out nearestVoxel)) {
-                Vector3 position = nearestVoxel;
-                position *= voxelMap.Scale;
-                position += voxelMap.Offset;
-                position += voxelRenderer.gameObject.transform.position;
+                if (!lastVoxel.Equals(nearestVoxel)) {
+                    lastVoxel = nearestVoxel;
+                    lastVoxelTimer = 0;
+                } else {
+                    lastVoxelTimer += Time.deltaTime;
+                    if (lastVoxelTimer > 1) {
+                        Vector3 position = nearestVoxel;
+                        position *= voxelMap.Scale;
+                        position += voxelMap.Offset;
+                        position += voxelRenderer.gameObject.transform.position;
 
-                DebugUI.DrawCubeCentred(position, new Vector3(voxelMap.Scale, voxelMap.Scale, voxelMap.Scale), voxelRenderer.gameObject.transform.rotation, Color.red);
+                        DebugUI.DrawCubeCentred(position, new Vector3(voxelMap.Scale, voxelMap.Scale, voxelMap.Scale), voxelRenderer.gameObject.transform.rotation, Color.red);
 
-                voxelRenderer.RemoveVoxel(nearestVoxel);
+                        voxelRenderer.RemoveVoxel(nearestVoxel);
+                        lastVoxel = IntVector3.UNDEFINED;
+                    }
+                }
+            } else {
+                lastVoxel = IntVector3.UNDEFINED;
             }
+        } else {
+            lastVoxel = IntVector3.UNDEFINED;
         }
 
         delta = target - laser.transform.position;

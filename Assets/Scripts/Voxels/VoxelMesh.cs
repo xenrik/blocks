@@ -113,6 +113,7 @@ public class VoxelMesh {
                 triangles[triangleOffset++] = vertexA + 2;
             }
 
+            mesh.Clear();
             mesh.vertices = vertices;
             mesh.uv = uvs;
             mesh.triangles = triangles;

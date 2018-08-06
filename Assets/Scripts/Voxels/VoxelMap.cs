@@ -114,6 +114,7 @@ public class VoxelMap : IEnumerable<KeyValuePair<IntVector3, int>> {
         get; set;
     }
 
+
     // If true we populate the debug properties
     public bool DebugEnabled {
         get; set;

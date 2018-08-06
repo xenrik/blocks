@@ -4,6 +4,8 @@ using UnityEngine;
 
 public struct IntVector3 {
     public static readonly IntVector3 ZERO = new IntVector3(0, 0, 0);
+    public static readonly IntVector3 UNDEFINED = new IntVector3(int.MaxValue, int.MaxValue, int.MaxValue);
+
     public int x;
     public int y;
     public int z;
