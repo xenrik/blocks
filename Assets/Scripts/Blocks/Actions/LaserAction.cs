@@ -116,14 +116,15 @@ public class LaserAction : MonoBehaviour {
         VoxelRenderer voxelRenderer = null;
         if (Physics.Raycast(ray, out hitInfo, 50.0f)) {
             target = hitInfo.point;
+            voxelRenderer = hitInfo.collider.gameObject.GetComponentInParent<VoxelRenderer>();
 
             // Protect a second ray to see if the point we are aiming at would collide first
             ray = new Ray(laser.transform.position, target - laser.transform.position);
             if (Physics.Raycast(ray, out hitInfo, 50.0f)) {
                 target = hitInfo.point;
+                voxelRenderer = hitInfo.collider.gameObject.GetComponentInParent<VoxelRenderer>();
             }
 
-            voxelRenderer = hitInfo.collider.gameObject.GetComponentInParent<VoxelRenderer>();
             hit = true;
         } 
 
@@ -159,7 +160,7 @@ public class LaserAction : MonoBehaviour {
                     lastVoxelTimer = 0;
                 } else {
                     lastVoxelTimer += Time.deltaTime;
-                    if (lastVoxelTimer > 1) {
+                    if (lastVoxelTimer > 0.1) {
                         Vector3 position = nearestVoxel;
                         position *= voxelMap.Scale;
                         position += voxelMap.Offset;

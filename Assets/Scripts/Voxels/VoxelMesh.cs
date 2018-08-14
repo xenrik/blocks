@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class VoxelMesh {
 
-    private const int MAX_FACES_PER_MESH = 65500 / 4;
+    private const int MAX_FACES_PER_MESH = 5000; //65500 / 4;
     private List<MeshDetails> meshDetailsList = new List<MeshDetails>();
 
     public void Add(VoxelFace face, Material material) {
@@ -60,6 +60,10 @@ public class VoxelMesh {
 
         private MeshCollider collider;
 
+        private Vector3[] vertices;
+        private Vector2[] uvs;
+        private int[] triangles;
+
         internal MeshDetails(Material material) {
             this.material = material;
 
@@ -83,9 +87,15 @@ public class VoxelMesh {
                 return;
             }
 
-            Vector3[] vertices = new Vector3[faces.Count * 4];
-            Vector2[] uvs = new Vector2[faces.Count * 4];
-            int[] triangles = new int[faces.Count * 6];
+            if (vertices == null || vertices.Length < faces.Count * 4) {
+                vertices = new Vector3[faces.Count * 4];
+            }
+            if (uvs == null || uvs.Length != vertices.Length) {
+                uvs = new Vector2[faces.Count * 4];
+            }
+            if (triangles == null || triangles.Length < faces.Count * 6) {
+                triangles = new int[faces.Count * 6];
+            }
 
             int vertexOffset = 0;
             int uvOffset = 0;
@@ -111,6 +121,11 @@ public class VoxelMesh {
                 triangles[triangleOffset++] = vertexA + 1;
                 triangles[triangleOffset++] = vertexA + 3;
                 triangles[triangleOffset++] = vertexA + 2;
+            }
+
+            // Zero any remaining triangles
+            while (triangleOffset < triangles.Length) {
+                triangles[triangleOffset++] = 0;
             }
 
             mesh.Clear();
