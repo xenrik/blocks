@@ -10,11 +10,14 @@ public class RigidbodyEditor : Editor {
     private static bool enabled;
 
     static RigidbodyEditor() {
-        enabled = EditorPrefs.GetBool(MENU_NAME, false);
-
         EditorApplication.delayCall += () => {
-            SetEnabled(enabled);
+            Initialise();
         };
+    }
+
+    static void Initialise() {
+        enabled = EditorPrefs.GetBool(MENU_NAME, false);
+        SetEnabled(enabled);
     }
 
     [MenuItem(MENU_NAME)]
@@ -27,6 +30,14 @@ public class RigidbodyEditor : Editor {
 
         Menu.SetChecked(MENU_NAME, enabled);
         EditorPrefs.SetBool(MENU_NAME, enabled);
+    }
+
+    private void OnEnable() {
+        enabled = EditorPrefs.GetBool(MENU_NAME, false);
+
+        EditorApplication.delayCall += () => {
+            SetEnabled(enabled);
+        };
     }
 
     private void OnSceneGUI() {

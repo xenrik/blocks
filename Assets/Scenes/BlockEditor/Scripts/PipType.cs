@@ -5,5 +5,9 @@ using UnityEngine;
 public enum PipType {
     GENERAL,
 
-    THRUSTER
+    THRUSTER,
+
+    MANEUVERING_JET,
+
+    MANEUVERING_JET_ANCHOR,
 }
