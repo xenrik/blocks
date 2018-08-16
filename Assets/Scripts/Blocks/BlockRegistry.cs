@@ -32,11 +32,6 @@ public class BlockRegistry : ScriptableObject {
             registry.Initialise();
             if (registry == null) {
                 throw new System.InvalidOperationException("Could not load the block registry!");
-            } else {
-                Debug.Log("Block Registry Initialised:");
-                foreach (BlockDefinition def in registry.Blocks) {
-                    Debug.Log($"   {def.BlockType}");
-                }
             }
         } 
 

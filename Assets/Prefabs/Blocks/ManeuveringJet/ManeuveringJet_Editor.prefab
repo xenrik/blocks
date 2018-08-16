@@ -62,6 +62,7 @@ GameObject:
   - component: {fileID: 114371091697840368}
   - component: {fileID: 114348267148191544}
   - component: {fileID: 114015111084688514}
+  - component: {fileID: 114767351377365424}
   m_Layer: 0
   m_Name: ManeuveringJet_Editor
   m_TagString: EditorBlock
@@ -287,6 +288,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d306492a4644cd4d8058d4464003124, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114767351377365424
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1925936548327666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b68e8a9d7edeaa64db09e1771bb23fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Properties:
+  - PropertyName: Thust
+    Type: 0
+    DefaultValue: 
+    Tooltip: Button Name
 --- !u!114 &114801576830166864
 MonoBehaviour:
   m_ObjectHideFlags: 1
