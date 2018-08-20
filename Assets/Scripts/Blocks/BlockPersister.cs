@@ -7,6 +7,13 @@ using System.Linq;
 public class BlockPersister : MonoBehaviour {
 
     public bool EditorMode = true;
+    public string DesignName;
+
+    private void OnEnable() {
+        if (!string.IsNullOrEmpty(DesignName)) {
+            Load(DesignName);
+        }
+    }
 
     public void Save(string designName) {
         Design design = new Design();

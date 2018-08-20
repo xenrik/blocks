@@ -18,4 +18,4 @@ MonoBehaviour:
     type: 2}
   GameplayBlock: {fileID: 1319782364412648, guid: e2382a6f410e645409e7f40ad381f5b1,
     type: 2}
-  Mass: 0
+  Mass: 0.5

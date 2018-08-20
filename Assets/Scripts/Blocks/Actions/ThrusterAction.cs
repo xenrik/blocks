@@ -18,6 +18,13 @@ public class ThrusterAction : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        // Disable if we are not on the Player
+        Block rootBlock = gameObject.GetRoot().GetComponent<Block>();
+        if (!rootBlock.IsPlayer) {
+            this.enabled = false;
+            return;
+        }
+
         PropertyHolder properties = GetComponent<PropertyHolder>();
         if (properties == null) {
             Debug.Log($"No properties: {gameObject}");

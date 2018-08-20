@@ -29,11 +29,6 @@ public class VoxelRegistry : ScriptableObject {
             registry.Initialise();
             if (registry == null) {
                 throw new System.InvalidOperationException("Could not load the voxel registry!");
-            } else {
-                Debug.Log("Voxel Registry Initialised:");
-                foreach (VoxelDefinition def in registry.Voxels) {
-                    Debug.Log($"   {def.VoxelId}");
-                }
             }
         }
 

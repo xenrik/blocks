@@ -3,7 +3,7 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -18,4 +18,4 @@ MonoBehaviour:
     type: 2}
   GameplayBlock: {fileID: 1248839836955506, guid: 87c21725de5618d41a50f55d90f040e0,
     type: 2}
-  Mass: 1
+  Mass: 0.5

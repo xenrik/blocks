@@ -11,8 +11,16 @@ public class Block : MonoBehaviour {
     [SerializeField]
     private string blockType;
 
+    /** True if this block is the root player block */
+    [SerializeField]
+    private bool isPlayer;
+
     /** The blocks which are linked to this block */
     private Block[] linkedBlocks = new Block[0];
+
+    public bool IsPlayer {
+        get { return isPlayer; }
+    }
 
     public string BlockType {
         get { return blockType; }
