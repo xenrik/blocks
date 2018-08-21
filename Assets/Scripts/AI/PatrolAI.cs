@@ -17,17 +17,23 @@ public class PatrolAI : BaseAI {
     public float closestPoint = float.MaxValue;
 
     private List<Vector3> nodes;
+    private List<float> distances;
     private int current;
+
+    private Vector3 target;
 
     void Awake() {
         IEnumerator<Vector3> enumer = Interpolate.NewCatmullRom(path, pathQuality, loop).GetEnumerator();
         enumer.MoveNext();
 
-        Vector3 first = enumer.Current;
         nodes = new List<Vector3>();
-        nodes.Add(first);
+        distances = new List<float>();
+
+        Vector3 first = enumer.Current;
+        nodes.Add(first); distances.Add(0);
         while (enumer.MoveNext() && enumer.Current != first) {
             nodes.Add(enumer.Current);
+            distances.Add(0);
         }
 
         current = 0;
@@ -38,8 +44,39 @@ public class PatrolAI : BaseAI {
     }
 
     void FixedUpdate() {
-        current = GetClosestPointLookahead(current, pathQuality);
-        gotoPoint(nodes[current], false);
+        float currentDistance = (transform.position - nodes[current]).sqrMagnitude;
+        float lastDistance = distances[current];
+
+        int next = (current + 1) % nodes.Count;
+        float nextDistance = (transform.position - nodes[next]).sqrMagnitude;
+        float lastNextDistance = distances[next];
+
+        bool advance = false;
+
+        // We're ready to switch
+        if (currentDistance < switchMagnitude) {
+            advance = true;
+        }
+
+        // We're moving away from the current target, if we are moving towards
+        // the next point, then advance anyway.
+        else if (currentDistance > lastDistance && nextDistance < lastNextDistance 
+                && lastDistance > 0 ) {
+            advance = true;
+        }
+
+        distances[current] = currentDistance;
+        distances[next] = nextDistance;
+        if (advance) {
+            current = next;
+            next = (current + 1) % nodes.Count;
+
+            // Already updated the new current
+            distances[next] = (transform.position - nodes[next]).sqrMagnitude;
+        }
+
+        target = nodes[current] + (nodes[next] - nodes[current]) * 0.5f;
+        gotoPoint(target, false);
     }
 
     void OnDrawGizmos() {
@@ -75,27 +112,9 @@ public class PatrolAI : BaseAI {
         if (this.nodes != null) {
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(nodes[current], 0.45f);
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(target, 0.45f);
         }
-    }
-
-    private int GetClosestPointLookahead(int current, int lookaheadLimit) {
-        float bestDistance = (transform.position - nodes[current]).sqrMagnitude;
-        if (bestDistance < switchMagnitude) {
-            return GetClosestPointLookahead((current + 1) % nodes.Count, lookaheadLimit);
-        }
-
-        int best = current;
-        while (lookaheadLimit > 0) {
-            int test = (current + lookaheadLimit) % nodes.Count;
-            float testDistance = (transform.position - nodes[test]).sqrMagnitude;
-            if (testDistance < bestDistance) {
-                bestDistance = testDistance;
-                best = test;
-            }
-
-            --lookaheadLimit;
-        }
-
-        return best;
     }
 }
