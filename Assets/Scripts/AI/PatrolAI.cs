@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class PatrolAI : BaseAI {
     public enum Mode {
@@ -12,15 +13,24 @@ public class PatrolAI : BaseAI {
     public float switchMagnitude = 50;
     public bool loop;
 
-    public Vector3 target;
     public float forceSwitchTime = 0;
     public float closestPoint = float.MaxValue;
 
-    private IEnumerator<Vector3> nodes;
+    private List<Vector3> nodes;
+    private int current;
 
     void Awake() {
-        nodes = Interpolate.NewCatmullRom(path, pathQuality, loop).GetEnumerator();
-        nodes.MoveNext();
+        IEnumerator<Vector3> enumer = Interpolate.NewCatmullRom(path, pathQuality, loop).GetEnumerator();
+        enumer.MoveNext();
+
+        Vector3 first = enumer.Current;
+        nodes = new List<Vector3>();
+        nodes.Add(first);
+        while (enumer.MoveNext() && enumer.Current != first) {
+            nodes.Add(enumer.Current);
+        }
+
+        current = 0;
     }
 
     void Start() {
@@ -28,33 +38,8 @@ public class PatrolAI : BaseAI {
     }
 
     void FixedUpdate() {
-        target = nodes.Current;
-        float sqrDistance = (transform.position - target).sqrMagnitude;
-
-        if (sqrDistance < switchMagnitude) {
-            if (!nodes.MoveNext()) {
-                this.enabled = false;
-                return;
-            }
-
-            closestPoint = float.MaxValue;
-            forceSwitchTime = 0;
-        } else if (sqrDistance < closestPoint) {
-            closestPoint = sqrDistance;
-            forceSwitchTime = 0;
-        } else if (forceSwitchTime == 0) {
-            forceSwitchTime = Time.time + 10;
-        } else if (forceSwitchTime < Time.time) {
-            if (!nodes.MoveNext()) {
-                this.enabled = false;
-                return;
-            }
-
-            closestPoint = float.MaxValue;
-            forceSwitchTime = 0;
-        }
-
-        gotoPoint(target, false);
+        current = GetClosestPointLookahead(current, pathQuality);
+        gotoPoint(nodes[current], false);
     }
 
     void OnDrawGizmos() {
@@ -67,19 +52,19 @@ public class PatrolAI : BaseAI {
                 Gizmos.DrawWireSphere(path[i].position, 0.3f);
             }
 
-            IEnumerator<Vector3> nodes = Interpolate.NewCatmullRom(path, pathQuality, loop).GetEnumerator();
-            nodes.MoveNext();
-            Vector3 first = nodes.Current;
-            Vector3 last = nodes.Current;
+            IEnumerator<Vector3> gizmoNodes = Interpolate.NewCatmullRom(path, pathQuality, loop).GetEnumerator();
+            gizmoNodes.MoveNext();
+            Vector3 first = gizmoNodes.Current;
+            Vector3 last = gizmoNodes.Current;
             Gizmos.color = Color.white;
             while (true) {
-                if (!nodes.MoveNext()) {
+                if (!gizmoNodes.MoveNext()) {
                     break;
                 }
 
-                Gizmos.DrawLine(last, nodes.Current);
-                Gizmos.DrawWireSphere(nodes.Current, 0.15f);
-                last = nodes.Current;
+                Gizmos.DrawLine(last, gizmoNodes.Current);
+                Gizmos.DrawWireSphere(gizmoNodes.Current, 0.15f);
+                last = gizmoNodes.Current;
 
                 if (last == first) {
                     break;
@@ -89,7 +74,28 @@ public class PatrolAI : BaseAI {
 
         if (this.nodes != null) {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(nodes.Current, 0.45f);
+            Gizmos.DrawWireSphere(nodes[current], 0.45f);
         }
+    }
+
+    private int GetClosestPointLookahead(int current, int lookaheadLimit) {
+        float bestDistance = (transform.position - nodes[current]).sqrMagnitude;
+        if (bestDistance < switchMagnitude) {
+            return GetClosestPointLookahead((current + 1) % nodes.Count, lookaheadLimit);
+        }
+
+        int best = current;
+        while (lookaheadLimit > 0) {
+            int test = (current + lookaheadLimit) % nodes.Count;
+            float testDistance = (transform.position - nodes[test]).sqrMagnitude;
+            if (testDistance < bestDistance) {
+                bestDistance = testDistance;
+                best = test;
+            }
+
+            --lookaheadLimit;
+        }
+
+        return best;
     }
 }

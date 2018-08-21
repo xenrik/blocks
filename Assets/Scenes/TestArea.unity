@@ -1261,6 +1261,7 @@ MonoBehaviour:
   switchMagnitude: 50
   loop: 1
   target: {x: 0, y: 0, z: 0}
+  next: {x: 0, y: 0, z: 0}
   forceSwitchTime: 0
   closestPoint: 3.4028235e+38
 --- !u!114 &1176707589
@@ -1279,7 +1280,7 @@ MonoBehaviour:
     iFactor: 0
     dFactor: 0.2553191
   headingController:
-    pFactor: 1
+    pFactor: 5
     iFactor: 0
     dFactor: 0.06382979
   thrustController:
@@ -1288,7 +1289,7 @@ MonoBehaviour:
     dFactor: 0.1
   thrust: 10
   thrustClamp: 10
-  angularThrust: 1
+  angularThrust: 2
   angulatThrustClamp: 10
   debugRayMultiplier: 1
   hull: 0
