@@ -763,6 +763,146 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1001 &1024893574
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4266424074845506, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 50.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266424074845506, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 45.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266424074845506, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -55.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266424074845506, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266424074845506, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266424074845506, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266424074845506, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266424074845506, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798611540107676, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
+      propertyPath: m_Name
+      value: Fly 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 54657534528633578, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6,
+        type: 2}
+      propertyPath: m_Drag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 54657534528633578, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6,
+        type: 2}
+      propertyPath: m_AngularDrag
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 54657534528633578, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6,
+        type: 2}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114987245330638408, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6,
+        type: 2}
+      propertyPath: DesignName
+      value: Fly
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 54657534528633578, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
+  m_SourcePrefab: {fileID: 100100000, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
+  m_IsPrefabAsset: 0
+--- !u!1 &1024893575 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1798611540107676, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6,
+    type: 2}
+  m_PrefabInternal: {fileID: 1024893574}
+--- !u!114 &1024893576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1024893575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab60da94c8ef96c4ea2489a0b49eeef0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  angularController:
+    pFactor: 5
+    iFactor: 0
+    dFactor: 0.2553191
+  headingController:
+    pFactor: 5
+    iFactor: 0
+    dFactor: 0.06382979
+  thrustController:
+    pFactor: 5
+    iFactor: 0
+    dFactor: 0.1
+  thrust: 10
+  thrustClamp: 10
+  angularThrust: 2
+  angulatThrustClamp: 10
+  debugRayMultiplier: 1
+  hull: 0
+  shields: 0
+  armour: 0
+--- !u!114 &1024893577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1024893575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ae870e80bfb75e45a0993878d5d0fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path:
+  - {fileID: 1603785546}
+  - {fileID: 1717903848}
+  - {fileID: 1920232690}
+  - {fileID: 824564479}
+  - {fileID: 1081741424}
+  pathQuality: 10
+  switchMagnitude: 50
+  loop: 1
+  forceSwitchTime: 0
+  closestPoint: 3.4028235e+38
+--- !u!54 &1024893578
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1024893575}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0.1
+  m_AngularDrag: 0.1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1069430554
 GameObject:
   m_ObjectHideFlags: 0
@@ -1260,8 +1400,6 @@ MonoBehaviour:
   pathQuality: 10
   switchMagnitude: 50
   loop: 1
-  target: {x: 0, y: 0, z: 0}
-  next: {x: 0, y: 0, z: 0}
   forceSwitchTime: 0
   closestPoint: 3.4028235e+38
 --- !u!114 &1176707589

@@ -34,17 +34,13 @@ public class BaseAI : MonoBehaviour {
     protected void ApplyForce(Vector3 force, ForceMode forceMode) {
         rigidBody.AddForce(force, forceMode);
 
-        if (OnForceApplied != null) {
-            OnForceApplied(force);
-        }
+        OnForceApplied?.Invoke(force);
     }
 
     protected void ApplyTorque(Vector3 torque, ForceMode forceMode) {
         rigidBody.AddTorque(torque, forceMode);
 
-        if (OnTorqueApplied != null) {
-            OnTorqueApplied(torque);
-        }
+        OnTorqueApplied?.Invoke(torque);
     }
 
     protected void gotoPoint(Vector3 target, bool approach) {

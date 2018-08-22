@@ -109,7 +109,7 @@ public class PatrolAI : BaseAI {
             }
         }
 
-        if (this.nodes != null) {
+        if (this.nodes != null && this.nodes.Count > current) {
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(nodes[current], 0.45f);
 
