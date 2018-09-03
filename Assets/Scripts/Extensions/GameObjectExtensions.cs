@@ -42,6 +42,14 @@ public static class GameObjectExtensions {
         return list;
     }
 
+    public static IEnumerable<GameObject> ChildrenWithTag(this GameObject gameObject, Tags tag, bool recursive = false) {
+        foreach (GameObject go in gameObject.Children(recursive)) {
+            if (tag.HasTag(go)) {
+                yield return go;
+            }
+        }
+    }
+
     public static string GetFullName(this GameObject gameObject) {
         string parentName = gameObject.transform.parent?.gameObject.GetFullName();
         return parentName != null ? parentName + "." + gameObject.name : gameObject.name;

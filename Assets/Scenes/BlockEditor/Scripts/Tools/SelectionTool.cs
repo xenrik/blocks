@@ -20,7 +20,7 @@ public class SelectionTool : MonoBehaviour, Tool {
             if (Tags.EDITOR_BLOCK.HasTag(newSelection)) {
                 SelectionManager.Selection = newSelection;
             }
-        }
+        } 
 
         return false;
     }

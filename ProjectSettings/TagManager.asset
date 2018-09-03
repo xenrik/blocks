@@ -13,6 +13,7 @@ TagManager:
   - EditorPip
   - TemplatePip
   - PaletteCamera
+  - CameraAnchor
   layers:
   - Default
   - TransparentFX

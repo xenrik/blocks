@@ -28,10 +28,13 @@ public enum Tags {
     TEMPLATE_BLOCK,
 
     // Tag that pips which are templates should have
-    TEMPLATE_PIP
+    TEMPLATE_PIP,
+
+    // Tag that anchors for cameras should have
+    CAMERA_ANCHOR
 }
 
-static class TagMethods {
+public static class TagMethods {
     public static string TagName(this Tags tag) {
         switch (tag) {
         case Tags.BLOCK: return "Block";
@@ -43,6 +46,7 @@ static class TagMethods {
         case Tags.PALETTE_CAMERA: return "PaletteCamera";
         case Tags.TEMPLATE_BLOCK: return "TemplateBlock";
         case Tags.TEMPLATE_PIP: return "TemplatePip";
+        case Tags.CAMERA_ANCHOR: return "CameraAnchor";
 
         default:
             return null;
