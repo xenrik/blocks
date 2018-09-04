@@ -6,10 +6,9 @@ public class BaseAI : MonoBehaviour {
     private ActorSettings settings;
     private Rigidbody rigidBody;
 
-    // event handling
-    public delegate void ForceApplied(Vector3 force);
-    public event ForceApplied OnForceApplied = null;
-    public event ForceApplied OnTorqueApplied = null;
+    private delegate void ForceAcuatorEvent(Vector3 force);
+    private event ForceAcuatorEvent ApplyForce = null;
+    private event ForceAcuatorEvent ApplyTorque = null;
 
     // Use this for initialization
     protected void initialise() {
@@ -21,16 +20,12 @@ public class BaseAI : MonoBehaviour {
         rigidBody = gameObject.GetComponent<Rigidbody>();
     }
 
-    public void AddForceListener(ForceObserver observer) {
-        OnForceApplied += new ForceApplied(observer.OnForceApplied);
-        OnTorqueApplied += new ForceApplied(observer.OnTorqueApplied);
+    public void AddForceActuator(ForceActuator actuator) {
+        ApplyForce += new ForceAcuatorEvent(actuator.ApplyForce);
+        ApplyTorque += new ForceAcuatorEvent(actuator.ApplyTorque);
     }
 
-    public void RemoveForceListener(ForceObserver observer) {
-        OnForceApplied -= new ForceApplied(observer.OnForceApplied);
-        OnTorqueApplied -= new ForceApplied(observer.OnTorqueApplied);
-    }
-
+    /*
     protected void ApplyForce(Vector3 force, ForceMode forceMode) {
         rigidBody.AddForce(force, forceMode);
 
@@ -42,6 +37,7 @@ public class BaseAI : MonoBehaviour {
 
         OnTorqueApplied?.Invoke(torque);
     }
+    */
 
     protected void gotoPoint(Vector3 target, bool approach) {
         // Current Heading
@@ -66,7 +62,8 @@ public class BaseAI : MonoBehaviour {
 
         Debug.DrawRay(transform.position, torque * settings.debugRayMultiplier, Color.red);
         if (torque.magnitude > 0) {
-            ApplyTorque(torque, ForceMode.Acceleration);
+            ApplyTorque?.Invoke(torque);
+            //ApplyTorque(torque, ForceMode.Acceleration);
         }
 
         float correction = headingError.magnitude;
@@ -89,7 +86,8 @@ public class BaseAI : MonoBehaviour {
 
         Debug.DrawRay(transform.position, thrust, Color.blue);
         if (thrust.magnitude > 0) {
-            ApplyForce(thrust, ForceMode.Force);
+            ApplyForce?.Invoke(thrust);
+            //ApplyForce(thrust, ForceMode.Force);
         }
     }
 }
