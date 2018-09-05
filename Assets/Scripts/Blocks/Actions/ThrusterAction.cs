@@ -15,6 +15,7 @@ public class ThrusterAction : MonoBehaviour, ForceActuator {
 
     private new ParticleSystem particleSystem;
     private ParticleSystem.EmissionModule emissionModule;
+    private ParticleSystem.MainModule mainModule;
     private Block rootBlock;
 
     // Use this for initialization
@@ -39,6 +40,7 @@ public class ThrusterAction : MonoBehaviour, ForceActuator {
 
         particleSystem = gameObject.GetComponentInChildren<ParticleSystem>();
         emissionModule = particleSystem.emission;
+        mainModule = particleSystem.main;
         emissionModule.enabled = false;
 
         particleSystem.Play();
@@ -78,9 +80,16 @@ public class ThrusterAction : MonoBehaviour, ForceActuator {
         }
 
         if (theta > -Mathf.PI && theta < Mathf.PI) {
-            emissionModule.enabled = true;
-            Vector3 directedForce = transform.rotation * (Force * force.magnitude * (Mathf.Abs(theta) / Mathf.PI));
-            rootBody.AddForceAtPosition(directedForce, transform.position);
+            float d = Mathf.Clamp(1 - (Mathf.Abs(theta) / Mathf.PI), 0, 1);
+            float p = 2.5f * (1 / Mathf.Sqrt(2 * Mathf.PI)) * Mathf.Exp(-10 * Mathf.Pow(d, 2));
+            if (p > float.Epsilon) {
+                Vector3 directedForce = transform.rotation * (Force * force.magnitude * p);
+                rootBody.AddForceAtPosition(directedForce, transform.position);
+                emissionModule.enabled = true;
+                mainModule.startLifetime = p;
+            } else {
+                emissionModule.enabled = true;
+            }
         } else {
             emissionModule.enabled = false;
         }

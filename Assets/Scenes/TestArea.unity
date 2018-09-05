@@ -865,6 +865,10 @@ Prefab:
       propertyPath: DesignName
       value: Fly
       objectReference: {fileID: 0}
+    - target: {fileID: 1798611540107676, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 54657534528633578, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 0d80f340756a1cd4a9729ffe9ad2e0c6, type: 2}

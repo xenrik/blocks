@@ -40,6 +40,15 @@ public class BaseAI : MonoBehaviour {
     */
 
     protected void gotoPoint(Vector3 target, bool approach) {
+        Vector3 current = transform.position;
+        Vector3 delta = (target - current).normalized;
+
+        Debug.DrawRay(transform.position, delta * 10, Color.red);
+        Debug.DrawLine(transform.position, target, Color.blue);
+
+        ApplyForce?.Invoke(delta);
+
+        /*
         // Current Heading
         Vector3 currentHeading = transform.forward;
 
@@ -86,8 +95,9 @@ public class BaseAI : MonoBehaviour {
 
         Debug.DrawRay(transform.position, thrust, Color.blue);
         if (thrust.magnitude > 0) {
-            ApplyForce?.Invoke(thrust);
+            //ApplyForce?.Invoke(thrust);
             //ApplyForce(thrust, ForceMode.Force);
         }
+        */
     }
 }
