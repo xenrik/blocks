@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using System.Linq;
 
@@ -31,23 +30,20 @@ public class BlockPersister : MonoBehaviour {
             AddBlock(state, block);
         }
 
-        string dataPath = Application.persistentDataPath;
-        Directory.CreateDirectory(dataPath + "/Designs");
-
+        string fullPath;
         string designJson = JsonUtility.ToJson(design, true);
-        File.WriteAllText(dataPath + "/Designs/" + designName + ".design", designJson);
-        Debug.Log($"Saved design to: {dataPath}/Designs/{designName}.design");
+        FileManager.WriteFile("Designs", designName + ".design", designJson, out fullPath);
+        Debug.Log($"Saved design to: {fullPath}");
     }
 
     public void Load(string designName) {
-        string dataPath = Application.persistentDataPath;
-        string fullPath = $"{dataPath}/Designs/{designName}.design";
-        if (!File.Exists(fullPath)) {
+        string fullPath;
+        string designJson = FileManager.ReadFile("Designs", designName + ".design", out fullPath);
+        if (designJson == null) {
             Debug.Log($"Could not find design at path: {fullPath}");
             return;
         }
 
-        string designJson = File.ReadAllText(fullPath);
         Design design = new Design();
         JsonUtility.FromJsonOverwrite(designJson, design);
 
