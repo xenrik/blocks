@@ -43,8 +43,8 @@ public class BaseAI : MonoBehaviour {
         Vector3 current = transform.position;
         Vector3 delta = (target - current).normalized;
 
-        Debug.DrawRay(transform.position, delta * 10, Color.red);
         Debug.DrawLine(transform.position, target, Color.blue);
+        Debug.DrawRay(transform.position, delta * 10, Color.red);
 
         ApplyForce?.Invoke(delta);
 

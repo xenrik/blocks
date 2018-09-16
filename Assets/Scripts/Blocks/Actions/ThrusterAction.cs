@@ -6,7 +6,7 @@ using UnityEngine;
 public class ThrusterAction : MonoBehaviour, ForceActuator {
 
     public string FireThrusterPropertyName;
-    public Vector3 Force;
+    public float Force;
 
     private string[] keyNames;
 
@@ -62,8 +62,9 @@ public class ThrusterAction : MonoBehaviour, ForceActuator {
 
         bool keyDown = keyNames.Any(keyName => Input.GetKey(keyName));
 		if (keyDown) {
-            Vector3 directedForce = transform.rotation * Force;
+            Vector3 directedForce = transform.forward * Force;
             rootBody.AddForceAtPosition(directedForce, transform.position);
+            Debug.DrawRay(transform.position, directedForce * 10, Color.green);
 
             emissionModule.enabled = true;
         } else {
@@ -73,6 +74,8 @@ public class ThrusterAction : MonoBehaviour, ForceActuator {
 
     public void ApplyForce(Vector3 force) {
         Vector3 forward = transform.forward;
+
+        // Find the angle between the target force and forward
         float costheta = Vector3.Dot(forward, force) / (forward.magnitude * force.magnitude);
         float theta = Mathf.Acos(costheta);
         if (theta > Mathf.PI) {
@@ -80,11 +83,22 @@ public class ThrusterAction : MonoBehaviour, ForceActuator {
         }
 
         if (theta > -Mathf.PI && theta < Mathf.PI) {
+            // Get the percentile between zero and PI
             float d = Mathf.Clamp(1 - (Mathf.Abs(theta) / Mathf.PI), 0, 1);
-            float p = 2.5f * (1 / Mathf.Sqrt(2 * Mathf.PI)) * Mathf.Exp(-10 * Mathf.Pow(d, 2));
+
+            // Normal distribution
+            float n = MoreMaths.NormalDistribution(0.2f, 1, d) / 2.0f;
+            float p = n;
+
             if (p > float.Epsilon) {
-                Vector3 directedForce = transform.rotation * (Force * force.magnitude * p);
+                Vector3 directedForce = forward * Force * p;
                 rootBody.AddForceAtPosition(directedForce, transform.position);
+
+                Debug.DrawRay(transform.position, forward * Force * 10, Color.blue);
+                Debug.DrawRay(transform.position, directedForce * 10, Color.red);
+
+                //Debug.DrawRay(transform.position, forward * 10, Color.magenta);
+
                 emissionModule.enabled = true;
                 mainModule.startLifetime = p;
             } else {
