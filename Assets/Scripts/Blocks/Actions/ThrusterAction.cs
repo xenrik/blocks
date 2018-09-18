@@ -94,8 +94,8 @@ public class ThrusterAction : MonoBehaviour, ForceActuator {
                 Vector3 directedForce = forward * Force * p;
                 rootBody.AddForceAtPosition(directedForce, transform.position);
 
-                Debug.DrawRay(transform.position, forward * Force * 10, Color.blue);
-                Debug.DrawRay(transform.position, directedForce * 10, Color.red);
+                Debug.DrawRay(transform.position, forward * Force, Color.blue);
+                Debug.DrawRay(transform.position, directedForce, Color.red);
 
                 //Debug.DrawRay(transform.position, forward * 10, Color.magenta);
 

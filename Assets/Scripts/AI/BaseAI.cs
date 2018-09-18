@@ -41,12 +41,19 @@ public class BaseAI : MonoBehaviour {
 
     protected void gotoPoint(Vector3 target, bool approach) {
         Vector3 current = transform.position;
-        Vector3 delta = (target - current).normalized;
+        Vector3 delta = target - current;
 
         Debug.DrawLine(transform.position, target, Color.blue);
-        Debug.DrawRay(transform.position, delta * 10, Color.red);
 
-        ApplyForce?.Invoke(delta);
+        float mass = rigidBody.mass;
+        Vector3 velocity = rigidBody.velocity;
+        Vector3 momentum = mass * velocity;
+
+        Vector3 force = (delta - momentum).normalized;
+
+        Debug.DrawRay(transform.position, force * 10, Color.yellow);
+
+        ApplyForce?.Invoke(force);
 
         /*
         // Current Heading
