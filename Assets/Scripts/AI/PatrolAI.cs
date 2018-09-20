@@ -16,6 +16,8 @@ public class PatrolAI : BaseAI {
     public float forceSwitchTime = 0;
     public float closestPoint = float.MaxValue;
 
+    public bool Reset = false;
+
     private List<Vector3> nodes;
     private List<float> distances;
     private int current;
@@ -23,6 +25,20 @@ public class PatrolAI : BaseAI {
     private Vector3 target;
 
     void Awake() {
+        Initialise();
+    }
+
+    void Start() {
+        base.initialise();
+    }
+
+    private void Update() {
+        if (Reset) {
+            Initialise();
+        }
+    }
+
+    private void Initialise() {
         IEnumerator<Vector3> enumer = Interpolate.NewCatmullRom(path, pathQuality, loop).GetEnumerator();
         enumer.MoveNext();
 
@@ -37,10 +53,7 @@ public class PatrolAI : BaseAI {
         }
 
         current = 0;
-    }
-
-    void Start() {
-        base.initialise();
+        Reset = false;
     }
 
     void FixedUpdate() {

@@ -25,37 +25,19 @@ public class BaseAI : MonoBehaviour {
         ApplyTorque += new ForceAcuatorEvent(actuator.ApplyTorque);
     }
 
-    /*
-    protected void ApplyForce(Vector3 force, ForceMode forceMode) {
+    protected void DoApplyForce(Vector3 force, ForceMode forceMode) {
         rigidBody.AddForce(force, forceMode);
 
-        OnForceApplied?.Invoke(force);
+        ApplyForce?.Invoke(force);
     }
 
-    protected void ApplyTorque(Vector3 torque, ForceMode forceMode) {
+    protected void DoApplyTorque(Vector3 torque, ForceMode forceMode) {
         rigidBody.AddTorque(torque, forceMode);
 
-        OnTorqueApplied?.Invoke(torque);
+        ApplyTorque?.Invoke(torque);
     }
-    */
 
     protected void gotoPoint(Vector3 target, bool approach) {
-        Vector3 current = transform.position;
-        Vector3 delta = target - current;
-
-        Debug.DrawLine(transform.position, target, Color.blue);
-
-        float mass = rigidBody.mass;
-        Vector3 velocity = rigidBody.velocity;
-        Vector3 momentum = mass * velocity;
-
-        Vector3 force = (delta - momentum).normalized;
-
-        Debug.DrawRay(transform.position, force * 10, Color.yellow);
-
-        ApplyForce?.Invoke(force);
-
-        /*
         // Current Heading
         Vector3 currentHeading = transform.forward;
 
@@ -78,8 +60,8 @@ public class BaseAI : MonoBehaviour {
 
         Debug.DrawRay(transform.position, torque * settings.debugRayMultiplier, Color.red);
         if (torque.magnitude > 0) {
-            ApplyTorque?.Invoke(torque);
-            //ApplyTorque(torque, ForceMode.Acceleration);
+            //ApplyTorque?.Invoke(torque);
+            DoApplyTorque(torque, ForceMode.Acceleration);
         }
 
         float correction = headingError.magnitude;
@@ -88,8 +70,6 @@ public class BaseAI : MonoBehaviour {
         float targetThrust = settings.thrust;
         if (approach) {
             targetThrust = Mathf.Min(settings.thrust, distanceMagnitude * 2);
-            //} else {
-            //    targetThrust = Mathf.Min(settings.thrust, distanceMagnitude*distanceMagnitude);
         }
 
         Vector3 thrust = transform.forward * targetThrust * (1 - correction);
@@ -103,8 +83,7 @@ public class BaseAI : MonoBehaviour {
         Debug.DrawRay(transform.position, thrust, Color.blue);
         if (thrust.magnitude > 0) {
             //ApplyForce?.Invoke(thrust);
-            //ApplyForce(thrust, ForceMode.Force);
+            DoApplyForce(thrust, ForceMode.Force);
         }
-        */
     }
 }

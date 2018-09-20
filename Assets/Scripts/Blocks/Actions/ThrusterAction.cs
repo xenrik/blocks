@@ -18,6 +18,9 @@ public class ThrusterAction : MonoBehaviour, ForceActuator {
     private ParticleSystem.MainModule mainModule;
     private Block rootBlock;
 
+    private Vector3 currentForce;
+    private Vector3 currentTorque;
+
     // Use this for initialization
     void Start () {
         PropertyHolder properties = GetComponent<PropertyHolder>();
@@ -73,10 +76,31 @@ public class ThrusterAction : MonoBehaviour, ForceActuator {
     }
 
     public void ApplyForce(Vector3 force) {
+        currentForce = force;
+        UpdateEmission();
+    }
+
+    public void ApplyTorque(Vector3 torque) {
+        currentTorque = torque;
+        UpdateEmission();
+    }
+
+    private void UpdateEmission() {
+        float emission = Mathf.Max(CalculateEmissionFactor(currentForce), CalculateEmissionFactor(currentTorque));
+
+        if (emission > 0) {
+            emissionModule.enabled = true;
+            mainModule.startLifetime = emission;
+        } else {
+            emissionModule.enabled = false;
+        }
+    }
+
+    private float CalculateEmissionFactor(Vector3 v) {
         Vector3 forward = transform.forward;
 
         // Find the angle between the target force and forward
-        float costheta = Vector3.Dot(forward, force) / (forward.magnitude * force.magnitude);
+        float costheta = Vector3.Dot(forward, v) / (forward.magnitude * v.magnitude);
         float theta = Mathf.Acos(costheta);
         if (theta > Mathf.PI) {
             theta -= Mathf.PI;
@@ -87,29 +111,9 @@ public class ThrusterAction : MonoBehaviour, ForceActuator {
             float d = Mathf.Clamp(1 - (Mathf.Abs(theta) / Mathf.PI), 0, 1);
 
             // Normal distribution
-            float n = MoreMaths.NormalDistribution(0.2f, 1, d) / 2.0f;
-            float p = n;
-
-            if (p > float.Epsilon) {
-                Vector3 directedForce = forward * Force * p;
-                rootBody.AddForceAtPosition(directedForce, transform.position);
-
-                Debug.DrawRay(transform.position, forward * Force, Color.blue);
-                Debug.DrawRay(transform.position, directedForce, Color.red);
-
-                //Debug.DrawRay(transform.position, forward * 10, Color.magenta);
-
-                emissionModule.enabled = true;
-                mainModule.startLifetime = p;
-            } else {
-                emissionModule.enabled = true;
-            }
-        } else {
-            emissionModule.enabled = false;
+            return MoreMaths.NormalDistribution(0.2f, 1, d) / 2.0f;
         }
-    }
 
-    public void ApplyTorque(Vector3 torque) {
-        ApplyForce(torque);
+        return 0;
     }
 }
