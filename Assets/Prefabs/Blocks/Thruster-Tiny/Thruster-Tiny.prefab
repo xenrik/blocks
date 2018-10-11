@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FireThrusterPropertyName: Thrust
-  Force: 1
+  Force: 10
 --- !u!198 &198553563365221040
 ParticleSystem:
   m_ObjectHideFlags: 1

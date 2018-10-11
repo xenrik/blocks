@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FireThrusterPropertyName: Thust
-  Force: 5
+  Force: 2
 --- !u!114 &114896772055388516
 MonoBehaviour:
   m_ObjectHideFlags: 1
